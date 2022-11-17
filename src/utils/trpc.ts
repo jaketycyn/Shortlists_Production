@@ -13,6 +13,7 @@ const getBaseUrl = () => {
 
 export const trpc = createTRPCNext<AppRouter>({
   config() {
+
     return {
       transformer: superjson,
       links: [
@@ -27,7 +28,7 @@ export const trpc = createTRPCNext<AppRouter>({
       ],
     };
   },
-  ssr: false,
+  ssr: true,
 });
 
 /**

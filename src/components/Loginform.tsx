@@ -21,7 +21,7 @@ const LoginForm: NextPage = () => {
   const onSubmit = useCallback(
     async (data: LoginSchema) => {
       try {
-        await signIn("credentials", { ...data });
+        await signIn("credentials", { ...data, redirect: false });
         reset();
       } catch (err) {
         console.error(err);
