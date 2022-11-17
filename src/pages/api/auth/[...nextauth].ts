@@ -62,7 +62,6 @@ export const authOptions: NextAuthOptions = {
 
           if (!isValidPassword) return null;
           
-
            console.log("result: ", result)
            console.log("id: ",  result.id)
            console.log("email: ", result.email)
@@ -85,15 +84,16 @@ export const authOptions: NextAuthOptions = {
     // }),
     // ...add more providers here
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
+  },
   jwt: {
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   pages: {
     signIn: "/",
     newUser: "/register",
-  },
-  session: {
-    strategy: "jwt",
   },
 };
 
