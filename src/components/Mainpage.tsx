@@ -8,6 +8,7 @@ import {
   HiOutlineChevronRight,
 } from "react-icons/hi";
 import { Dialog, Menu, Transition } from "@headlessui/react";
+import FooterNav from "./FooterNav";
 
 
 
@@ -25,7 +26,7 @@ const Mainpage: NextPage = () => {
   // const newIndex = index + 1;
   // }
 
-const [showShareForm, setShowShareForm] = useState(false);
+//const [showShareForm, setShowShareForm] = useState(false);
 
 
 
@@ -82,8 +83,9 @@ const [showShareForm, setShowShareForm] = useState(false);
             </ul>
           </div>
         </div>
-        
+        <div>  <FooterNav/></div>
       </div>
+     
     );
 }
 
