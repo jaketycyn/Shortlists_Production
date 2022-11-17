@@ -14,4 +14,4 @@ const Example: NextPage = () => {
   );
 };
 
-export default FooterNav;
+export default Example;
