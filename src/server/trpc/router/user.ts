@@ -15,5 +15,12 @@ export const userRouter = router({
 //     return ctx.prisma.example.findMany();
 //   }),
 registerUser: publicProcedure
-    .input(z.object({username: z.string(), email: z.string().email(), password:z.string()}))
+    .input(registerSchema)
+    .mutation(async ({input, ctx}) => {
+        const {username, email, password} = input;
+
+        const exists = await ctx.prisma.user.findFirst({})
+        where: {email}
+        
+    })
 });

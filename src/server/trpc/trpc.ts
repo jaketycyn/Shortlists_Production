@@ -3,6 +3,10 @@ import superjson from "superjson";
 
 import { type Context } from "./context";
 
+/* This is where you initialize tRPC and define reusable procedures and middlewares. By convention, you shouldn’t export the entire t-object but instead create reusable procedures and middlewares and export those.
+
+You’ll notice we use superjson as data transformer. This makes it so that your data types are preserved when they reach the client, so if you for example send a Date object, the client will return a Date, and not a string which is the case for most APIs. */
+
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape }) {

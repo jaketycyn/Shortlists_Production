@@ -32,7 +32,8 @@ export const createContextInner = async (opts: CreateContextOptions) => {
  **/
 
 // createContext: This is where you define context which depends on the request, e.g. the user’s session. You request the session using the opts.req object, and then pass the session down to the createContextInner function to create the final context.
-export const createContext = async ({req, res}: CreateNextContextOptions) => {
+export const createContext = async (opts: CreateNextContextOptions) => {
+  const { req, res } = opts;
 
   // Get the session from the server using the unstable_getServerSession wrapper function
   const session = await getServerAuthSession({ req, res });
