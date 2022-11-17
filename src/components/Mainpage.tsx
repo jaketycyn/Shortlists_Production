@@ -14,24 +14,16 @@ import { Dialog, Menu, Transition } from "@headlessui/react";
 const Mainpage: NextPage = () => {
 
   // subMenu State & Functions
-  const [subMenuIndexes, setSubMenuIndexes] = useState([]);
   const [userListsOpen, setUserListsOpen] = useState(true);
-  const [userReceivedListsOpen, setUserReceivedListsOpen] = useState(true);
+  //const [subMenuIndexes, setSubMenuIndexes] = useState([]);
+  //const [userReceivedListsOpen, setUserReceivedListsOpen] = useState(true);
  //const [subMenuIndex, setSubMenuIndex] = useState();
 
 
- const toggleSubMenu = (index: number, subMenuIndexes: any) => {
+  // const toggleSubMenu = (index: number, subMenuIndexes: any) => {
   //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in. Thus we use newIndex
-  const newIndex = index + 1;
-  const subMenuIndexFound = subMenuIndexes.find((i:any) => i === newIndex);
-  if (subMenuIndexFound) {
-    //setSubMenuIndexes([...subMenuIndexes], newIndex + 1);
-    const result = subMenuIndexes.filter((item:any) => item !== newIndex);
-    setSubMenuIndexes(result);
-  } else {
-    setSubMenuIndexes((subMenuIndexes) => [...subMenuIndexes, newIndex]);
-  }
-};
+  // const newIndex = index + 1;
+  // }
 
 const [showShareForm, setShowShareForm] = useState(false);
 
