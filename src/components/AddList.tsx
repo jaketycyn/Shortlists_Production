@@ -4,52 +4,25 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import { useForm, Resolver, SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+
 import { trpc } from "../utils/trpc";
 import { addListSchema, type AddListSchema } from "../server/schema/listSchema";
 
 import { HiX, HiOutlineCheck, HiPlus } from "react-icons/hi";
 
-// const resolver: Resolver<AddListSchema> = async (values) => {
-//   return {
-//     values: !values.listTitle ? {} : values,
-//     errors: !values.listTitle
-//       ? {
-//           listTitle: {
-//             type: "required",
-//             message: "A title is required",
-//           },
-//         }
-//       : {},
-//   };
-// };
-
-// const router = useRouter();
-// const { handleSubmit, register, reset } = useForm<RegisterSchema>({
-//   defaultValues: {
-//     username: "",
-//     email: "",
-//     password: "",
-//   },
-//   resolver: zodResolver(registerSchema),
-// });
-
-// const { mutateAsync } = trpc.user.registerUser.useMutation()
-
-// const onSubmit = useCallback(
-//   async (data: RegisterSchema) => {
-//     try {
-//       const result = await mutateAsync(data);
-//       if (result.status === 201) {
-//         reset();
-//         router.push("/");
-//       }
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   },
-//   [mutateAsync, router, reset]
-// );
+const resolver: Resolver<AddListSchema> = async (values) => {
+  return {
+    values: !values.listTitle ? {} : values,
+    errors: !values.listTitle
+      ? {
+          listTitle: {
+            type: "required",
+            message: "A title is required",
+          },
+        }
+      : {},
+  };
+};
 
 const AddList: NextPage = () => {
   const [showToast, setShowToast] = React.useState<boolean>(false);
@@ -59,7 +32,7 @@ const AddList: NextPage = () => {
     // reset,
     formState: { errors },
   } = useForm<AddListSchema>({
-    resolver: zodResolver(addListSchema),
+    resolver,
   });
 
   const { mutateAsync } = trpc.userList.addList.useMutation();
@@ -71,7 +44,10 @@ const AddList: NextPage = () => {
       try {
         const result = await mutateAsync(data);
         if (result) {
-          router.push("/");
+          setShowToast(true);
+          setTimeout(() => {
+            router.push("/");
+          }, 1000);
         }
         console.log("result: ", result);
       } catch (err) {

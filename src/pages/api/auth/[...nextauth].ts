@@ -23,7 +23,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     session: async ({ session, token }) => {
-      if (token) {
+      if (session && token) {
         //?logic for adding user.id from token to session
         // https://next-auth.js.org/getting-started/client
         // https://next-auth.js.org/configuration/callbacks#session-callback
