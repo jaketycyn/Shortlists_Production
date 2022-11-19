@@ -2,9 +2,18 @@ import { TRPCError } from "@trpc/server";
 import { registerSchema } from "../../schema/userSchema";
 import { hash } from "argon2";
 
-import { router, publicProcedure } from "../trpc";
+import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { addListSchema } from "../../schema/listSchema";
 
-export const userRouter = router({
+export const userListRouter = router({
+  addList: protectedProcedure
+    .input(addListSchema)
+    .mutation(async ({ input, ctx }) => {
+      const { listTitle } = input;
+
+      console.log("ctx.session.user: inside userListRouter", ctx.session.user);
+    }),
+
   //! examples
   // hello: publicProcedure
   //     .input(z.object({ text: z.string().nullish() }).nullish())
@@ -38,12 +47,10 @@ export const userRouter = router({
         data: { username, email, password: hashedPassword },
       });
 
-      console.log("result: ", result);
-
       return {
         status: 201,
         message: "Account created successfully",
-        result: { email: result.email, id: result.id },
+        result: result.email,
       };
     }),
 });
