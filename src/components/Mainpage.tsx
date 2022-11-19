@@ -74,7 +74,9 @@ const Mainpage: NextPage = () => {
                 className={` container relative z-0 h-full items-center
                 `}
                 //? addItemOrList && "opacity-30" ^ above
-              ></div>
+              >
+                {}
+              </div>
             </ul>
           </div>
         ) : (
