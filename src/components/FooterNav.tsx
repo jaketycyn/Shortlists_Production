@@ -8,7 +8,7 @@ import type { NextPage } from "next";
 
 const FooterNav: NextPage = () => {
   const [showAdd, setShowAdd] = React.useState<boolean>(false);
-  console.log("showAdd", showAdd);
+  //console.log("showAdd", showAdd);
 
   return (
     <div className="grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center text-center  ">

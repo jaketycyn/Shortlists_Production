@@ -18,7 +18,7 @@ export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   callbacks: {
     jwt: async ({ token, user, account, profile, isNewUser }) => {
-      console.log("token: ", token);
+      //console.log("token: ", token);
 
       return token;
     },
@@ -63,10 +63,10 @@ export const authOptions: NextAuthOptions = {
 
           if (!isValidPassword) return null;
 
-          console.log("result: ", result);
-          console.log("id: ", result.id);
-          console.log("email: ", result.email);
-          console.log("username: ", result.username);
+          // console.log("result: ", result);
+          // console.log("id: ", result.id);
+          // console.log("email: ", result.email);
+          // console.log("username: ", result.username);
           return {
             id: result.id,
             email: result.email,

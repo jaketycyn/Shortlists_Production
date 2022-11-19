@@ -10,8 +10,8 @@ export const getServerAuthSession = async (ctx: {
   req: GetServerSidePropsContext["req"];
   res: GetServerSidePropsContext["res"];
 }) => {
-  console.log("authOptions.session: ", authOptions.session)
-  console.log("authOptions ", authOptions)
+  // console.log("authOptions.session: ", authOptions.session)
+  // console.log("authOptions ", authOptions)
 
   // //new stuff
   // if (!authOptions.session) {
@@ -32,4 +32,3 @@ export const getServerAuthSession = async (ctx: {
 
   return await unstable_getServerSession(ctx.req, ctx.res, authOptions);
 };
-
