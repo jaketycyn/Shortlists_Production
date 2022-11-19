@@ -10,8 +10,8 @@ import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
-  console.log("session: ", session);
-  console.log("status: ", status);
+  // console.log("session: ", session);
+  // console.log("status: ", status);
   //const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
 
   return (

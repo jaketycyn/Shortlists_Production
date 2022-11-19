@@ -25,8 +25,17 @@ export const userListRouter = router({
   getLists: protectedProcedure.query(({ ctx }) => {
     console.log("user.id: ", ctx.session.user.id);
 
-    return ctx.prisma.userList.findMany({
+    const results = ctx.prisma.userList.findMany({
       where: { userId: ctx.session.user.id },
     });
+
+    console.log("results: ", results);
+
+    return results;
+    // return {
+    //   status: 201,
+    //   message: "Retrieved user lists successfully",
+    //   lists: { results },
+    // };
   }),
 });
