@@ -1,35 +1,37 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 //import DiscordProvider from "next-auth/providers/discord";
-import GoogleProvider from 'next-auth/providers/google'
+import GoogleProvider from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import { verify } from "argon2";
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../../../env/server.mjs";
 import { prisma } from "../../../server/db/client";
-import { loginSchema} from "../../../server/schema/userSchema";
+import { loginSchema } from "../../../server/schema/userSchema";
 import { Session } from "inspector";
-import { getToken } from "next-auth/jwt"
+import { getToken } from "next-auth/jwt";
 
-const secret = process.env.NEXTAUTH_SECRET
+const secret = process.env.NEXTAUTH_SECRET;
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
   adapter: PrismaAdapter(prisma),
   callbacks: {
     jwt: async ({ token, user, account, profile, isNewUser }) => {
-      console.log("token: ", token)
-      return token
-    },    
-    // session: async ({ session, token }) => {
-    //   if (token) {
-    //     session.user.userId = token.userId;
-    //     session.user.email = token.email;
-    //     session.user.username = token.username;
-    //   }
-   
-    //   return session;
-    // },
+      console.log("token: ", token);
+
+      return token;
+    },
+    session: async ({ session, token }) => {
+      if (token) {
+        //?logic for adding user.id from token to session
+        // https://next-auth.js.org/getting-started/client
+        // https://next-auth.js.org/configuration/callbacks#session-callback
+        session.user.id = token.sub;
+      }
+
+      return session;
+    },
   },
   // Configure one or more authentication providers
 
@@ -47,7 +49,7 @@ export const authOptions: NextAuthOptions = {
       authorize: async (credentials) => {
         try {
           // console.log("credentials: ", credentials)
-      
+
           const { email, password } = await loginSchema.parseAsync(credentials);
 
           const result = await prisma.user.findFirst({
@@ -58,15 +60,18 @@ export const authOptions: NextAuthOptions = {
           if (!result) return null;
 
           const isValidPassword = await verify(result.password, password);
-        
 
           if (!isValidPassword) return null;
-          
-           console.log("result: ", result)
-           console.log("id: ",  result.id)
-           console.log("email: ", result.email)
-           console.log("username: ", result.username)
-          return { id: result.id, email: result.email, username: result.username };
+
+          console.log("result: ", result);
+          console.log("id: ", result.id);
+          console.log("email: ", result.email);
+          console.log("username: ", result.username);
+          return {
+            id: result.id,
+            email: result.email,
+            username: result.username,
+          };
         } catch {
           return null;
         }
@@ -75,9 +80,8 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
-      
     }),
-   
+
     // DiscordProvider({
     //   clientId: env.DISCORD_CLIENT_ID,
     //   clientSecret: env.DISCORD_CLIENT_SECRET,
@@ -98,4 +102,3 @@ export const authOptions: NextAuthOptions = {
 };
 
 export default NextAuth(authOptions);
-
