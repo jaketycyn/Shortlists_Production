@@ -1,4 +1,4 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
+import NextAuth, { User, type NextAuthOptions } from "next-auth";
 //import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
@@ -12,6 +12,8 @@ import { Session } from "inspector";
 import { getToken } from "next-auth/jwt";
 
 const secret = process.env.NEXTAUTH_SECRET;
+
+type ExtendedUserType = User & { id?: any };
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
@@ -27,7 +29,7 @@ export const authOptions: NextAuthOptions = {
         //?logic for adding user.id from token to session
         // https://next-auth.js.org/getting-started/client
         // https://next-auth.js.org/configuration/callbacks#session-callback
-        session.user.id = token.sub;
+        (session.user as ExtendedUserType).id = token.sub;
       }
 
       return session;
