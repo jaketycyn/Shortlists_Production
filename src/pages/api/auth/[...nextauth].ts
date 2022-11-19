@@ -13,6 +13,10 @@ import { getToken } from "next-auth/jwt";
 
 const secret = process.env.NEXTAUTH_SECRET;
 
+//had to do any to get rid of type error to allow upload to Vercel
+//see the docs here and below in session for more info
+//https://github.com/nextauthjs/next-auth/discussions/2979
+//https://next-auth.js.org/getting-started/typescript#module-augmentation
 type ExtendedUserType = User & { id?: any };
 
 export const authOptions: NextAuthOptions = {
