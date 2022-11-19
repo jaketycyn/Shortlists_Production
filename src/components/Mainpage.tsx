@@ -12,29 +12,11 @@ import { Dialog, Menu, Transition } from "@headlessui/react";
 
 import { trpc } from "../utils/trpc";
 import FooterNav from "./FooterNav";
+import { DeleteListSchema } from "../server/schema/listSchema";
 
 const Mainpage: NextPage = () => {
-
   // subMenu State & Functions
   const [userListsOpen, setUserListsOpen] = useState(true);
-  
-
-  // const [subMenuIndexes, setSubMenuIndexes] = useState([]);
-  // const [userReceivedListsOpen, setUserReceivedListsOpen] = useState(true);
-  //const [subMenuIndex, setSubMenuIndex] = useState();
-
-  // const toggleSubMenu = (index: number, subMenuIndexes: any) => {
-  //   //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in. Thus we use newIndex
-  //   const newIndex = index + 1;
-  //   const subMenuIndexFound = subMenuIndexes.find((i: any) => i === newIndex);
-  //   if (subMenuIndexFound) {
-  //     //setSubMenuIndexes([...subMenuIndexes], newIndex + 1);
-  //     const result = subMenuIndexes.filter((item: any) => item !== newIndex);
-  //     setSubMenuIndexes(result);
-  //   } else {
-  //     setSubMenuIndexes((subMenuIndexess) => [...subMenuIndexes, newIndex]);
-  //   }
-  // };
 
   const [showShareForm, setShowShareForm] = useState(false);
   const getLists = trpc.userList.getLists.useQuery();
@@ -46,8 +28,14 @@ const Mainpage: NextPage = () => {
   // console.log("data: ", data?.user.username)
 
   //!Deleting List from Just having userid + listId
-  
 
+  const { mutateAsync } = trpc.userList.deleteList.useMutation();
+
+  const DeleteItem = async (data: DeleteListSchema) => {
+    try {
+      const result = await mutateAsync(data);
+    } catch (error) {}
+  };
 
   return (
     <div className="flex h-screen flex-col justify-between">
@@ -86,9 +74,7 @@ const Mainpage: NextPage = () => {
 
               {/* Display UserClassicLists Module: Begins*/}
 
-              <div
-                className="container relative z-0 h-full items-center"
-              >
+              <div className="container relative z-0 h-full items-center">
                 {usersLists && userListsOpen && (
                   <div>
                     {usersLists.map((list, index) => (
@@ -106,7 +92,8 @@ const Mainpage: NextPage = () => {
                           />
                         </button>
                         <Link
-                          href="/list"
+                          //TODO: Change to proper route for inside a list
+                          href="/"
                           key={index}
                           //onClick={() => goInsideList(list._id)}
                           className="h-full w-full p-2"
@@ -114,12 +101,38 @@ const Mainpage: NextPage = () => {
                           {list.title}
                         </Link>
                         {/* DropDown: Begin */}
-                        <div className="dropdown dropdown-left">
-                          <label tabIndex={0} className='btn m-1' >...</label>
-                          <ul tabIndex={0} className='dropdown-content menu flex flex-col p-2 w-20 items-center text-center  shadow border-2 border-black bg-white rounded-box  divide-black'>
-                            <li className="p-1 w-full "onClick={() => console.log("Edit")}>Edit</li>
-                            <li className="p-1 "onClick={() => console.log("Share")}>Share</li>
-                            <li className="p-1 "onClick={() => console.log("Trash")}>Trash</li>
+                        <div className="dropdown-left dropdown">
+                          <label tabIndex={0} className="btn m-1">
+                            ...
+                          </label>
+                          <ul
+                            tabIndex={0}
+                            className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
+                          >
+                            <li
+                              className="w-full p-1 "
+                              onClick={() => console.log("Edit")}
+                            >
+                              Edit
+                            </li>
+                            <li
+                              className="p-1 "
+                              onClick={() => console.log("Share")}
+                            >
+                              Share
+                            </li>
+                            <li
+                              className="p-1"
+                              // onClick={() => console.log("Trash: ", list.id, list.userId)}
+                              onClick={() =>
+                                DeleteItem({
+                                  listId: list.id,
+                                  userId: list.userId,
+                                })
+                              }
+                            >
+                              Trash
+                            </li>
                           </ul>
                         </div>
                         {/* DropDown: End */}

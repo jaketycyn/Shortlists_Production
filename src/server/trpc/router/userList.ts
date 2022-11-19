@@ -3,7 +3,7 @@ import { registerSchema } from "../../schema/userSchema";
 import { hash } from "argon2";
 
 import { router, publicProcedure, protectedProcedure } from "../trpc";
-import { addListSchema } from "../../schema/listSchema";
+import { addListSchema, deleteListSchema } from "../../schema/listSchema";
 
 export const userListRouter = router({
   addList: protectedProcedure
@@ -38,4 +38,21 @@ export const userListRouter = router({
     //   lists: { results },
     // };
   }),
+
+  deleteList: protectedProcedure
+    .input(deleteListSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { listId, userId } = input;
+      // console.log("listId", listId)
+      // console.log("userId", userId)
+      const results = await ctx.prisma.userList.deleteMany({
+        where: { id: listId, userId: userId },
+      });
+
+      return {
+        status: 201,
+        message: "Retrieved user lists successfully",
+        results,
+      };
+    }),
 });
