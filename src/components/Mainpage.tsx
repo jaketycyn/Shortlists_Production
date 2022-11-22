@@ -18,10 +18,11 @@ const Mainpage: NextPage = () => {
   // subMenu State & Functions
   const [userListsOpen, setUserListsOpen] = useState(true);
 
-  const [showShareForm, setShowShareForm] = useState(false);
-  const getLists = trpc.userList.getLists.useQuery();
-  const usersLists = getLists.data;
-  console.log("usersLists: ", usersLists);
+  const [showShareForm, setShowShareForm] = useState(true);
+  const results = trpc.userList.getLists.useQuery();
+  console.log("listData", results.data);
+  const usersLists = results.data;
+  //console.log("usersLists: ", usersLists);
 
   const { data } = useSession();
   //console.log("data from useSession: ", data);
@@ -34,8 +35,12 @@ const Mainpage: NextPage = () => {
   const DeleteItem = async (data: DeleteListSchema) => {
     try {
       const result = await mutateAsync(data);
+      console.log("result: ", result);
+      trpc.userList.getLists.useQuery();
     } catch (error) {}
   };
+
+  //console.log("usersLists: ", usersLists?.length);
 
   return (
     <div className="flex h-screen flex-col justify-between">
@@ -46,7 +51,17 @@ const Mainpage: NextPage = () => {
           <h1 className="font-semibold">Shortlists</h1>
           {/* Setup Grid - layout later for spacing of Back, list name, share icon & more options icon w/ redirect to options page like Notion*/}
         </header>
-        {usersLists ? (
+
+        {usersLists === undefined || usersLists.length === 0 ? (
+          <div className="z-0 m-2 mt-40 flex flex-col items-center rounded-md text-center">
+            <h1>You have no Lists created</h1>
+            <p className="mt-8">
+              To create your first lists and any future lists click the {"+"} in
+              the bottom right hand corner
+            </p>
+            <p className="mt-8">Then select the option "Add List"</p>
+          </div>
+        ) : (
           <div className="z-0 m-2 flex flex-col items-center rounded-md text-black ">
             <ul className="w-5/6 pt-2 ">
               {/* My Lists Button: Begin*/}
@@ -75,7 +90,7 @@ const Mainpage: NextPage = () => {
               {/* Display UserClassicLists Module: Begins*/}
 
               <div className="container relative z-0 h-full items-center">
-                {usersLists && userListsOpen && (
+                {usersLists && userListsOpen ? (
                   <div>
                     {usersLists.map((list, index) => (
                       <div
@@ -92,7 +107,7 @@ const Mainpage: NextPage = () => {
                           />
                         </button>
                         <Link
-                          //TODO: Change to proper route for inside a list
+                          //TODO: Change to proper route for inside a
                           href="/"
                           key={index}
                           //onClick={() => goInsideList(list._id)}
@@ -139,12 +154,12 @@ const Mainpage: NextPage = () => {
                       </div>
                     ))}
                   </div>
+                ) : (
+                  <div></div>
                 )}
               </div>
             </ul>
           </div>
-        ) : (
-          <div>Create your first list</div>
         )}
       </div>
       <FooterNav />

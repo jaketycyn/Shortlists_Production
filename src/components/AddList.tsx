@@ -47,7 +47,7 @@ const AddList: NextPage = () => {
           setShowToast(true);
           setTimeout(() => {
             router.push("/");
-          }, 1000);
+          }, 500);
         }
         console.log("result: ", result);
       } catch (err) {
