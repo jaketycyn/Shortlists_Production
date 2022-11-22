@@ -28,7 +28,7 @@ const Mainpage: NextPage = () => {
   //console.log("usersLists: ", usersLists);
 
   const { data } = useSession();
-  //console.log("data from useSession: ", data);
+  console.log("data from useSession: ", data);
   // console.log("data: ", data?.user.username)
 
   //!Deleting List from Just having userid + listId
