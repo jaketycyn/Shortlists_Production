@@ -62,7 +62,7 @@ const Mainpage: NextPage = () => {
               To create your first lists and any future lists click the {"+"} in
               the bottom right hand corner
             </p>
-            <p className="mt-8">Then select the option "Add List"</p>
+            <p className="mt-8">Then select the option {"Add List"}</p>
           </div>
         ) : (
           <div className="z-0 m-2 flex flex-col items-center rounded-md text-black ">
