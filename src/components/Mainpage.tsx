@@ -19,9 +19,12 @@ const Mainpage: NextPage = () => {
   const [userListsOpen, setUserListsOpen] = useState(true);
 
   const [showShareForm, setShowShareForm] = useState(true);
-  const results = trpc.userList.getLists.useQuery();
-  console.log("listData", results.data);
-  const usersLists = results.data;
+  const {
+    data: results,
+    refetch,
+  } = trpc.userList.getLists.useQuery();
+  console.log("listData", results);
+  const usersLists = results;
   //console.log("usersLists: ", usersLists);
 
   const { data } = useSession();
@@ -36,7 +39,7 @@ const Mainpage: NextPage = () => {
     try {
       const result = await mutateAsync(data);
       console.log("result: ", result);
-      trpc.userList.getLists.useQuery();
+      refetch();
     } catch (error) {}
   };
 
@@ -139,11 +142,13 @@ const Mainpage: NextPage = () => {
                             <li
                               className="p-1"
                               // onClick={() => console.log("Trash: ", list.id, list.userId)}
-                              onClick={() =>
+                              onClick={async () =>
                                 DeleteItem({
                                   listId: list.id,
                                   userId: list.userId,
                                 })
+                                // set reQuery to ture
+
                               }
                             >
                               Trash
