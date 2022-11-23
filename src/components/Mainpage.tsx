@@ -16,12 +16,14 @@ import { DeleteListSchema } from "../server/schema/listSchema";
 
 const Mainpage: NextPage = () => {
   // subMenu State & Functions
+
   const [userListsOpen, setUserListsOpen] = useState(true);
 
   const [showShareForm, setShowShareForm] = useState(true);
   const {
     data: results,
     refetch,
+    isLoading,
   } = trpc.userList.getLists.useQuery();
   console.log("listData", results);
   const usersLists = results;
@@ -33,7 +35,9 @@ const Mainpage: NextPage = () => {
 
   //!Deleting List from Just having userid + listId
 
-  const { mutateAsync } = trpc.userList.deleteList.useMutation();
+  if (isLoading) return <div>Loading...</div>;
+
+  //const { mutateAsync } = trpc.userList.deleteList.useMutation();
 
   const DeleteItem = async (data: DeleteListSchema) => {
     try {
@@ -142,13 +146,13 @@ const Mainpage: NextPage = () => {
                             <li
                               className="p-1"
                               // onClick={() => console.log("Trash: ", list.id, list.userId)}
-                              onClick={async () =>
-                                DeleteItem({
-                                  listId: list.id,
-                                  userId: list.userId,
-                                })
+                              onClick={
+                                async () =>
+                                  DeleteItem({
+                                    listId: list.id,
+                                    userId: list.userId,
+                                  })
                                 // set reQuery to ture
-
                               }
                             >
                               Trash

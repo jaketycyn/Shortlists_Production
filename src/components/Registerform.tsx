@@ -46,10 +46,10 @@ const RegisterForm: NextPage = () => {
     async (data: RegisterSchema) => {
       try {
         const result = await mutateAsync(data);
-        // if (result.status === 201) {
-        //   reset();
-        //   router.push("/");
-        // }
+        if (result.status === 201) {
+          reset();
+          router.push("/");
+        }
       } catch (err) {
         console.error(err);
       }
