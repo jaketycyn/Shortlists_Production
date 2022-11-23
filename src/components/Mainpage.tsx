@@ -1,18 +1,18 @@
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { Fragment, useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 import {
-  HiOutlineDotsVertical,
-  HiPlus,
+  // HiOutlineDotsVertical,
+  // HiPlus,
   HiOutlineChevronRight,
 } from "react-icons/hi";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 
 import { trpc } from "../utils/trpc";
 import FooterNav from "./FooterNav";
-import { DeleteListSchema } from "../server/schema/listSchema";
+import { type DeleteListSchema } from "../server/schema/listSchema";
 
 const Mainpage: NextPage = () => {
   // subMenu State & Functions
@@ -37,9 +37,8 @@ const Mainpage: NextPage = () => {
 
   if (isLoading) return <div>Loading...</div>;
 
-  //const { mutateAsync } = trpc.userList.deleteList.useMutation();
-
   const DeleteItem = async (data: DeleteListSchema) => {
+    const { mutateAsync } = trpc.userList.deleteList.useMutation();
     try {
       const result = await mutateAsync(data);
       console.log("result: ", result);
