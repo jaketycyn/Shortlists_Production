@@ -1,6 +1,6 @@
+import React, { useState } from "react";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 import Link from "next/link";
 
 import {
@@ -13,41 +13,90 @@ import { Dialog, Menu, Transition } from "@headlessui/react";
 import { trpc } from "../utils/trpc";
 import FooterNav from "./FooterNav";
 import { type DeleteListSchema } from "../server/schema/listSchema";
+import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+
+interface EditListInputs {
+  title: string
+}
 
 const Mainpage: NextPage = () => {
   // subMenu State & Functions
-
+ 
   const [userListsOpen, setUserListsOpen] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editListId, setEditListId] = useState('');
+  const [editListUserId, setEditListUserId] = useState('');
+
 
   const [showShareForm, setShowShareForm] = useState(true);
+  
   const {
     data: results,
     refetch,
     isLoading,
   } = trpc.userList.getLists.useQuery();
-  console.log("listData", results);
+
+  //console.log("listData", results);
   const usersLists = results;
-  //console.log("usersLists: ", usersLists);
+
 
   const { data } = useSession();
   console.log("data from useSession: ", data);
-  // console.log("data: ", data?.user.username)
 
-  //!Deleting List from Just having userid + listId
 
+  // Delete Item
+const { mutateAsync } = trpc.userList.deleteList.useMutation()
+
+//console.log("mutateAsync", mutateAsync)
+
+const DeleteList = async (data: DeleteListSchema) => {
+ 
+  try {
+    const result = await mutateAsync(data);
+    console.log("result: ", result);
+    refetch();
+  } catch (error) {}
+};
+
+
+
+  // Update List - aka change name
+  const { register, watch, handleSubmit } = useForm<EditListInputs>({
+    mode: "onBlur"
+  });
+  React.useEffect(() => {
+    const subscription = watch((title) => {
+      //console.log(title)
+
+    })
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  const {mutate: updateListMutate} = trpc.userList.changeListTitle.useMutation()
+
+  const onSubmit = (data: EditListInputs) => {
+    
+    console.log("data for edit: ", data);
+    console.log("data for editListId: ", editListId);
+    console.log("data for editListUserId: ", editListUserId);
+    const updateData = {
+      title: data.title,
+      listId: editListId,
+      userId: editListUserId
+    }
+    try {
+      console.log("updateData", updateData)
+    const results =  updateListMutate(updateData)  
+    refetch();
+    }
+    catch{
+      
+    }
+  }
   if (isLoading) return <div>Loading...</div>;
 
-  const DeleteItem = async (data: DeleteListSchema) => {
-    const { mutateAsync } = trpc.userList.deleteList.useMutation();
-    try {
-      const result = await mutateAsync(data);
-      console.log("result: ", result);
-      refetch();
-    } catch (error) {}
-  };
-
-  //console.log("usersLists: ", usersLists?.length);
-
+  
   return (
     <div className="flex h-screen flex-col justify-between">
       <div>
@@ -97,11 +146,13 @@ const Mainpage: NextPage = () => {
 
               <div className="container relative z-0 h-full items-center">
                 {usersLists && userListsOpen ? (
+                    <form onBlur={handleSubmit(onSubmit)}>
                   <div>
                     {usersLists.map((list, index) => (
                       <div
-                        className="relative mt-2 flex cursor-pointer  snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600  text-sm  text-black hover:bg-primary"
+                        className="relative mt-2 flex cursor-pointer  snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600  text-sm  text-black"
                         key={index}
+                        onBlur={() => setIsEditing(false)}
                       >
                         <button className="relative flex h-10 w-10 items-center  p-2">
                           <HiOutlineChevronRight
@@ -112,15 +163,33 @@ const Mainpage: NextPage = () => {
                             // }
                           />
                         </button>
-                        <Link
+                        {isEditing ? (
+                          <Link href='/'>
+                          <input
                           //TODO: Change to proper route for inside a
-                          href="/"
+                          
                           key={index}
                           //onClick={() => goInsideList(list._id)}
-                          className="h-full w-full p-2"
-                        >
-                          {list.title}
-                        </Link>
+                          className="h-full w-full "
+                          placeholder={list.title}
+                          {...register('title')}
+                          />
+              
+                          </Link>
+                    
+                        ) : ( <Link href='/'>
+                        <input
+                        //TODO: Change to proper route for inside a
+                        
+                        key={index}
+                        //onClick={() => goInsideList(list._id)}
+                        className="h-full w-full "
+                        value={list.title}
+                        onClick={() => {setIsEditing(true); setEditListId(list.id);setEditListUserId(list.userId)}}
+                        />
+            
+                        </Link>)}
+                          
                         {/* DropDown: Begin */}
                         <div className="dropdown-left dropdown">
                           <label tabIndex={0} className="btn m-1">
@@ -130,12 +199,6 @@ const Mainpage: NextPage = () => {
                             tabIndex={0}
                             className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
                           >
-                            <li
-                              className="w-full p-1 "
-                              onClick={() => console.log("Edit")}
-                            >
-                              Edit
-                            </li>
                             <li
                               className="p-1 "
                               onClick={() => console.log("Share")}
@@ -147,7 +210,7 @@ const Mainpage: NextPage = () => {
                               // onClick={() => console.log("Trash: ", list.id, list.userId)}
                               onClick={
                                 async () =>
-                                  DeleteItem({
+                                  DeleteList({
                                     listId: list.id,
                                     userId: list.userId,
                                   })
@@ -162,6 +225,7 @@ const Mainpage: NextPage = () => {
                       </div>
                     ))}
                   </div>
+                  </form>
                 ) : (
                   <div></div>
                 )}

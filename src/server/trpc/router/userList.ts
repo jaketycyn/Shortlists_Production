@@ -3,7 +3,7 @@ import { registerSchema } from "../../schema/userSchema";
 import { hash } from "argon2";
 
 import { router, publicProcedure, protectedProcedure } from "../trpc";
-import { addListSchema, deleteListSchema } from "../../schema/listSchema";
+import { addListSchema, deleteListSchema ,updateListSchema } from "../../schema/listSchema";
 
 export const userListRouter = router({
   addList: protectedProcedure
@@ -45,7 +45,7 @@ export const userListRouter = router({
       const { listId, userId } = input;
       // console.log("listId", listId)
       // console.log("userId", userId)
-      const results = await ctx.prisma.userList.deleteMany({
+       await ctx.prisma.userList.deleteMany({
         where: { id: listId, userId: userId },
       });
 
@@ -55,7 +55,30 @@ export const userListRouter = router({
         //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
         status: 204,
         message: "Delete user list successfully",
-        results,
+      
+      };
+    }),
+  changeListTitle: protectedProcedure
+    .input(updateListSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { listId, title, userId } = input;
+      // console.log("listId", listId)
+      // console.log("userId", userId)
+
+       await ctx.prisma.userList.updateMany({
+        where: { id: listId, userId: userId },
+        data: {
+          title: title
+        }
+      });
+
+      return {
+        //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200
+        // "The successful result of a PUT or a DELETE is often not a 200 OK but a 204 No Content (or a 201 Created when the resource is uploaded for the first time)."
+        //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
+        status: 204,
+        message: "Delete user list successfully",
+      
       };
     }),
 });
