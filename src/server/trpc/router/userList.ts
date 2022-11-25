@@ -77,7 +77,7 @@ export const userListRouter = router({
         // "The successful result of a PUT or a DELETE is often not a 200 OK but a 204 No Content (or a 201 Created when the resource is uploaded for the first time)."
         //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
         status: 204,
-        message: "Delete user list successfully",
+        message: "Change user list title successful",
       
       };
     }),

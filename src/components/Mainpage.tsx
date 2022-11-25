@@ -73,9 +73,9 @@ const DeleteList = async (data: DeleteListSchema) => {
     return () => subscription.unsubscribe();
   }, [watch]);
 
-  const {mutate: updateListMutate} = trpc.userList.changeListTitle.useMutation()
+  const {mutateAsync: updateListMutate} = trpc.userList.changeListTitle.useMutation()
 
-  const onSubmit = (data: EditListInputs) => {
+  const onSubmit = async (data: EditListInputs) => {
     
     console.log("data for edit: ", data);
     console.log("data for editListId: ", editListId);
@@ -87,11 +87,12 @@ const DeleteList = async (data: DeleteListSchema) => {
     }
     try {
       console.log("updateData", updateData)
-    const results =  updateListMutate(updateData)  
-    refetch();
+      const results = await updateListMutate(updateData)
+      refetch();
+      await console.log('results: ', results)
     }
     catch{
-      
+
     }
   }
   if (isLoading) return <div>Loading...</div>;
