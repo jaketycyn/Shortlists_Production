@@ -17,20 +17,16 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 interface EditListInputs {
-  title: string
+  title: string;
 }
 
 const Mainpage: NextPage = () => {
   // subMenu State & Functions
- 
-  const [userListsOpen, setUserListsOpen] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editListId, setEditListId] = useState('');
-  const [editListUserId, setEditListUserId] = useState('');
 
+  const [userListsOpen, setUserListsOpen] = useState(true);
 
   const [showShareForm, setShowShareForm] = useState(true);
-  
+
   const {
     data: results,
     refetch,
@@ -40,64 +36,85 @@ const Mainpage: NextPage = () => {
   //console.log("listData", results);
   const usersLists = results;
 
-
   const { data } = useSession();
   console.log("data from useSession: ", data);
 
-
   // Delete Item
-const { mutateAsync } = trpc.userList.deleteList.useMutation()
+  const { mutateAsync } = trpc.userList.deleteList.useMutation();
 
-//console.log("mutateAsync", mutateAsync)
+  //console.log("mutateAsync", mutateAsync)
 
-const DeleteList = async (data: DeleteListSchema) => {
- 
-  try {
-    const result = await mutateAsync(data);
-    console.log("result: ", result);
-    refetch();
-  } catch (error) {}
-};
-
-
+  const DeleteList = async (data: DeleteListSchema) => {
+    try {
+      const result = await mutateAsync(data);
+      console.log("result: ", result);
+      refetch();
+    } catch (error) {}
+  };
 
   // Update List - aka change name
   const { register, watch, handleSubmit } = useForm<EditListInputs>({
-    mode: "onBlur"
+    mode: "onBlur",
   });
   React.useEffect(() => {
     const subscription = watch((title) => {
       //console.log(title)
-
-    })
+    });
     return () => subscription.unsubscribe();
   }, [watch]);
 
-  const {mutateAsync: updateListMutate} = trpc.userList.changeListTitle.useMutation()
+  // Hiding Update List component - will move it to a separate component later
 
-  const onSubmit = async (data: EditListInputs) => {
-    
-    console.log("data for edit: ", data);
-    console.log("data for editListId: ", editListId);
-    console.log("data for editListUserId: ", editListUserId);
-    const updateData = {
-      title: data.title,
-      listId: editListId,
-      userId: editListUserId
-    }
-    try {
-      console.log("updateData", updateData)
-      const results = await updateListMutate(updateData)
-      refetch();
-      await console.log('results: ', results)
-    }
-    catch{
+  // const [isEditing, setIsEditing] = useState(false);
+  // const [editListId, setEditListId] = useState('');
+  // const [editListUserId, setEditListUserId] = useState('');
+  // const {mutateAsync: updateListMutate} = trpc.userList.changeListTitle.useMutation()
 
-    }
-  }
+  // const onSubmit = async (data: EditListInputs) => {
+
+  //   console.log("data for edit: ", data);
+  //   console.log("data for editListId: ", editListId);
+  //   console.log("data for editListUserId: ", editListUserId);
+  //   const updateData = {
+  //     title: data.title,
+  //     listId: editListId,
+  //     userId: editListUserId
+  //   }
+  //   try {
+  //     console.log("updateData", updateData)
+  //     const results = await updateListMutate(updateData)
+  //     refetch();
+  //     await console.log('results: ', results)
+  //   }
+  //   catch{
+
+  //   }
+  // }
+
+  // part of an outer div
+  // onBlur={() => setIsEditing(false)
+
+  // <form onBlur={handleSubmit(onSubmit)}></form>
+  // Below: part of the input for passing props such as userId and listId
+  // onClick={() => {setIsEditing(true); setEditListId(list.id);setEditListUserId(list.userId)}
+  // {isEditing ? (
+  //   <Link href='/'>
+  //   <input
+  //   //TODO: Change to proper route for inside a
+
+  //   key={index}
+  //   //onClick={() => goInsideList(list._id)}
+  //   className="h-full w-full "
+  //   placeholder={list.title}
+  //   {...register('title')}
+  //   />
+
+  //   </Link>
+
+  // )
+
   if (isLoading) return <div>Loading...</div>;
 
-  
   return (
     <div className="flex h-screen flex-col justify-between">
       <div>
@@ -147,13 +164,11 @@ const DeleteList = async (data: DeleteListSchema) => {
 
               <div className="container relative z-0 h-full items-center">
                 {usersLists && userListsOpen ? (
-                    <form onBlur={handleSubmit(onSubmit)}>
                   <div>
                     {usersLists.map((list, index) => (
                       <div
                         className="relative mt-2 flex cursor-pointer  snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600  text-sm  text-black"
                         key={index}
-                        onBlur={() => setIsEditing(false)}
                       >
                         <button className="relative flex h-10 w-10 items-center  p-2">
                           <HiOutlineChevronRight
@@ -164,33 +179,15 @@ const DeleteList = async (data: DeleteListSchema) => {
                             // }
                           />
                         </button>
-                        {isEditing ? (
-                          <Link href='/'>
-                          <input
-                          //TODO: Change to proper route for inside a
-                          
+                        <Link
+                          href="/"
                           key={index}
                           //onClick={() => goInsideList(list._id)}
                           className="h-full w-full "
-                          placeholder={list.title}
-                          {...register('title')}
-                          />
-              
-                          </Link>
-                    
-                        ) : ( <Link href='/'>
-                        <input
-                        //TODO: Change to proper route for inside a
-                        
-                        key={index}
-                        //onClick={() => goInsideList(list._id)}
-                        className="h-full w-full "
-                        value={list.title}
-                        onClick={() => {setIsEditing(true); setEditListId(list.id);setEditListUserId(list.userId)}}
-                        />
-            
-                        </Link>)}
-                          
+                        >
+                          {list.title}
+                        </Link>
+
                         {/* DropDown: Begin */}
                         <div className="dropdown-left dropdown">
                           <label tabIndex={0} className="btn m-1">
@@ -226,7 +223,6 @@ const DeleteList = async (data: DeleteListSchema) => {
                       </div>
                     ))}
                   </div>
-                  </form>
                 ) : (
                   <div></div>
                 )}
