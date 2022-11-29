@@ -1,0 +1,60 @@
+ // Hiding Update List component - will move it to a separate component later
+
+  // const [isEditing, setIsEditing] = useState(false);
+  // const [editListId, setEditListId] = useState('');
+  // const [editListUserId, setEditListUserId] = useState('');
+  // const {mutateAsync: updateListMutate} = trpc.userList.changeListTitle.useMutation()
+
+  // Update List - aka change name
+  // const { register, watch, handleSubmit } = useForm<EditListInputs>({
+  //   mode: "onBlur",
+  // });
+  // React.useEffect(() => {
+  //   const subscription = watch((title) => {
+  //     //console.log(title)
+  //   });
+  //   return () => subscription.unsubscribe();
+  // }, [watch]);
+
+  // const onSubmit = async (data: EditListInputs) => {
+
+  //   console.log("data for edit: ", data);
+  //   console.log("data for editListId: ", editListId);
+  //   console.log("data for editListUserId: ", editListUserId);
+  //   const updateData = {
+  //     title: data.title,
+  //     listId: editListId,
+  //     userId: editListUserId
+  //   }
+  //   try {
+  //     console.log("updateData", updateData)
+  //     const results = await updateListMutate(updateData)
+  //     refetch();
+  //     await console.log('results: ', results)
+  //   }
+  //   catch{
+
+  //   }
+  // }
+
+  // part of an outer div
+  // onBlur={() => setIsEditing(false)
+
+  // <form onBlur={handleSubmit(onSubmit)}></form>
+  // Below: part of the input for passing props such as userId and listId
+  // onClick={() => {setIsEditing(true); setEditListId(list.id);setEditListUserId(list.userId)}
+  // {isEditing ? (
+  //   <Link href='/'>
+  //   <input
+  //   //TODO: Change to proper route for inside a
+
+  //   key={index}
+  //   //onClick={() => goInsideList(list._id)}
+  //   className="h-full w-full "
+  //   placeholder={list.title}
+  //   {...register('title')}
+  //   />
+
+  //   </Link>
+
+  // )

@@ -3,29 +3,27 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import { decrement, increment } from "../slices/counterSlice";
+import type { RootState } from "../store/store";
+
 import {
   // HiOutlineDotsVertical,
   // HiPlus,
   HiOutlineChevronRight,
 } from "react-icons/hi";
-import { Dialog, Menu, Transition } from "@headlessui/react";
 
 import { trpc } from "../utils/trpc";
 import FooterNav from "./FooterNav";
 import { type DeleteListSchema } from "../server/schema/listSchema";
-import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-
-interface EditListInputs {
-  title: string;
-}
 
 const Mainpage: NextPage = () => {
   // subMenu State & Functions
 
   const [userListsOpen, setUserListsOpen] = useState(true);
 
-  const [showShareForm, setShowShareForm] = useState(true);
+  // const [showShareForm, setShowShareForm] = useState(true);
 
   const {
     data: results,
@@ -33,7 +31,7 @@ const Mainpage: NextPage = () => {
     isLoading,
   } = trpc.userList.getLists.useQuery();
 
-  //console.log("listData", results);
+  console.log("results: ", results);
   const usersLists = results;
 
   const { data } = useSession();
@@ -41,8 +39,6 @@ const Mainpage: NextPage = () => {
 
   // Delete Item
   const { mutateAsync } = trpc.userList.deleteList.useMutation();
-
-  //console.log("mutateAsync", mutateAsync)
 
   const DeleteList = async (data: DeleteListSchema) => {
     try {
@@ -52,69 +48,7 @@ const Mainpage: NextPage = () => {
     } catch (error) {}
   };
 
-  // Update List - aka change name
-  const { register, watch, handleSubmit } = useForm<EditListInputs>({
-    mode: "onBlur",
-  });
-  React.useEffect(() => {
-    const subscription = watch((title) => {
-      //console.log(title)
-    });
-    return () => subscription.unsubscribe();
-  }, [watch]);
-
-  // Hiding Update List component - will move it to a separate component later
-
-  // const [isEditing, setIsEditing] = useState(false);
-  // const [editListId, setEditListId] = useState('');
-  // const [editListUserId, setEditListUserId] = useState('');
-  // const {mutateAsync: updateListMutate} = trpc.userList.changeListTitle.useMutation()
-
-  // const onSubmit = async (data: EditListInputs) => {
-
-  //   console.log("data for edit: ", data);
-  //   console.log("data for editListId: ", editListId);
-  //   console.log("data for editListUserId: ", editListUserId);
-  //   const updateData = {
-  //     title: data.title,
-  //     listId: editListId,
-  //     userId: editListUserId
-  //   }
-  //   try {
-  //     console.log("updateData", updateData)
-  //     const results = await updateListMutate(updateData)
-  //     refetch();
-  //     await console.log('results: ', results)
-  //   }
-  //   catch{
-
-  //   }
-  // }
-
-  // part of an outer div
-  // onBlur={() => setIsEditing(false)
-
-  // <form onBlur={handleSubmit(onSubmit)}></form>
-  // Below: part of the input for passing props such as userId and listId
-  // onClick={() => {setIsEditing(true); setEditListId(list.id);setEditListUserId(list.userId)}
-  // {isEditing ? (
-  //   <Link href='/'>
-  //   <input
-  //   //TODO: Change to proper route for inside a
-
-  //   key={index}
-  //   //onClick={() => goInsideList(list._id)}
-  //   className="h-full w-full "
-  //   placeholder={list.title}
-  //   {...register('title')}
-  //   />
-
-  //   </Link>
-
-  // )
-
-  if (isLoading) return <div>Loading...</div>;
-
+  if (isLoading) return <div>Loading ...</div>;
   return (
     <div className="flex h-screen flex-col justify-between">
       <div>
