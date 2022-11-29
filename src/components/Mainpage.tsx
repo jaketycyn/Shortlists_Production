@@ -19,6 +19,9 @@ import FooterNav from "./FooterNav";
 import { type DeleteListSchema } from "../server/schema/listSchema";
 
 const Mainpage: NextPage = () => {
+  const count = useSelector((state: RootState) => state.counter.value);
+  const dispatch = useDispatch();
+
   // subMenu State & Functions
 
   const [userListsOpen, setUserListsOpen] = useState(true);
@@ -165,6 +168,24 @@ const Mainpage: NextPage = () => {
           </div>
         )}
       </div>
+
+      {/* Counter Slice Redux Example: Start */}
+      {/* <div className="flex flex-col items-center">
+        <h1>{count}</h1>
+        <button
+          className="mt-2 w-40 bg-green-900/80"
+          onClick={() => dispatch(increment())}
+        >
+          +
+        </button>
+        <button
+          className="mt-2 w-40 bg-red-900/80"
+          onClick={() => dispatch(decrement())}
+        >
+          -
+        </button>
+      </div> */}
+      {/* Counter Slice Redux Example: End */}
       <FooterNav />
     </div>
   );
