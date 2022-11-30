@@ -1,8 +1,4 @@
-import { TRPCError } from "@trpc/server";
-import { registerSchema } from "../../schema/userSchema";
-import { hash } from "argon2";
-
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { router, protectedProcedure } from "../trpc";
 import {
   addListSchema,
   deleteListSchema,
