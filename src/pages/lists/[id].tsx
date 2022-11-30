@@ -1,18 +1,43 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 import { HiOutlineChevronLeft } from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
 
 const ListPage: NextPage = () => {
   const router = useRouter();
+
+  const [showTextInput, setShowTextInput] = useState(false);
+  const [showItemOptions, setShowItemOptions] = useState(false);
+  const [hasFocus, setFocus] = useState(false);
+
   const listId = router.query.id;
 
   const listItems = [
     { id: 123, title: "item1" },
     { id: 456, title: "item2" },
   ];
+
+  const clearItemInput = () => {
+    setShowTextInput(!showTextInput);
+
+    //clearItemValue();
+    // ^ context that cleared the input value of the form previously
+  };
+
+  //TODO: Add items through trpc
+
+  //TODO: Add items through redux
+
+  //TODO: Retrieve items through redux
+  //TODO: Utilize items from redux for local rendering purposes
+
+  //TODO: DELETE items through trpc
+  //TODO: DELETE items through redux
+
+  //TODO: Share Items
 
   const dispatch = useAppDispatch();
 
@@ -48,6 +73,7 @@ const ListPage: NextPage = () => {
 
               {/* https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type */}
               {/* react fragments solve error  */}
+              {/*   Display Items Module: Start */}
               <>
                 {listItems.length >= 1 ? (
                   listItems.map((item, index) => (
@@ -62,6 +88,53 @@ const ListPage: NextPage = () => {
                   <div>No items in this list. Please add some below</div>
                 )}
               </>
+              {/*   Display Items Module: End */}
+              {/*   Add Item Module: Start */}
+
+              <div className="text-gray-dark my-8 items-center rounded">
+                <span
+                  className={`cursor pointer mt-8 flex items-center justify-center rounded-lg border-2 border-solid border-black bg-primary p-2 hover:bg-gray-400 ${
+                    showTextInput && "hidden"
+                  }`}
+                  onClick={() => {
+                    setShowTextInput(!showTextInput);
+                    setShowItemOptions(false);
+                  }}
+                >
+                  Add an item...
+                </span>
+                <span className={`${!showTextInput && "hidden"}`}>
+                  <input
+                    type="text"
+                    id="itemTitle"
+                    className="block h-20 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500  focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                    placeholder="Enter a title for this card..."
+                    name="itemTitle"
+                    //value={title}
+                    //onChange={handleItemInput}
+                    onFocus={() => setFocus(true)}
+                    onBlur={() => setFocus(false)}
+                    onTouchCancel={() => setFocus(false)}
+                    onTouchEnd={() => setFocus(false)}
+                    required
+                  />
+                  <span className="relative mt-6 flex items-center justify-center ">
+                    <button
+                      className="hover:bg-green-800focus:ring-4 absolute left-0    rounded-lg bg-green-500 px-4 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-blue-300 "
+                      //onClick={handleSubmit}
+                    >
+                      Add Item
+                    </button>
+                    <button
+                      className="absolute right-0 rounded-lg bg-red-700 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300  "
+                      onClick={() => clearItemInput()}
+                    >
+                      Cancel
+                    </button>
+                  </span>
+                </span>
+              </div>
+              {/*   Add Item Module: End */}
             </div>
           </div>
         </div>
