@@ -158,7 +158,14 @@ const ListPage: NextPage = () => {
               {/* react fragments solve error  */}
               {/*   Display Items Module: Start */}
               <>
-                {items!.length >= 1 || items !== null ? (
+                {items === undefined || items?.length === 0 ? (
+                  <div className="z-0 m-2 flex flex-col items-center rounded-md text-center">
+                    <h1>You have no Items in this list</h1>
+                    <p className="mt-8">
+                      To create an item click the addItem button below.
+                    </p>
+                  </div>
+                ) : (
                   items!.map((item, index) => (
                     <div
                       className="relative z-0 mt-1 grid cursor-pointer grid-cols-4 gap-2 rounded-lg border-2 border-solid border-black bg-white p-2 font-semibold text-black hover:bg-gray-200"
@@ -167,8 +174,6 @@ const ListPage: NextPage = () => {
                       <div className="col-span-3 col-start-1">{item.title}</div>
                     </div>
                   ))
-                ) : (
-                  <div>No items in this list. Please add some below</div>
                 )}
               </>
               {/*   Display Items Module: End */}
