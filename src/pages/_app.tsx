@@ -2,7 +2,8 @@ import React from "react";
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-import { store } from "../store/store";
+import { persistor, store } from "../store/store";
+import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
 
 import { trpc } from "../utils/trpc";
@@ -14,9 +15,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <Provider store={store}>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
+      <PersistGate loading={null} persistor={persistor}>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+      </PersistGate>
     </Provider>
   );
 };

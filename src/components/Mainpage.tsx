@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-//redux
-import { useSelector, useDispatch } from "react-redux";
-import { decrement, increment } from "../slices/counterSlice";
-import type { RootState } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../hooks/useTypedSelector";
 
 import {
   // HiOutlineDotsVertical,
@@ -17,10 +14,12 @@ import {
 import { trpc } from "../utils/trpc";
 import FooterNav from "./FooterNav";
 import { type DeleteListSchema } from "../server/schema/listSchema";
+import { getLists, setLists } from "../slices/listSlice";
 
 const Mainpage: NextPage = () => {
-  const count = useSelector((state: RootState) => state.counter.value);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+
+  const { lists, error, loading } = useAppSelector((state) => state.list);
 
   // subMenu State & Functions
 
@@ -35,10 +34,17 @@ const Mainpage: NextPage = () => {
   } = trpc.userList.getLists.useQuery();
 
   console.log("results: ", results);
+
   const usersLists = results;
 
   const { data } = useSession();
   console.log("data from useSession: ", data);
+
+  //redux setting Lists
+
+  useEffect(() => {
+    dispatch(setLists(usersLists));
+  }, [usersLists]);
 
   // Delete Item
   const { mutateAsync } = trpc.userList.deleteList.useMutation();
@@ -51,6 +57,8 @@ const Mainpage: NextPage = () => {
     } catch (error) {}
   };
 
+  console.log("userLists from redux: ", lists);
+
   if (isLoading) return <div>Loading ...</div>;
   return (
     <div className="flex h-screen flex-col justify-between">
@@ -62,7 +70,7 @@ const Mainpage: NextPage = () => {
           {/* Setup Grid - layout later for spacing of Back, list name, share icon & more options icon w/ redirect to options page like Notion*/}
         </header>
 
-        {usersLists === undefined || usersLists.length === 0 ? (
+        {lists === undefined || lists?.length === 0 ? (
           <div className="z-0 m-2 mt-40 flex flex-col items-center rounded-md text-center">
             <h1>You have no Lists created</h1>
             <p className="mt-8">
@@ -100,9 +108,9 @@ const Mainpage: NextPage = () => {
               {/* Display UserClassicLists Module: Begins*/}
 
               <div className="container relative z-0 h-full items-center">
-                {usersLists && userListsOpen ? (
+                {lists && userListsOpen ? (
                   <div>
-                    {usersLists.map((list, index) => (
+                    {lists.map((list, index) => (
                       <div
                         className="relative mt-2 flex cursor-pointer  snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600  text-sm  text-black"
                         key={index}
@@ -117,9 +125,11 @@ const Mainpage: NextPage = () => {
                           />
                         </button>
                         <Link
-                          href="/"
+                          href={`/lists/${encodeURIComponent(list.id)}`}
                           key={index}
-                          //onClick={() => goInsideList(list._id)}
+                          onClick={() =>
+                            console.log("LISTCLICK: ", lists[index]?.title)
+                          }
                           className="h-full w-full "
                         >
                           {list.title}
@@ -185,7 +195,7 @@ const Mainpage: NextPage = () => {
           -
         </button>
       </div> */}
-      {/* Counter Slice Redux Example: End */}
+      {/*  Counter Slice Redux Example: End */}
       <FooterNav />
     </div>
   );

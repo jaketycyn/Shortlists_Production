@@ -14,6 +14,7 @@ const Home: NextPage = () => {
   // console.log("status: ", status);
   //const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
 
+  console.log("INDEX>TSX FIRING");
   return (
     <>
       {/* <Head>

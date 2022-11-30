@@ -1,30 +1,84 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { trpc } from "../utils/trpc";
 
-export interface ListState {
-  value: number;
+// individual list
+export interface List {
+  id: string;
+  userId: string;
+  title: string;
+  //This date will force a serialization error every time Will need to be converted to a string later or omitted on storage.
+  createdAt: Date;
 }
 
+//the entire Lists state (all things attributed to lists)
+export interface ListState {
+  lists: null | List[];
+  loading: boolean;
+  errors: any;
+}
+
+//initializing state preloading of any data
 const initialState: ListState = {
-  value: 0,
+  lists: null,
+  loading: false,
+  errors: null,
 };
 
+// ACTIONS
+export const getLists = createAsyncThunk(
+  "lists/getLists",
+  async (lists, thunkApi) => {
+    try {
+      const response = trpc.userList.getLists.useQuery();
+      //const response = "hi";
+      console.log("response in Slice: ", response);
+
+      return response;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+// export const setLists = createAsyncThunk(
+//   "lists/setLists",
+//   async (usersLists: List[], thunkApi) => {
+//     console.log("usersLists: ", usersLists);
+//     try {
+//       const response = usersLists;
+//       console.log("response in Slice: ", response);
+
+//       return response;
+//     } catch (error: any) {
+//       return thunkApi.rejectWithValue(error.message);
+//     }
+//   }
+// );
+
+// SLICE
 export const listSlice = createSlice({
-  name: "listSlice",
+  name: "lists",
   initialState,
   reducers: {
-    addList: (state) => {
-      state.value += 1;
+    setLists: (state, action: PayloadAction<List[]>) => {
+      state.lists = action.payload;
     },
-    removeList: (state) => {
-      state.value -= 1;
-    },
-    getLists: (state, action: PayloadAction<number>) => {
-      state.value += action.payload;
-    },
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(getLists.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getLists.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.lists = action.payload;
+      })
+      .addCase(getLists.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.errors = action.payload;
+      });
   },
 });
 
-export const { addList, removeList, getLists } = listSlice.actions;
-
 export default listSlice.reducer;
+export const { setLists } = listSlice.actions;
