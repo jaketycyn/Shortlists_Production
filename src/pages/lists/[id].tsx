@@ -44,19 +44,25 @@ const ListPage: NextPage = () => {
         <div className="z-0 m-6 grid h-full grid-flow-row auto-rows-max items-center overflow-scroll p-2">
           <div className="relative grid">
             <div className="items-center py-1 text-center">
-              <h3 className="text-lg">{currentTitle}</h3>
+              <h3 className="bg-primary text-lg">{currentTitle}</h3>
+
+              {/* https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type */}
+              {/* react fragments solve error  */}
+              <>
+                {listItems.length >= 1 ? (
+                  listItems.map((item, index) => (
+                    <div
+                      className="relative z-0 mt-1 grid cursor-pointer grid-cols-4 gap-2 rounded-lg border-2 border-solid border-black bg-white p-2 font-semibold text-black hover:bg-gray-200"
+                      key={index}
+                    >
+                      <div className="col-span-3 col-start-1">{item.title}</div>
+                    </div>
+                  ))
+                ) : (
+                  <div>No items in this list. Please add some below</div>
+                )}
+              </>
             </div>
-            {/* https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type */}
-            {/* react fragments solve error  */}
-            <>
-              {listItems.length >= 1 ? (
-                listItems.map((item, index) => {
-                  <div>some items</div>;
-                })
-              ) : (
-                <div>no items</div>
-              )}
-            </>
           </div>
         </div>
       </div>
