@@ -40,9 +40,11 @@ const Mainpage: NextPage = () => {
 
   //redux setting Lists
 
+  const fetchedLists = results as List[];
+
   useEffect(() => {
-    dispatch(setLists(results));
-  }, [results]);
+    dispatch(setLists(fetchedLists));
+  }, [fetchedLists]);
 
   // Delete Item
   const { mutateAsync } = trpc.userList.deleteList.useMutation();
