@@ -1,10 +1,33 @@
+import { useState, useCallback } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useForm, Resolver, SubmitHandler } from "react-hook-form";
 
-import { HiOutlineChevronLeft } from "react-icons/hi";
+import {
+  HiOutlineChevronLeft,
+  HiX,
+  HiOutlineCheck,
+  HiPlus,
+} from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
+
+import { trpc } from "../../utils/trpc";
+import { type AddItemSchema } from "../../server/schema/itemSchema";
+
+const resolver: Resolver<AddItemSchema> = async (values) => {
+  return {
+    values: !values.itemTitle ? {} : values,
+    errors: !values.itemTitle
+      ? {
+          itemTitle: {
+            type: "required",
+            message: "A title is required",
+          },
+        }
+      : {},
+  };
+};
 
 const ListPage: NextPage = () => {
   const router = useRouter();
@@ -28,6 +51,31 @@ const ListPage: NextPage = () => {
   };
 
   //TODO: Add items through trpc
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<AddItemSchema>({
+    resolver,
+  });
+
+  const onSubmit = useCallback(
+    async (data: AddItemSchema) => {
+      try {
+        const result = data;
+        console.log("data found with value: ", data);
+        // const result = await mutateAsync(data)
+        if (result) {
+          //showToast Agent
+          console.log("result found with value: ", result);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [router]
+    //might need to add something for test firing
+  );
 
   //TODO: Add items through redux
 
@@ -41,7 +89,7 @@ const ListPage: NextPage = () => {
 
   const dispatch = useAppDispatch();
 
-  const { lists, errors, loading } = useAppSelector((state) => state.list);
+  const { lists, loading } = useAppSelector((state) => state.list);
   //console.log("lists inside [id]: ", lists);
 
   const Listindex = lists?.findIndex((item) => item.id === listId);
@@ -104,34 +152,44 @@ const ListPage: NextPage = () => {
                   Add an item...
                 </span>
                 <span className={`${!showTextInput && "hidden"}`}>
-                  <input
-                    type="text"
-                    id="itemTitle"
-                    className="block h-20 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500  focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    placeholder="Enter a title for this card..."
-                    name="itemTitle"
-                    //value={title}
-                    //onChange={handleItemInput}
-                    onFocus={() => setFocus(true)}
-                    onBlur={() => setFocus(false)}
-                    onTouchCancel={() => setFocus(false)}
-                    onTouchEnd={() => setFocus(false)}
-                    required
-                  />
-                  <span className="relative mt-6 flex items-center justify-center ">
-                    <button
-                      className="hover:bg-green-800focus:ring-4 absolute left-0    rounded-lg bg-green-500 px-4 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-blue-300 "
-                      //onClick={handleSubmit}
-                    >
-                      Add Item
-                    </button>
-                    <button
-                      className="absolute right-0 rounded-lg bg-red-700 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300  "
-                      onClick={() => clearItemInput()}
-                    >
-                      Cancel
-                    </button>
-                  </span>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    {/* Error Toast/Message: Start */}
+                    {/* //TODO: Change to Toast pop up and use useState to clear it on cancel so a new submit must be fired for error toast to appear */}
+                    <div className="mb-4">
+                      {errors?.itemTitle && (
+                        <p className="inline  p-2 font-bold text-red-800">
+                          ⚠{errors.itemTitle.message}
+                        </p>
+                      )}
+                    </div>
+                    {/* Error Toast/Message: End */}
+                    <input
+                      type="text"
+                      id="itemTitle"
+                      className="block h-20 w-full rounded-lg border border-gray-300 bg-primary  p-2.5 text-sm text-gray-900 focus:border-blue-500  focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                      placeholder="Enter a title for this card..."
+                      onFocus={() => setFocus(true)}
+                      onTouchCancel={() => setFocus(false)}
+                      onTouchEnd={() => setFocus(false)}
+                      {...register("itemTitle")}
+                    />
+                    <span className="relative mt-6 flex items-center justify-center ">
+                      <button
+                        className="hover:bg-green-800focus:ring-4 absolute left-0    rounded-lg bg-green-500 px-4 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-blue-300 "
+                        type="submit"
+                        //onClick={handleSubmit}
+                      >
+                        Add Item
+                      </button>
+                      <button
+                        className="absolute right-0 rounded-lg bg-red-700 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300  "
+                        onClick={() => clearItemInput()}
+                        type="reset"
+                      >
+                        Cancel
+                      </button>
+                    </span>
+                  </form>
                 </span>
               </div>
               {/*   Add Item Module: End */}
