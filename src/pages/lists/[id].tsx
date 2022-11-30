@@ -132,6 +132,7 @@ const ListPage: NextPage = () => {
 
   const currentTitle = lists?.[Listindex!]?.title;
 
+  const currentItems = lists as Item[];
   // useEffect(() => {
   //   async function getListItems() {
   //     const response = 'items'
@@ -168,9 +169,9 @@ const ListPage: NextPage = () => {
               {/* react fragments solve error  */}
               {/*   Display Items Module: Start */}
               <>
-                {items! === undefined ||
-                items?.length === 0 ||
-                items! === null ? (
+                {fetchedItems! === undefined ||
+                fetchedItems?.length === 0 ||
+                fetchedItems! === null ? (
                   <div className="z-0 m-2 flex flex-col items-center rounded-md text-center">
                     <h1>You have no Items in this list</h1>
                     <p className="mt-8">
@@ -178,7 +179,7 @@ const ListPage: NextPage = () => {
                     </p>
                   </div>
                 ) : (
-                  items!.map((item, index) => (
+                  fetchedItems!.map((item, index) => (
                     <div
                       className="relative z-0 mt-1 grid cursor-pointer grid-cols-4 gap-2 rounded-lg border-2 border-solid border-black bg-white p-2 font-semibold text-black hover:bg-gray-200"
                       key={index}
