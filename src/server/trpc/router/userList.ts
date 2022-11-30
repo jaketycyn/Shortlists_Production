@@ -3,7 +3,11 @@ import { registerSchema } from "../../schema/userSchema";
 import { hash } from "argon2";
 
 import { router, publicProcedure, protectedProcedure } from "../trpc";
-import { addListSchema, deleteListSchema ,updateListSchema } from "../../schema/listSchema";
+import {
+  addListSchema,
+  deleteListSchema,
+  updateListSchema,
+} from "../../schema/listSchema";
 
 export const userListRouter = router({
   addList: protectedProcedure
@@ -11,7 +15,8 @@ export const userListRouter = router({
     .mutation(async ({ input, ctx }) => {
       const { listTitle } = input;
 
-      console.log("ctx.session.user: inside userListRouter", ctx.session.user);
+      //console.log("ctx.session.user: inside userListRouter", ctx.session.user);
+
       const result = await ctx.prisma.userList.create({
         data: { title: listTitle, userId: ctx.session.user.id },
       });
@@ -23,7 +28,7 @@ export const userListRouter = router({
       };
     }),
   getLists: protectedProcedure.query(({ ctx }) => {
-    console.log("user.id: ", ctx.session.user.id);
+    //console.log("user.id: ", ctx.session.user.id);
 
     const results = ctx.prisma.userList.findMany({
       where: { userId: ctx.session.user.id },
@@ -45,7 +50,7 @@ export const userListRouter = router({
       const { listId, userId } = input;
       // console.log("listId", listId)
       // console.log("userId", userId)
-       await ctx.prisma.userList.deleteMany({
+      await ctx.prisma.userList.deleteMany({
         where: { id: listId, userId: userId },
       });
 
@@ -55,7 +60,6 @@ export const userListRouter = router({
         //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
         status: 204,
         message: "Delete user list successfully",
-      
       };
     }),
   changeListTitle: protectedProcedure
@@ -65,11 +69,11 @@ export const userListRouter = router({
       // console.log("listId", listId)
       // console.log("userId", userId)
 
-       await ctx.prisma.userList.updateMany({
+      await ctx.prisma.userList.updateMany({
         where: { id: listId, userId: userId },
         data: {
-          title: title
-        }
+          title: title,
+        },
       });
 
       return {
@@ -78,7 +82,6 @@ export const userListRouter = router({
         //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
         status: 204,
         message: "Change user list title successful",
-      
       };
     }),
 });
