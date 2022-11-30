@@ -17,6 +17,7 @@ const ListPage: NextPage = () => {
   const Listindex = lists?.findIndex((item) => item.id === listId);
   console.log("ListIndex is: ", Listindex);
 
+  const currentTitle = lists?.[Listindex!]?.title!;
   return (
     <>
       <div className="flex h-screen flex-col justify-between">
@@ -26,7 +27,7 @@ const ListPage: NextPage = () => {
             <HiOutlineChevronLeft className="mt-1 h-4 w-4" />
           </Link>
           <div className="row-start-1 w-full items-center justify-between text-center">
-            {lists[Listindex].title}
+            {lists ? <h1> {currentTitle}</h1> : null}
           </div>
           <div className="row-start-1">
             {/* some sort of share interface or module pop up or navigation to a share form page for inputs */}
@@ -38,7 +39,7 @@ const ListPage: NextPage = () => {
         <div className="z-0 m-6 grid h-full grid-flow-row auto-rows-max items-center overflow-scroll p-2">
           <div className="relative grid">
             <div className="items-center py-1 text-center">
-              <h3 className="text-lg">{lists[Listindex].title}</h3>
+              <h3 className="text-lg">{currentTitle}</h3>
             </div>
           </div>
         </div>
