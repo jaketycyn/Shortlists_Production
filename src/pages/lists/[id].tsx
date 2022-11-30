@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
 
 import { trpc } from "../../utils/trpc";
 import { type AddItemSchema } from "../../server/schema/itemSchema";
+import { type Item, setItems } from "../../slices/itemSlice";
 
 const resolver: Resolver<AddItemSchema> = async (values) => {
   return {
@@ -31,17 +32,17 @@ const resolver: Resolver<AddItemSchema> = async (values) => {
 
 const ListPage: NextPage = () => {
   const router = useRouter();
-
+  const dispatch = useAppDispatch();
   const [showTextInput, setShowTextInput] = useState(false);
   const [showItemOptions, setShowItemOptions] = useState(false);
   const [hasFocus, setFocus] = useState(false);
 
   const listId = router.query.id as string;
 
-  const listItems = [
-    { id: 123, title: "item1" },
-    { id: 456, title: "item2" },
-  ];
+  // const listItems = [
+  //   { id: 123, title: "item1" },
+  //   { id: 456, title: "item2" },
+  // ];
 
   const clearItemInput = () => {
     setShowTextInput(!showTextInput);
@@ -50,7 +51,7 @@ const ListPage: NextPage = () => {
     // ^ context that cleared the input value of the form previously
   };
 
-  //TODO: Add items through trpc
+  // Add items through trpc
   const {
     handleSubmit,
     register,
@@ -93,19 +94,36 @@ const ListPage: NextPage = () => {
     }
   }, [formState, reset]);
 
-  //TODO: Add items through redux
-
+  //TODO - FUTURE: Add items through redux
   //TODO: Retrieve items through redux
+
+  //TODO: Retrieve items
+  const {
+    data: retrievedItems,
+    refetch,
+    isLoading,
+  } = trpc.userItem.getItems.useQuery({ listId });
+
+  console.log("retrievedItems: ", retrievedItems);
+
+  //TODO : Set items into redux
+
+  const fetchedItems = retrievedItems as Item[];
+  useEffect(() => {
+    dispatch(setItems(fetchedItems));
+  }, [dispatch, fetchedItems]);
+
   //TODO: Utilize items from redux for local rendering purposes
 
   //TODO: DELETE items through trpc
-  //TODO: DELETE items through redux
+  //TODO - FUTURE: DELETE items through redux
 
   //TODO: Share Items
 
-  const dispatch = useAppDispatch();
-
-  const { lists, loading } = useAppSelector((state) => state.list);
+  //Retrieve items through redux
+  const { items } = useAppSelector((state) => state.item);
+  //Retrieve lists through redux
+  const { lists, error, loading } = useAppSelector((state) => state.list);
   //console.log("lists inside [id]: ", lists);
 
   const Listindex = lists?.findIndex((item) => item.id === listId);
@@ -140,8 +158,8 @@ const ListPage: NextPage = () => {
               {/* react fragments solve error  */}
               {/*   Display Items Module: Start */}
               <>
-                {listItems.length >= 1 ? (
-                  listItems.map((item, index) => (
+                {items!.length >= 1 ? (
+                  items!.map((item, index) => (
                     <div
                       className="relative z-0 mt-1 grid cursor-pointer grid-cols-4 gap-2 rounded-lg border-2 border-solid border-black bg-white p-2 font-semibold text-black hover:bg-gray-200"
                       key={index}
