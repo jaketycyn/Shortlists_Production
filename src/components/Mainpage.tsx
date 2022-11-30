@@ -19,7 +19,7 @@ import { getLists, setLists, type List } from "../slices/listSlice";
 const Mainpage: NextPage = () => {
   const dispatch = useAppDispatch();
 
-  const { lists, errors, loading } = useAppSelector((state) => state.list);
+  const { lists, error, loading } = useAppSelector((state) => state.list);
 
   // subMenu State & Functions
 
