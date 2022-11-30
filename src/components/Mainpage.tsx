@@ -44,7 +44,7 @@ const Mainpage: NextPage = () => {
 
   useEffect(() => {
     dispatch(setLists(fetchedLists));
-  }, [fetchedLists]);
+  }, [dispatch, fetchedLists]);
 
   // Delete Item
   const { mutateAsync } = trpc.userList.deleteList.useMutation();
