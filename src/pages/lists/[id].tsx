@@ -17,7 +17,7 @@ const ListPage: NextPage = () => {
   const Listindex = lists?.findIndex((item) => item.id === listId);
   console.log("ListIndex is: ", Listindex);
 
-  const currentTitle = lists?.[Listindex!]?.title!;
+  const currentTitle = lists?.[Listindex!]?.title;
   return (
     <>
       <div className="flex h-screen flex-col justify-between">
