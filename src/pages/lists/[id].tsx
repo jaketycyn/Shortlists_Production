@@ -168,7 +168,9 @@ const ListPage: NextPage = () => {
               {/* react fragments solve error  */}
               {/*   Display Items Module: Start */}
               <>
-                {items! === undefined || items?.length === 0 ? (
+                {items! === undefined ||
+                items?.length === 0 ||
+                items! === null ? (
                   <div className="z-0 m-2 flex flex-col items-center rounded-md text-center">
                     <h1>You have no Items in this list</h1>
                     <p className="mt-8">
