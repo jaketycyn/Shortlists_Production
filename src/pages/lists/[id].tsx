@@ -158,7 +158,7 @@ const ListPage: NextPage = () => {
               {/* react fragments solve error  */}
               {/*   Display Items Module: Start */}
               <>
-                {items!.length >= 1 ? (
+                {items!.length >= 1 || items !== null ? (
                   items!.map((item, index) => (
                     <div
                       className="relative z-0 mt-1 grid cursor-pointer grid-cols-4 gap-2 rounded-lg border-2 border-solid border-black bg-white p-2 font-semibold text-black hover:bg-gray-200"
