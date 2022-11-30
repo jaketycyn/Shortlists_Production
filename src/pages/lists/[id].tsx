@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -54,20 +54,27 @@ const ListPage: NextPage = () => {
   const {
     handleSubmit,
     register,
-    formState: { errors },
+    reset,
+    formState,
+    formState: { errors, isSubmitSuccessful },
   } = useForm<AddItemSchema>({
     resolver,
+    defaultValues: { itemTitle: "" },
   });
+
+  const { mutateAsync } = trpc.userItem.addItem.useMutation();
 
   const onSubmit = useCallback(
     async (data: AddItemSchema) => {
       try {
-        const result = data;
+        const result = await mutateAsync(data);
+        // const result = data;
         console.log("data found with value: ", data);
-        // const result = await mutateAsync(data)
         if (result) {
           //showToast Agent
           console.log("result found with value: ", result);
+          console.log("itemshould be created - will redirect from here later");
+          //TODO: Clear input field after submitting
         }
       } catch (err) {
         console.log(err);
@@ -76,6 +83,15 @@ const ListPage: NextPage = () => {
     [router]
     //might need to add something for test firing
   );
+
+  //reset item input form afterSubmit
+  React.useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset({
+        itemTitle: "",
+      });
+    }
+  }, [formState, reset]);
 
   //TODO: Add items through redux
 
@@ -96,6 +112,7 @@ const ListPage: NextPage = () => {
   //console.log("ListIndex is: ", Listindex);
 
   const currentTitle = lists?.[Listindex!]?.title;
+
   return (
     <>
       <div className="flex h-screen flex-col justify-between">
@@ -114,10 +131,10 @@ const ListPage: NextPage = () => {
           <div className="row-start-1">...</div>
         </header>
         {/* Header Nav: End */}
-        <div className="z-0 m-6 grid h-full grid-flow-row auto-rows-max items-center overflow-scroll p-2">
+        <div className="z-0 m-2 grid h-full grid-flow-row auto-rows-max items-center overflow-scroll p-2">
           <div className="relative grid">
             <div className="items-center py-1 text-center">
-              <h3 className="bg-primary text-lg">{currentTitle}</h3>
+              <h3 className="mb-4 text-lg font-semibold">{currentTitle}</h3>
 
               {/* https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type */}
               {/* react fragments solve error  */}
@@ -166,8 +183,8 @@ const ListPage: NextPage = () => {
                     <input
                       type="text"
                       id="itemTitle"
-                      className="block h-20 w-full rounded-lg border border-gray-300 bg-primary  p-2.5 text-sm text-gray-900 focus:border-blue-500  focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                      placeholder="Enter a title for this card..."
+                      className="block h-20 w-full rounded-lg border border-gray-300 bg-primary p-2.5  text-center text-sm text-gray-900 focus:border-blue-500  focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                      placeholder="Enter your item name here..."
                       onFocus={() => setFocus(true)}
                       onTouchCancel={() => setFocus(false)}
                       onTouchEnd={() => setFocus(false)}
