@@ -14,7 +14,7 @@ import {
 import { trpc } from "../utils/trpc";
 import FooterNav from "./FooterNav";
 import { type DeleteListSchema } from "../server/schema/listSchema";
-import { getLists, setLists } from "../slices/listSlice";
+import { getLists, setLists, type List } from "../slices/listSlice";
 
 const Mainpage: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -35,16 +35,14 @@ const Mainpage: NextPage = () => {
 
   console.log("results: ", results);
 
-  const usersLists = results;
-
   const { data } = useSession();
   console.log("data from useSession: ", data);
 
   //redux setting Lists
 
   useEffect(() => {
-    dispatch(setLists(usersLists));
-  }, [usersLists]);
+    dispatch(setLists(results));
+  }, [results]);
 
   // Delete Item
   const { mutateAsync } = trpc.userList.deleteList.useMutation();
