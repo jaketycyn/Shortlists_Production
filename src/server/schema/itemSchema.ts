@@ -2,11 +2,13 @@ import * as z from "zod";
 
 export const addItemSchema = z.object({
   itemTitle: z.string(),
+  listId: z.string(),
 });
 
 export const deleteItemSchema = z.object({
   itemId: z.string(),
   userId: z.string(),
+  listId: z.string(),
 });
 
 export const updateItemSchema = deleteItemSchema.extend({

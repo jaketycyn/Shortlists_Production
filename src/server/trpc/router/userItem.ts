@@ -12,10 +12,10 @@ export const userItemRouter = router({
   addItem: protectedProcedure
     .input(addItemSchema)
     .mutation(async ({ input, ctx }) => {
-      const { itemTitle } = input;
+      const { itemTitle, listId } = input;
 
       const result = await ctx.prisma.userItem.create({
-        data: { title: itemTitle, userId: ctx.session.user.id },
+        data: { title: itemTitle, listId: listId, userId: ctx.session.user.id },
       });
 
       return {

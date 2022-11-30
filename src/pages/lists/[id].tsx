@@ -36,7 +36,7 @@ const ListPage: NextPage = () => {
   const [showItemOptions, setShowItemOptions] = useState(false);
   const [hasFocus, setFocus] = useState(false);
 
-  const listId = router.query.id;
+  const listId = router.query.id as string;
 
   const listItems = [
     { id: 123, title: "item1" },
@@ -59,7 +59,7 @@ const ListPage: NextPage = () => {
     formState: { errors, isSubmitSuccessful },
   } = useForm<AddItemSchema>({
     resolver,
-    defaultValues: { itemTitle: "" },
+    defaultValues: { itemTitle: "", listId: listId },
   });
 
   const { mutateAsync } = trpc.userItem.addItem.useMutation();
@@ -73,7 +73,7 @@ const ListPage: NextPage = () => {
         if (result) {
           //showToast Agent
           console.log("result found with value: ", result);
-          console.log("itemshould be created - will redirect from here later");
+          console.log("item should be created - will redirect from here later");
           //TODO: Clear input field after submitting
         }
       } catch (err) {

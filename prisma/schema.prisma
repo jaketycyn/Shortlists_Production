@@ -73,16 +73,19 @@ model VerificationToken {
 
 model UserItem {
   id        String   @id @default(cuid())
-  title     String?
+  title     String
   createdAt DateTime @default(now())
   userId    String
+  listId    String
+  userList  UserList @relation(fields: [listId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 }
 
 model UserList {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   title     String?
-  createdAt DateTime @default(now())
+  createdAt DateTime   @default(now())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
+  UserItem  UserItem[]
 }
