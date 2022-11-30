@@ -36,6 +36,7 @@ const ListPage: NextPage = () => {
   const [showTextInput, setShowTextInput] = useState(false);
   const [showItemOptions, setShowItemOptions] = useState(false);
   const [hasFocus, setFocus] = useState(false);
+  const [listItems, setListItems] = useState([]);
 
   const listId = router.query.id as string;
 
@@ -131,6 +132,15 @@ const ListPage: NextPage = () => {
 
   const currentTitle = lists?.[Listindex!]?.title;
 
+  // useEffect(() => {
+  //   async function getListItems() {
+  //     const response = 'items'
+  //   }
+  //   const data = await response
+
+  //   setListItems(data)
+  // },[])
+
   return (
     <>
       <div className="flex h-screen flex-col justify-between">
@@ -158,7 +168,7 @@ const ListPage: NextPage = () => {
               {/* react fragments solve error  */}
               {/*   Display Items Module: Start */}
               <>
-                {items === undefined || items?.length === 0 ? (
+                {items! === undefined || items?.length === 0 ? (
                   <div className="z-0 m-2 flex flex-col items-center rounded-md text-center">
                     <h1>You have no Items in this list</h1>
                     <p className="mt-8">
