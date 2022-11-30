@@ -15,14 +15,14 @@ export interface List {
 export interface ListState {
   lists: null | List[];
   loading: boolean;
-  errors: any;
+  error: any;
 }
 
 //initializing state preloading of any data
 const initialState: ListState = {
   lists: null,
   loading: false,
-  errors: null,
+  error: null,
 };
 
 // ACTIONS
@@ -75,7 +75,7 @@ export const listSlice = createSlice({
       })
       .addCase(getLists.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.errors = action.payload;
+        state.error = action.payload;
       });
   },
 });
