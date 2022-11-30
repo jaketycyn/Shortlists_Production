@@ -1,6 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
 import counterReducer from "../slices/counterSlice";
+import itemSlice from "../slices/itemSlice";
 import listSlice from "../slices/listSlice";
 
 import storage from "redux-persist/lib/storage";
@@ -17,6 +17,7 @@ const persistConfig = {
 
 //place reducers here
 const rootReducer = combineReducers({
+  item: itemSlice,
   list: listSlice,
   counter: counterReducer,
 });
