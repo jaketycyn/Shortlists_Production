@@ -9,13 +9,18 @@ const ListPage: NextPage = () => {
   const router = useRouter();
   const listId = router.query.id;
 
+  const listItems = [
+    { id: 123, title: "item1" },
+    { id: 456, title: "item2" },
+  ];
+
   const dispatch = useAppDispatch();
 
   const { lists, errors, loading } = useAppSelector((state) => state.list);
-  console.log("lists inside [id]: ", lists);
+  //console.log("lists inside [id]: ", lists);
 
   const Listindex = lists?.findIndex((item) => item.id === listId);
-  console.log("ListIndex is: ", Listindex);
+  //console.log("ListIndex is: ", Listindex);
 
   const currentTitle = lists?.[Listindex!]?.title;
   return (
@@ -41,6 +46,17 @@ const ListPage: NextPage = () => {
             <div className="items-center py-1 text-center">
               <h3 className="text-lg">{currentTitle}</h3>
             </div>
+            {/* https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type */}
+            {/* react fragments solve error  */}
+            <>
+              {listItems.length >= 1 ? (
+                listItems.map((item, index) => {
+                  <div>some items</div>;
+                })
+              ) : (
+                <div>no items</div>
+              )}
+            </>
           </div>
         </div>
       </div>
