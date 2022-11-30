@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useForm, Resolver, SubmitHandler } from "react-hook-form";
 
 import { trpc } from "../utils/trpc";
-import { addListSchema, type AddListSchema } from "../server/schema/listSchema";
+import { type AddListSchema } from "../server/schema/listSchema";
 
 import { HiX, HiOutlineCheck, HiPlus } from "react-icons/hi";
 
