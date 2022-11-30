@@ -4,6 +4,7 @@ import {
   deleteItemSchema,
   updateItemSchema,
 } from "../../schema/itemSchema";
+import { z } from "zod";
 
 //! change userList to userItem
 //! change List and list to Item or item respectively
@@ -25,22 +26,24 @@ export const userItemRouter = router({
       };
     }),
 
-  //   getLists: protectedProcedure.query(({ ctx }) => {
-  //     console.log("user.id: ", ctx.session.user.id);
+  getItems: protectedProcedure
+    .input(z.object({ listId: z.string() }))
+    .query(({ input, ctx }) => {
+      //console.log("user.id: ", ctx.session.user.id);
+      const { listId } = input;
+      const results = ctx.prisma.userItem.findMany({
+        where: { userId: ctx.session.user.id, listId: listId },
+      });
 
-  //     const results = ctx.prisma.userList.findMany({
-  //       where: { userId: ctx.session.user.id },
-  //     });
+      console.log("results: ", results);
 
-  //     console.log("results: ", results);
-
-  //     return results;
-  //     // return {
-  //     //   status: 201,
-  //     //   message: "Retrieved user lists successfully",
-  //     //   lists: { results },
-  //     // };
-  //   }),
+      return results;
+      // return {
+      //   status: 201,
+      //   message: "Retrieved user lists successfully",
+      //   items: { results },
+      // };
+    }),
 
   //   deleteList: protectedProcedure
   //     .input(deleteListSchema)
