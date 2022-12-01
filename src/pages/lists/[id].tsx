@@ -213,7 +213,7 @@ const ListPage: NextPage = () => {
                     <input
                       type="text"
                       id="itemTitle"
-                      className="block h-20 w-full rounded-lg border border-gray-300 bg-primary p-2.5  text-center text-sm text-gray-900 focus:border-blue-500  focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                      className="block h-20 w-full rounded-lg border border-gray-300 bg-primary p-2.5  text-center text-sm text-gray-900 focus:border-blue-500  focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-200 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                       placeholder="Enter your item name here..."
                       onFocus={() => setFocus(true)}
                       onTouchCancel={() => setFocus(false)}
