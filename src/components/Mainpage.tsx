@@ -75,10 +75,10 @@ const Mainpage: NextPage = () => {
   //if (isLoading) return <div>Loading ...</div>;
   return (
     <motion.div
-      initial={{ opacity: 0, x: 500 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.2 }}
-      exit={{ x: -500 }}
+      initial={{ x: 2000 }}
+      animate={{ x: 0 }}
+      transition={{ duration: 0.3 }}
+      exit={{ x: -2000 }}
     >
       <div className="flex h-screen flex-col justify-between">
         <div>
