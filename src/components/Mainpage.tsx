@@ -77,7 +77,7 @@ const Mainpage: NextPage = () => {
       <div>
         {/* userLists ({getLists.status}):{" "}
         <pre>{JSON.stringify(usersLists, null, 2)}</pre> */}
-        <header className="absolute top-0 z-10 mb-2 flex h-14 w-full  flex-col items-center border-2 bg-white pt-4 text-center">
+        <header className="absolute top-0 z-10 mb-2 flex h-14 w-full flex-col  items-center bg-primary pt-4 text-center">
           <h1 className="font-semibold">Shortlists</h1>
           {/* Setup Grid - layout later for spacing of Back, list name, share icon & more options icon w/ redirect to options page like Notion*/}
         </header>
@@ -98,8 +98,8 @@ const Mainpage: NextPage = () => {
               {/* My Lists Button: Begin*/}
               <div className="flex flex-col items-center text-center">
                 <button
-                  className={`h-30 mt-12 grid  w-1/2 grid-cols-4 grid-rows-1 items-center rounded-lg border-2 border-slate-400 text-center font-semibold ${
-                    !userListsOpen && "bg-gray-300"
+                  className={`h-30 mt-12 grid  w-1/2 grid-cols-4 grid-rows-1 items-center rounded-lg border-2 border-black/80 bg-white text-center font-semibold ${
+                    !userListsOpen && "bg-accent"
                   }`}
                   onClick={() => setUserListsOpen(!userListsOpen)}
                 >
@@ -125,7 +125,7 @@ const Mainpage: NextPage = () => {
                   <div>
                     {filteredArchivedLists.map((list, index) => (
                       <div
-                        className="relative mt-2 flex cursor-pointer  snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600  text-sm  text-black"
+                        className="relative mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
                         key={index}
                       >
                         <button className="relative flex h-10 w-10 items-center  p-2">
