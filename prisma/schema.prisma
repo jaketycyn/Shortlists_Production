@@ -7,12 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -77,6 +71,7 @@ model UserItem {
   createdAt DateTime @default(now())
   userId    String
   listId    String
+  archive   String?   @default("undefined")
   userList  UserList @relation(fields: [listId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 }
@@ -86,6 +81,7 @@ model UserList {
   title     String?
   createdAt DateTime   @default(now())
   userId    String
+  archive   String?     @default("undefined")
   user      User       @relation(fields: [userId], references: [id])
   UserItem  UserItem[]
 }

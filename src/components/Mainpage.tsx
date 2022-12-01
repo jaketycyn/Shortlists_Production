@@ -43,15 +43,22 @@ const Mainpage: NextPage = () => {
   const fetchedLists = results as List[];
 
   useEffect(() => {
+    const filteredArchivedLists = fetchedLists?.filter(
+      (i) => i.archive !== "archive"
+    );
+
     dispatch(setLists(fetchedLists));
   }, [dispatch, fetchedLists]);
 
   // Delete Item
-  const { mutateAsync } = trpc.userList.deleteList.useMutation();
+  // const { mutateAsync } = trpc.userList.deleteList.useMutation();
+  const { mutateAsync: mutateArchiveList } =
+    trpc.userList.archiveList.useMutation();
 
-  const DeleteList = async (data: DeleteListSchema) => {
+  const ArchiveList = async (data: DeleteListSchema) => {
     try {
-      const result = await mutateAsync(data);
+      const result = await mutateArchiveList(data);
+      // await and fire a mutateArchiveItem.many ?? maybe
       console.log("result: ", result);
       refetch();
     } catch (error) {}
@@ -155,7 +162,7 @@ const Mainpage: NextPage = () => {
                               // onClick={() => console.log("Trash: ", list.id, list.userId)}
                               onClick={
                                 async () =>
-                                  DeleteList({
+                                  ArchiveList({
                                     listId: list.id,
                                     userId: list.userId,
                                   })
