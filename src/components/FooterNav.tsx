@@ -13,27 +13,28 @@ const FooterNav: NextPage = () => {
   return (
     <div>
       {/* AddItemOrList Component: Start*/}
-      {showAdd ? (
-        <div className="m-8 flex flex-row justify-center text-center">
-          <button className="btn m-2 bg-blue-400 sm:btn-sm md:btn-md lg:btn-lg">
-            <Link href="/addList" onClick={() => console.log("addList")}>
-              Add List
-            </Link>
-          </button>
-          <button className=" btn m-2 bg-orange-400 sm:btn-sm md:btn-md lg:btn-lg ">
-            <Link href="/" onClick={() => console.log("addItem")}>
-              Add Item
-            </Link>
-          </button>
-        </div>
-      ) : null}
-
+      <div className="mb-20 flex flex-col items-center justify-center text-center">
+        {showAdd ? (
+          <div className="">
+            <button className="btn m-2 bg-blue-400 sm:btn-sm md:btn-md lg:btn-lg">
+              <Link href="/addList" onClick={() => console.log("addList")}>
+                Add List
+              </Link>
+            </button>
+            <button className=" btn m-2 bg-orange-400 sm:btn-sm md:btn-md lg:btn-lg ">
+              <Link href="/" onClick={() => console.log("addItem")}>
+                Add Item
+              </Link>
+            </button>
+          </div>
+        ) : null}
+      </div>
       {/* AddItemOrList Component: End*/}
 
       {/* FooterBar Component: Start*/}
       {/* This is below the AddItem/List and has its own separate forced bottom-0 position */}
 
-      <div className="bottom-0  grid h-14 w-full grid-cols-3 grid-rows-1 items-center  justify-center bg-blue-800 text-center">
+      <div className="btm-nav bottom-0  grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-black/30 text-center">
         <div className="col-start-1 row-start-1 flex flex-col items-center">
           <Link href="/" className="absolute bottom-3 text-center">
             Hamburger
@@ -42,7 +43,7 @@ const FooterNav: NextPage = () => {
         <div className="col-start-2 row-start-1 flex flex-col items-center">
           <button
             onClick={() => setShowAdd(!showAdd)}
-            className=" btn-circle btn absolute bottom-8 flex h-12 w-12 items-center justify-center "
+            className="btn-circle btn absolute bottom-8 flex h-12 w-12 bg-black/40 "
           >
             <HiPlus />
           </button>
