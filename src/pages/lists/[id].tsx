@@ -88,10 +88,12 @@ const ListPage: NextPage = () => {
 
   //reset item input form afterSubmit
   React.useEffect(() => {
-    if (isSubmitSuccessful) {
+    if (formState.isSubmitSuccessful) {
       reset({
         itemTitle: "",
+        listId: listId,
       });
+      refetch();
     }
   }, [formState, reset]);
 
@@ -133,14 +135,6 @@ const ListPage: NextPage = () => {
   const currentTitle = lists?.[Listindex!]?.title;
 
   const currentItems = lists as Item[];
-  // useEffect(() => {
-  //   async function getListItems() {
-  //     const response = 'items'
-  //   }
-  //   const data = await response
-
-  //   setListItems(data)
-  // },[])
 
   return (
     <>
