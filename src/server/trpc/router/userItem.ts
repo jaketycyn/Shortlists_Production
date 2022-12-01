@@ -1,6 +1,8 @@
 import { router, protectedProcedure } from "../trpc";
 import {
   addItemSchema,
+  archiveItemSchema,
+  archiveItemsSchema,
   deleteItemSchema,
   updateItemSchema,
 } from "../../schema/itemSchema";
@@ -26,6 +28,48 @@ export const userItemRouter = router({
       };
     }),
 
+  archiveItem: protectedProcedure
+    .input(archiveItemSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { listId, userId } = input;
+      // console.log("listId", listId)
+      // console.log("userId", userId)
+      await ctx.prisma.userItem.updateMany({
+        where: { listId: listId, userId: userId },
+        data: {
+          archive: "archive",
+        },
+      });
+
+      return {
+        //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200
+        // "The successful result of a PUT or a DELETE is often not a 200 OK but a 204 No Content (or a 201 Created when the resource is uploaded for the first time)."
+        //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
+        status: 204,
+        message: "Archived user item successfully",
+      };
+    }),
+  archiveManyItems: protectedProcedure
+    .input(archiveItemsSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { listId, userId } = input;
+      // console.log("listId", listId)
+      // console.log("userId", userId)
+      await ctx.prisma.userItem.updateMany({
+        where: { listId: listId, userId: userId },
+        data: {
+          archive: "archive",
+        },
+      });
+
+      return {
+        //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200
+        // "The successful result of a PUT or a DELETE is often not a 200 OK but a 204 No Content (or a 201 Created when the resource is uploaded for the first time)."
+        //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
+        status: 204,
+        message: "Archived user items successfully",
+      };
+    }),
   getItems: protectedProcedure
     .input(z.object({ listId: z.string() }))
     .query(({ input, ctx }) => {

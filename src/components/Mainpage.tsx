@@ -33,20 +33,16 @@ const Mainpage: NextPage = () => {
     isLoading,
   } = trpc.userList.getLists.useQuery();
 
-  console.log("results: ", results);
+  //console.log("results: ", results);
 
   const { data } = useSession();
-  console.log("data from useSession: ", data);
+  //console.log("data from useSession: ", data);
 
   //redux setting Lists
 
   const fetchedLists = results as List[];
 
   useEffect(() => {
-    const filteredArchivedLists = fetchedLists?.filter(
-      (i) => i.archive !== "archive"
-    );
-
     dispatch(setLists(fetchedLists));
   }, [dispatch, fetchedLists]);
 
@@ -54,17 +50,23 @@ const Mainpage: NextPage = () => {
   // const { mutateAsync } = trpc.userList.deleteList.useMutation();
   const { mutateAsync: mutateArchiveList } =
     trpc.userList.archiveList.useMutation();
+  const { mutateAsync: mutateArchiveItems } =
+    trpc.userItem.archiveManyItems.useMutation();
 
   const ArchiveList = async (data: DeleteListSchema) => {
     try {
       const result = await mutateArchiveList(data);
+      const itemResult = await mutateArchiveItems(data);
       // await and fire a mutateArchiveItem.many ?? maybe
+
       console.log("result: ", result);
+      console.log("itemResult: ", itemResult);
       refetch();
     } catch (error) {}
   };
 
-  console.log("userLists from redux: ", lists);
+  //filtering out lists in Redux with archive set as "archive" these will be displayed in a trash bin for permanent deletion later
+  const filteredArchivedLists = lists?.filter((i) => i.archive !== "archive");
 
   if (isLoading) return <div>Loading ...</div>;
   return (
@@ -77,7 +79,8 @@ const Mainpage: NextPage = () => {
           {/* Setup Grid - layout later for spacing of Back, list name, share icon & more options icon w/ redirect to options page like Notion*/}
         </header>
 
-        {lists === undefined || lists?.length === 0 ? (
+        {filteredArchivedLists === undefined ||
+        filteredArchivedLists?.length === 0 ? (
           <div className="z-0 m-2 mt-40 flex flex-col items-center rounded-md text-center">
             <h1>You have no Lists created</h1>
             <p className="mt-8">
@@ -115,9 +118,9 @@ const Mainpage: NextPage = () => {
               {/* Display UserClassicLists Module: Begins*/}
 
               <div className="container relative z-0 h-full items-center">
-                {lists && userListsOpen ? (
+                {filteredArchivedLists && userListsOpen ? (
                   <div>
-                    {lists.map((list, index) => (
+                    {filteredArchivedLists.map((list, index) => (
                       <div
                         className="relative mt-2 flex cursor-pointer  snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600  text-sm  text-black"
                         key={index}
@@ -135,7 +138,10 @@ const Mainpage: NextPage = () => {
                           href={`/lists/${encodeURIComponent(list.id)}`}
                           key={index}
                           onClick={() =>
-                            console.log("LISTCLICK: ", lists[index]?.title)
+                            console.log(
+                              "LISTCLICK: ",
+                              filteredArchivedLists[index]?.title
+                            )
                           }
                           className="h-full w-full "
                         >

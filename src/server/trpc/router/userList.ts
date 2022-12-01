@@ -60,13 +60,13 @@ export const userListRouter = router({
         message: "Archived user list successfully",
       };
     }),
-
   deleteList: protectedProcedure
     .input(deleteListSchema)
     .mutation(async ({ ctx, input }) => {
       const { listId, userId } = input;
       // console.log("listId", listId)
       // console.log("userId", userId)
+      //!in current iteration will not work as long as items with association to this list exist and are connected
       await ctx.prisma.userList.deleteMany({
         where: { id: listId, userId: userId },
       });
