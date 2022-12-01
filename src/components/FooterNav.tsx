@@ -16,12 +16,12 @@ const FooterNav: NextPage = () => {
       <div className="mb-20 flex flex-col items-center justify-center text-center">
         {showAdd ? (
           <div className="">
-            <button className="btn m-2 bg-blue-400 sm:btn-sm md:btn-md lg:btn-lg">
+            <button className="btn m-2  sm:btn-sm md:btn-md lg:btn-lg">
               <Link href="/addList" onClick={() => console.log("addList")}>
                 Add List
               </Link>
             </button>
-            <button className=" btn m-2 bg-orange-400 sm:btn-sm md:btn-md lg:btn-lg ">
+            <button className=" btn m-2 sm:btn-sm md:btn-md lg:btn-lg ">
               <Link href="/" onClick={() => console.log("addItem")}>
                 Add Item
               </Link>

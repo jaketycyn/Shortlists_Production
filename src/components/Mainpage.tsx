@@ -220,7 +220,7 @@ const Mainpage: NextPage = () => {
         </button>
       </div> */}
         {/*  Counter Slice Redux Example: End */}
-        <div className="absolute bottom-0 z-40 flex flex w-full flex-col text-center">
+        <div className="absolute bottom-0 z-40 flex w-full flex-col text-center">
           <FooterNav />
         </div>
       </div>
