@@ -208,6 +208,7 @@ const ListPage: NextPage = () => {
                     <div
                       className="relative z-0 m-1 grid cursor-pointer grid-cols-7 grid-rows-1 rounded-lg border-2 border-solid border-black bg-white p-2 font-semibold text-black hover:bg-gray-200"
                       key={index}
+                      onBlur={() => setShowItemOptions(false)}
                     >
                       <div className="col-span-5 col-start-1 row-start-1">
                         {item.title}
