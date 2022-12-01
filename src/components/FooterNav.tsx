@@ -11,42 +11,49 @@ const FooterNav: NextPage = () => {
   //console.log("showAdd", showAdd);
 
   return (
-    <div className="bottom-0 grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-blue-800 text-center">
-      <div className="col-start-1 row-start-1">
-        <Link href="/" className="absolute bottom-3 text-center">
-          Hamburger
-        </Link>
-        {showAdd ? (
-          <Link href="/addList" onClick={() => setShowAdd(false)}>
-            {" "}
-            <button className="absolute bottom-20 left-20 h-12  w-24 rounded-lg border-2 bg-white text-black">
-              <p className="">Add List</p>
-            </button>
-          </Link>
-        ) : null}
-      </div>
-      <div className="col-start-2 row-start-1 flex items-center justify-center">
-        <button
-          onClick={() => setShowAdd(!showAdd)}
-          className="absolute bottom-8 flex h-12 w-12 items-center justify-center rounded-full border-2 border-black bg-accent/90 "
-        >
-          <HiPlus />
-        </button>
-      </div>
-      <div className="col-start-3 row-start-1">
-        {/* AddItemOrList Component Start*/}
-        <Link href="/" className="absolute bottom-3 text-center">
-          Bell
-        </Link>
-        {showAdd ? (
-          <button className="align-right border- absolute right-20 bottom-20 h-12 w-24 rounded-lg bg-white text-black">
-            <Link href="/addItem" onClick={() => setShowAdd(false)}>
-              <p className="">Add Item</p>
+    <div>
+      {/* AddItemOrList Component: Start*/}
+      {showAdd ? (
+        <div className="m-8 flex flex-row justify-center text-center">
+          <button className="btn m-2 bg-blue-400 sm:btn-sm md:btn-md lg:btn-lg">
+            <Link href="/addList" onClick={() => console.log("addList")}>
+              Add List
             </Link>
           </button>
-        ) : null}
-        {/* AddItemOrList Component End*/}
+          <button className=" btn m-2 bg-orange-400 sm:btn-sm md:btn-md lg:btn-lg ">
+            <Link href="/" onClick={() => console.log("addItem")}>
+              Add Item
+            </Link>
+          </button>
+        </div>
+      ) : null}
+
+      {/* AddItemOrList Component: End*/}
+
+      {/* FooterBar Component: Start*/}
+      {/* This is below the AddItem/List and has its own separate forced bottom-0 position */}
+
+      <div className="bottom-0  grid h-14 w-full grid-cols-3 grid-rows-1 items-center  justify-center bg-blue-800 text-center">
+        <div className="col-start-1 row-start-1 flex flex-col items-center">
+          <Link href="/" className="absolute bottom-3 text-center">
+            Hamburger
+          </Link>
+        </div>
+        <div className="col-start-2 row-start-1 flex flex-col items-center">
+          <button
+            onClick={() => setShowAdd(!showAdd)}
+            className=" btn-circle btn absolute bottom-8 flex h-12 w-12 items-center justify-center "
+          >
+            <HiPlus />
+          </button>
+        </div>
+        <div className="col-start-3 row-start-1">
+          <Link href="/" className="z-80 absolute bottom-3 text-center">
+            Bell
+          </Link>
+        </div>
       </div>
+      {/* FooterBar Component: End*/}
     </div>
   );
 };
