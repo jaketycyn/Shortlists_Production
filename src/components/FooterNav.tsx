@@ -11,7 +11,7 @@ const FooterNav: NextPage = () => {
   //console.log("showAdd", showAdd);
 
   return (
-    <div>
+    <div className="">
       {/* AddItemOrList Component: Start*/}
       <div className="mb-20 flex flex-col items-center justify-center text-center">
         {showAdd ? (
