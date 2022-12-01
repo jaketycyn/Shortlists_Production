@@ -11,7 +11,7 @@ const FooterNav: NextPage = () => {
   //console.log("showAdd", showAdd);
 
   return (
-    <div className="grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-primary text-center">
+    <div className="bottom-0 grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-blue-800 text-center">
       <div className="col-start-1 row-start-1">
         <Link href="/" className="absolute bottom-3 text-center">
           Hamburger

@@ -9,6 +9,7 @@ import {
   HiX,
   HiOutlineCheck,
   HiPlus,
+  HiTrash,
 } from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
 
@@ -175,10 +176,18 @@ const ListPage: NextPage = () => {
                 ) : (
                   fetchedItems!.map((item, index) => (
                     <div
-                      className="relative z-0 mt-1 grid cursor-pointer grid-cols-4 gap-2 rounded-lg border-2 border-solid border-black bg-white p-2 font-semibold text-black hover:bg-gray-200"
+                      className="relative z-0 m-1 grid cursor-pointer grid-cols-4 grid-rows-1 rounded-lg border-2 border-solid border-black bg-white p-2 font-semibold text-black hover:bg-gray-200"
                       key={index}
                     >
-                      <div className="col-span-3 col-start-1">{item.title}</div>
+                      <div className="col-span-3 col-start-1 row-start-1">
+                        {item.title}
+                      </div>
+                      <div className="absolute right-8 col-start-4 row-start-1  w-1/4 ">
+                        <HiTrash
+                          className="h-full w-full"
+                          onClick={() => console.log("trash icon")}
+                        />
+                      </div>
                     </div>
                   ))
                 )}
