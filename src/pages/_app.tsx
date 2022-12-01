@@ -8,16 +8,20 @@ import { Provider } from "react-redux";
 
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
+import { AnimatePresence } from "framer-motion";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
+  router,
   pageProps: { session, ...pageProps },
 }) => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <SessionProvider session={session}>
-          <Component {...pageProps} />
+          <AnimatePresence initial={false}>
+            <Component key={router.pathname} {...pageProps} />
+          </AnimatePresence>
         </SessionProvider>
       </PersistGate>
     </Provider>
