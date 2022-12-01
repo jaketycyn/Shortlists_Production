@@ -72,7 +72,7 @@ const Mainpage: NextPage = () => {
   //filtering out lists in Redux with archive set as "archive" these will be displayed in a trash bin for permanent deletion later
   const filteredArchivedLists = lists?.filter((i) => i.archive !== "trash");
 
-  if (isLoading) return <div>Loading ...</div>;
+  //if (isLoading) return <div>Loading ...</div>;
   return (
     <motion.div
       initial={{ opacity: 0 }}
