@@ -75,8 +75,8 @@ const Mainpage: NextPage = () => {
   //if (isLoading) return <div>Loading ...</div>;
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ opacity: 0, x: 500 }}
+      animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.2 }}
       exit={{ x: -500 }}
     >
