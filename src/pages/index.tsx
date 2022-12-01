@@ -23,7 +23,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head> */}
 
-      <main>
+      <main className="h-screen">
         {session ? (
           <Mainpage />
         ) : (

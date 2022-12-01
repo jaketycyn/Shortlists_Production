@@ -77,7 +77,7 @@ const Mainpage: NextPage = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.25 }}
+      transition={{ duration: 0.1 }}
       exit={{ x: -3000 }}
     >
       <div className="flex h-screen flex-col justify-between">
