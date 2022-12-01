@@ -11,42 +11,39 @@ const FooterNav: NextPage = () => {
   //console.log("showAdd", showAdd);
 
   return (
-    <div className="grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center text-center  ">
+    <div className="grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-primary text-center">
       <div className="col-start-1 row-start-1">
-        <Link href="/">Home</Link>
+        <Link href="/" className="absolute bottom-3 text-center">
+          Hamburger
+        </Link>
+        {showAdd ? (
+          <button className="absolute bottom-20 left-20 h-12  w-24 rounded-lg border-2 bg-white text-black">
+            <Link href="/addList" onClick={() => setShowAdd(false)}>
+              <p className="">Add List</p>
+            </Link>
+          </button>
+        ) : null}
       </div>
-      <div className="col-start-2 row-start-1"></div>
-      <div className="col-start-3 row-start-1 flex items-center justify-center">
+      <div className="col-start-2 row-start-1 flex items-center justify-center">
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="flex h-6 w-6 items-center justify-center  border-2 border-black "
+          className="absolute bottom-8 flex h-12 w-12 items-center justify-center rounded-full border-2 border-black bg-accent/90 "
         >
           <HiPlus />
         </button>
+      </div>
+      <div className="col-start-3 row-start-1">
         {/* AddItemOrList Component Start*/}
-
+        <Link href="/" className="absolute bottom-3 text-center">
+          Bell
+        </Link>
         {showAdd ? (
-          <div className="absolute bottom-16 right-2 z-10 flex bg-white">
-            <ul className=" grid gap-y-4">
-              <button>
-                <Link href="/addList" onClick={() => setShowAdd(false)}>
-                  <li className="bg-white-900 z-10 flex h-16 w-32 flex-row items-center justify-center border-4 ">
-                    <p className="z-10 flex flex-row">Add List</p>
-                  </li>
-                </Link>
-              </button>
-              <button>
-                <Link href="/addItem" onClick={() => setShowAdd(false)}>
-                  <li className=" flex h-16 w-32 items-center justify-center border-4">
-                    <p className="flex flex-row ">Add Item</p>
-                  </li>
-                </Link>
-              </button>
-            </ul>
-          </div>
-        ) : (
-          <div></div>
-        )}
+          <button className="align-right border- absolute right-20 bottom-20 h-12 w-24 rounded-lg bg-white text-black">
+            <Link href="/addItem" onClick={() => setShowAdd(false)}>
+              <p className="">Add Item</p>
+            </Link>
+          </button>
+        ) : null}
         {/* AddItemOrList Component End*/}
       </div>
     </div>
