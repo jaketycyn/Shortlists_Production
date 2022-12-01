@@ -10,6 +10,7 @@ import {
   // HiPlus,
   HiOutlineChevronRight,
 } from "react-icons/hi";
+import { motion } from "framer-motion";
 
 import { trpc } from "../utils/trpc";
 import FooterNav from "./FooterNav";
@@ -73,7 +74,11 @@ const Mainpage: NextPage = () => {
 
   if (isLoading) return <div>Loading ...</div>;
   return (
-    <div className="absolute inset-0">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.75, ease: "easeOut" }}
+    >
       <div className="flex h-screen flex-col justify-between">
         <div>
           {/* userLists ({getLists.status}):{" "}
@@ -216,7 +221,7 @@ const Mainpage: NextPage = () => {
         {/*  Counter Slice Redux Example: End */}
         <FooterNav />
       </div>
-    </div>
+    </motion.div>
   );
 };
 
