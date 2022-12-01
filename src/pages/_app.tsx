@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
 import { AnimatePresence } from "framer-motion";
+//removed for now transitions still work and removed a trpc query error
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -19,9 +20,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <SessionProvider session={session}>
-          <AnimatePresence initial={false}>
-            <Component key={router.pathname} {...pageProps} />
-          </AnimatePresence>
+          <Component key={router.pathname} {...pageProps} />
         </SessionProvider>
       </PersistGate>
     </Provider>
