@@ -13,7 +13,10 @@ import {
 
 import { trpc } from "../utils/trpc";
 import FooterNav from "./FooterNav";
-import { type DeleteListSchema } from "../server/schema/listSchema";
+import {
+  ArchiveListSchema,
+  type DeleteListSchema,
+} from "../server/schema/listSchema";
 import { getLists, setLists, type List } from "../slices/listSlice";
 
 const Mainpage: NextPage = () => {
@@ -53,7 +56,7 @@ const Mainpage: NextPage = () => {
   const { mutateAsync: mutateArchiveItems } =
     trpc.userItem.archiveManyItems.useMutation();
 
-  const ArchiveList = async (data: DeleteListSchema) => {
+  const ArchiveList = async (data: ArchiveListSchema) => {
     try {
       const result = await mutateArchiveList(data);
       const itemResult = await mutateArchiveItems(data);
@@ -66,7 +69,7 @@ const Mainpage: NextPage = () => {
   };
 
   //filtering out lists in Redux with archive set as "archive" these will be displayed in a trash bin for permanent deletion later
-  const filteredArchivedLists = lists?.filter((i) => i.archive !== "archive");
+  const filteredArchivedLists = lists?.filter((i) => i.archive !== "trash");
 
   if (isLoading) return <div>Loading ...</div>;
   return (
@@ -171,6 +174,7 @@ const Mainpage: NextPage = () => {
                                   ArchiveList({
                                     listId: list.id,
                                     userId: list.userId,
+                                    archiveStatus: "trash",
                                   })
                                 // set reQuery to ture
                               }

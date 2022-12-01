@@ -31,13 +31,13 @@ export const userItemRouter = router({
   archiveItem: protectedProcedure
     .input(archiveItemSchema)
     .mutation(async ({ ctx, input }) => {
-      const { listId, userId } = input;
+      const { listId, userId, archiveStatus } = input;
       // console.log("listId", listId)
       // console.log("userId", userId)
       await ctx.prisma.userItem.updateMany({
         where: { listId: listId, userId: userId },
         data: {
-          archive: "archive",
+          archive: archiveStatus,
         },
       });
 
@@ -52,13 +52,13 @@ export const userItemRouter = router({
   archiveManyItems: protectedProcedure
     .input(archiveItemsSchema)
     .mutation(async ({ ctx, input }) => {
-      const { listId, userId } = input;
+      const { listId, userId, archiveStatus } = input;
       // console.log("listId", listId)
       // console.log("userId", userId)
       await ctx.prisma.userItem.updateMany({
         where: { listId: listId, userId: userId },
         data: {
-          archive: "archive",
+          archive: archiveStatus,
         },
       });
 

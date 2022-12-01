@@ -8,10 +8,14 @@ export const addItemSchema = z.object({
 export const archiveItemsSchema = z.object({
   userId: z.string(),
   listId: z.string(),
+  archiveStatus: z.string(),
 });
 
-export const archiveItemSchema = archiveItemsSchema.extend({
+export const archiveItemSchema = z.object({
+  userId: z.string(),
   itemId: z.string(),
+  listId: z.string(),
+  archiveStatus: z.string(),
 });
 
 export const deleteItemSchema = z.object({
@@ -20,7 +24,10 @@ export const deleteItemSchema = z.object({
   listId: z.string(),
 });
 
-export const updateItemSchema = deleteItemSchema.extend({
+export const updateItemSchema = z.object({
+  itemId: z.string(),
+  userId: z.string(),
+  listId: z.string(),
   title: z.string(),
 });
 
