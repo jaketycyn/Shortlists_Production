@@ -7,6 +7,7 @@ export interface Item {
   id: string;
   userId: string;
   title: string;
+  archive: string;
   //This date will force a serialization error every time Will need to be converted to a string later or omitted on storage.
   createdAt: Date;
 }
