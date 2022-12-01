@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-const AddListForm = dynamic(() => import("../components/AddList"), {
+const AddListForm = dynamic(async () => await import("../components/AddList"), {
   ssr: false,
 });
 
