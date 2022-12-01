@@ -17,11 +17,12 @@ const FooterNav: NextPage = () => {
           Hamburger
         </Link>
         {showAdd ? (
-          <button className="absolute bottom-20 left-20 h-12  w-24 rounded-lg border-2 bg-white text-black">
-            <Link href="/addList" onClick={() => setShowAdd(false)}>
+          <Link href="/addList" onClick={() => setShowAdd(false)}>
+            {" "}
+            <button className="absolute bottom-20 left-20 h-12  w-24 rounded-lg border-2 bg-white text-black">
               <p className="">Add List</p>
-            </Link>
-          </button>
+            </button>
+          </Link>
         ) : null}
       </div>
       <div className="col-start-2 row-start-1 flex items-center justify-center">

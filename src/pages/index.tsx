@@ -27,7 +27,7 @@ const Home: NextPage = () => {
         {session ? (
           <Mainpage />
         ) : (
-          <div>
+          <div className="">
             <LoginForm />
           </div>
         )}

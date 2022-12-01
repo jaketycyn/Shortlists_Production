@@ -1,16 +1,18 @@
 import dynamic from "next/dynamic";
 
-const RegisterForm = dynamic(() => import('../components/Registerform'), {
-  ssr: false,
-})
+const RegisterForm = dynamic(
+  async () => await import("../components/Registerform"),
+  {
+    ssr: false,
+  }
+);
 
-function RegisterPage(){
+function RegisterPage() {
   return (
-
     <div>
-      <RegisterForm/>
+      <RegisterForm />
     </div>
-      )
+  );
 }
- 
-export default RegisterPage
+
+export default RegisterPage;

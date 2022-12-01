@@ -7,8 +7,6 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginSchema } from "../server/schema/userSchema";
 
-
-
 const LoginForm: NextPage = () => {
   const { handleSubmit, register, reset } = useForm<LoginSchema>({
     defaultValues: {
@@ -31,12 +29,11 @@ const LoginForm: NextPage = () => {
   );
 
   return (
-    
-    <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8 mt-20 ">
-      <div className="w-full max-w-md space-y-8">
+    <div className="mt-20 flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8 ">
+      <div className="w-full max-w-md space-y-8 rounded-lg border-2 bg-white">
         <div>
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-          Sign in to your account
+            Sign in to your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             Or{" "}
@@ -45,9 +42,7 @@ const LoginForm: NextPage = () => {
               href={"/register"}
               //onClick={toggleMember}
             >
-             
-             register a new account
-               
+              register a new account
             </Link>
           </p>
         </div>
@@ -71,7 +66,7 @@ const LoginForm: NextPage = () => {
                 className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 placeholder="E-mail"
                 type="email"
-               {...register('email')}
+                {...register("email")}
                 required
               />
             </div>
@@ -81,13 +76,12 @@ const LoginForm: NextPage = () => {
                 className="relative block w-full appearance-none rounded-none rounded-t-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 placeholder="Password"
                 type="password"
-                
-                {...register('password')}
+                {...register("password")}
                 // value={values.password}
                 // onChange={handleChange}
               />
             </div>
-            <div className="flex items-center justify-between  mt-2">
+            <div className="mt-2 flex items-center  justify-between">
               <div className="flex items-center">
                 <input
                   id="remember-me"
@@ -114,10 +108,10 @@ const LoginForm: NextPage = () => {
             </div>
             <div>
               <button
-                className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2.5 px-4 mt-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="group relative mt-4 flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2.5 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 type="submit"
               >
-               Login
+                Login
               </button>
             </div>
             {/* //?Google Login 
