@@ -14,6 +14,12 @@ export const archiveListSchema = z.object({
   userId: z.string(),
   archiveStatus: z.string(),
 });
+export const shareListSchema = z.object({
+  userId: z.string(),
+  listTitle: z.string(),
+  listId: z.string(),
+  targetEmail: z.string().email(),
+});
 
 export const updateListSchema = z.object({
   listId: z.string(),
@@ -24,4 +30,5 @@ export const updateListSchema = z.object({
 export type AddListSchema = z.TypeOf<typeof addListSchema>;
 export type ArchiveListSchema = z.TypeOf<typeof archiveListSchema>;
 export type DeleteListSchema = z.TypeOf<typeof deleteListSchema>;
+export type ShareListSchema = z.TypeOf<typeof shareListSchema>;
 export type UpdateListSchema = z.TypeOf<typeof updateListSchema>;

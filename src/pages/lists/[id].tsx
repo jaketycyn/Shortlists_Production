@@ -175,7 +175,7 @@ const ListPage: NextPage = () => {
       <div className="flex h-screen flex-col justify-between">
         {/* Header Nav: Start */}
         <header className="border-grey z-80 sticky top-0 grid h-14 w-full grid-cols-8 grid-rows-1 border-b p-4 text-center">
-          {/* back button */}
+          {/* Back button - Home page link */}
           <div className="col-start-1 row-start-1">
             <Link href="/">
               <svg
@@ -198,9 +198,9 @@ const ListPage: NextPage = () => {
           <div className="col-span-2 col-start-3 row-start-1 w-full items-center justify-between text-center">
             {lists ? <h1> {currentTitle}</h1> : null}
           </div>
-          {/* share */}
+          {/* Share Form Link */}
           <div className="col-start-7 row-start-1 flex flex-col items-end">
-            <Link href="/">
+            <Link href="/share">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

@@ -3,6 +3,7 @@ import {
   addListSchema,
   archiveListSchema,
   deleteListSchema,
+  shareListSchema,
   updateListSchema,
 } from "../../schema/listSchema";
 
@@ -101,5 +102,78 @@ export const userListRouter = router({
         status: 204,
         message: "Change user list title successful",
       };
+    }),
+  shareList: protectedProcedure
+    .input(shareListSchema)
+    //can add back in CTX later but removed because of the scenario where someone can share someone else's list thus their ID wouldnt' be taken from here but rather passed along from the shareform page.
+    .mutation(async ({ input, ctx }) => {
+      //! NEED ITEM VALUES
+      //? Do I pass items with a parentItemId to attach everyitem to another item at one point?
+      const { userId, listTitle, listId, targetEmail } = input;
+
+      //!Hardcoded itemTitle
+      const itemTitle = "Chicken";
+      const itemTitle2 = "Broccoli";
+      const items = [itemTitle, itemTitle2];
+      // console.log("SHARELIST - inputs: ", input);
+
+      // use targetEmail and search DB and retrieve userID corresponding to targetEmail
+
+      //! Will want a way to prevent password from coming back for security reasons in the future
+      const FoundUser = await ctx.prisma.user.findFirst({
+        where: { email: targetEmail },
+      });
+
+      if (FoundUser) {
+        console.log("FoundUser: ", FoundUser);
+        console.log("ID: ", FoundUser?.id);
+        // with userId corresponding to targetEmail create a new list referencing the old listID, for the targetEmail user with its own unique ID
+        //! will need to attach parentList value and add said value to scheme
+        const newList = await ctx.prisma.userList.create({
+          data: { title: listTitle, userId: FoundUser!.id },
+        });
+
+        console.log("newList: ", newList);
+        console.log("newList ID: ", newList.id);
+
+        // create items inside list in the new List with reference to the original 'parent' id
+
+        //depending on iTems array fire function
+        if (items.length === 0) {
+          console.log("no items Found");
+        }
+        if (items.length === 1) {
+          //! create 1 item
+          const newItem = await ctx.prisma.userItem.create({
+            data: {
+              title: itemTitle,
+              listId: newList.id,
+              userId: FoundUser!.id,
+            },
+          });
+          return {
+            status: 201,
+            message: "List shared successfully",
+            newList,
+            newItem,
+          };
+        }
+        if (items.length > 1) {
+          //! create many test
+          const newItems = await ctx.prisma.userItem.createMany({
+            data: [
+              { title: itemTitle, listId: newList.id, userId: FoundUser!.id },
+              { title: itemTitle2, listId: newList.id, userId: FoundUser!.id },
+            ],
+            skipDuplicates: true,
+          });
+          return {
+            status: 201,
+            message: "List shared successfully",
+            newList,
+            newItems,
+          };
+        }
+      }
     }),
 });
