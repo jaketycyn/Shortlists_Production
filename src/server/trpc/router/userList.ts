@@ -132,7 +132,7 @@ export const userListRouter = router({
         console.log("ID: ", FoundUser?.id);
         console.log("items: ", items);
         // with userId corresponding to targetEmail create a new list referencing the old listID, for the targetEmail user with its own unique ID
-        //! will need to attach parentList value and add said value to scheme
+
         const newList = await ctx.prisma.userList.create({
           data: {
             title: listTitle,
@@ -148,27 +148,33 @@ export const userListRouter = router({
         console.log("newList ID: ", newList.id);
 
         // create items inside list in the new List with reference to the original 'parent' id
-
+        // will eventually need to attach parentList value and add said value to scheme for prompts, but those can be in their own call
         //depending on iTems array fire function
+
         if (sentItems.length === 0) {
           console.log("no items Found");
+          return {
+            status: 201,
+            message: "List shared successfully",
+            newList,
+          };
         }
         if (sentItems.length === 1) {
           console.log("create 1 item");
           //! create 1 item
-          // const newItem = await ctx.prisma.userItem.create({
-          //   data: {
-          //     title: itemTitle,
-          //     listId: newList.id,
-          //     userId: FoundUser!.id,
-          //   },
-          // });
-          // return {
-          //   status: 201,
-          //   message: "List shared successfully",
-          //   newList,
-          //   newItem,
-          // };
+          const newItem = await ctx.prisma.userItem.create({
+            data: {
+              title: items[0]!.title,
+              listId: newList.id,
+              userId: FoundUser!.id,
+            },
+          });
+          return {
+            status: 201,
+            message: "List shared successfully",
+            newList,
+            newItem,
+          };
         }
         if (sentItems.length > 1) {
           console.log(`create ${[items].length}  items`);
