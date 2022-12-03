@@ -15,6 +15,7 @@ export interface List {
 //the entire Lists state (all things attributed to lists)
 export interface ListState {
   lists: null | List[];
+  activeList: undefined | List;
   loading: boolean;
   error: any;
 }
@@ -22,6 +23,7 @@ export interface ListState {
 //initializing state preloading of any data
 const initialState: ListState = {
   lists: null,
+  activeList: undefined,
   loading: false,
   error: null,
 };
@@ -64,6 +66,9 @@ export const listSlice = createSlice({
     setLists: (state, action: PayloadAction<List[]>) => {
       state.lists = action.payload;
     },
+    setActiveList: (state, action: PayloadAction<any>) => {
+      state.activeList = action.payload;
+    },
   },
   extraReducers(builder) {
     builder
@@ -82,4 +87,4 @@ export const listSlice = createSlice({
 });
 
 export default listSlice.reducer;
-export const { setLists } = listSlice.actions;
+export const { setLists, setActiveList } = listSlice.actions;
