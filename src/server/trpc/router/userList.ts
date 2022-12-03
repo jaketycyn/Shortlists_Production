@@ -158,8 +158,7 @@ export const userListRouter = router({
             message: "List shared successfully",
             newList,
           };
-        }
-        if (sentItems.length === 1) {
+        } else if (sentItems.length === 1) {
           console.log("create 1 item");
           //! create 1 item
           const newItem = await ctx.prisma.userItem.create({
@@ -175,9 +174,8 @@ export const userListRouter = router({
             newList,
             newItem,
           };
-        }
-        if (sentItems.length > 1) {
-          console.log(`create ${[items].length}  items`);
+        } else if (sentItems.length > 1) {
+          console.log(`create ${items.length}  items`);
           //! create many test
           //   const newItems = await ctx.prisma.userItem.createMany({
           //     data: [
@@ -186,12 +184,12 @@ export const userListRouter = router({
           //     ],
           //     skipDuplicates: true,
           //   });
-          //   return {
-          //     status: 201,
-          //     message: "List shared successfully",
-          //     newList,
-          //     newItems,
-          //   };
+          return {
+            status: 201,
+            message: "List shared successfully",
+            newList,
+            //newItem,
+          };
         }
       }
     }),
