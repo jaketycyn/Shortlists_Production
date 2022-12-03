@@ -56,18 +56,33 @@ const Shareform: NextPage = () => {
         data.userId = activeList!.userId;
 
         if (items) {
-          data.items = items;
+          //filter out archived/trash items so they aren't sent/copied over
+          const filteredItems = items.filter(
+            (i) => i.archive == "archive" || "trash"
+          );
+          console.log("filteredItems: ", filteredItems);
+
+          data.items = filteredItems;
           console.log("data.items: ", data.items);
           const result = await mutateAsync(data);
         }
         const result = await mutateAsync(data);
-        // if (result) {
-        //   setShowToast(true);
-        //   setTimeout(() => {
-        //     router.push("/");
-        //   }, 500);
-        //}
+        if (result) {
+          setTimeout(() => {
+            setShowToast(true);
+          }, 500);
+
+          // setTimeout(() => {
+          //   setShowToast(false);
+          // }, 100);
+
+          //redirection if needed
+          // setTimeout(() => {
+          //   router.push("/");
+          // }, 500);
+        }
         console.log("result: ", result);
+        setShowToast(false);
       } catch (err) {
         console.error(err);
       }
@@ -116,30 +131,32 @@ const Shareform: NextPage = () => {
           //onClick={() => setAddItemOrList(false)}
         >
           <div className="flex flex-col items-center">
-            {/* Toast: Start*/}
-            {showToast ? (
-              <div
-                id="toast-simple"
-                className="flex h-14 w-60 items-center space-x-4 divide-x divide-gray-200 rounded-lg bg-green-400 p-4 text-black shadow"
-                role="alert"
-              >
-                <HiPlus />
-                <div className="pl-6 font-normal">List Shared</div>
-              </div>
-            ) : (
-              <div></div>
-            )}
-
-            {/* Toast: End */}
             {errors?.targetEmail && (
               <p className="inline font-bold text-red-800">
                 ⚠{errors.targetEmail.message}
               </p>
             )}
             <div // controls opacity of rest of active list when add item/list is selected
-              className="container relative mx-auto flex h-full flex-row flex-col  p-6 px-4 pb-8 "
+              className="container relative mx-auto flex h-full flex-col  p-6 px-4 pb-8 "
             >
-              <div className="m-4 pb-8 text-center">{activeList!.title}</div>
+              {/* Toast: Start*/}
+              <div className="mb-12 flex flex-col items-center space-x-4 ">
+                {showToast ? (
+                  <div className="">
+                    <div
+                      id="toast-simple"
+                      className="flex h-14 w-60 items-center divide-x  divide-black  rounded-lg bg-green-500 pl-6 text-black shadow"
+                    >
+                      <HiPlus />
+                      <div className="pl-10 font-normal">List Shared</div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex">{activeList!.title}</div>
+                )}
+              </div>
+
+              {/* Toast: End */}
               <input
                 autoFocus
                 autoComplete="off"
