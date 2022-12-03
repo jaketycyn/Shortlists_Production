@@ -65,24 +65,29 @@ const Shareform: NextPage = () => {
           data.items = filteredItems;
           console.log("data.items: ", data.items);
           const result = await mutateAsync(data);
-        }
-        const result = await mutateAsync(data);
-        if (result) {
-          setTimeout(() => {
+          console.log("result in Onsubmit share form: ", result);
+          if (result) {
             setShowToast(true);
-          }, 500);
-
-          // setTimeout(() => {
-          //   setShowToast(false);
-          // }, 100);
+            setTimeout(() => {
+              setShowToast(false);
+            }, 1000);
+          }
+        } else {
+          const result = await mutateAsync(data);
+          console.log("result in Onsubmit share form: ", result);
+          if (result) {
+            setShowToast(true);
+            setTimeout(() => {
+              setShowToast(false);
+            }, 1000);
+          }
 
           //redirection if needed
           // setTimeout(() => {
           //   router.push("/");
           // }, 500);
         }
-        console.log("result: ", result);
-        setShowToast(false);
+        //setShowToast(false);
       } catch (err) {
         console.error(err);
       }
@@ -164,6 +169,7 @@ const Shareform: NextPage = () => {
                 autoComplete="off"
                 className="flex h-20 w-full border-2 border-black text-center text-black"
                 placeholder="Enter friend's email..."
+                onFocus={() => setShowToast(false)}
                 {...register("targetEmail")}
               />
             </div>
