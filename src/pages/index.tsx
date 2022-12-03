@@ -2,8 +2,11 @@ import { type NextPage } from "next";
 // import Head from "next/head";
 // import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 import LoginForm from "../components/Loginform";
 import Mainpage from "../components/Mainpage";
+import { useAppDispatch } from "../hooks/useTypedSelector";
+import { setActiveList } from "../slices/listSlice";
 
 import { trpc } from "../utils/trpc";
 
@@ -15,6 +18,12 @@ const Home: NextPage = () => {
   //const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
 
   console.log("INDEX>TSX FIRING");
+
+  // reset of ActiveList on returning to homepage/checking session. Might need to move this up one level in the future!
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(setActiveList(undefined));
+  }, []);
   return (
     <>
       {/* <Head>
