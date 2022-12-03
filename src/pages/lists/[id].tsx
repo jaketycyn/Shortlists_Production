@@ -109,13 +109,20 @@ const ListPage: NextPage = () => {
     isLoading,
   } = trpc.userItem.getItems.useQuery({ listId });
 
-  console.log("retrievedItems: ", retrievedItems);
+  //console.log("retrievedItems: ", retrievedItems);
 
   //TODO : Set items into redux
 
   const fetchedItems = retrievedItems as Item[];
+  //console.log("fetchedItems: ", fetchedItems);
   useEffect(() => {
-    dispatch(setItems(fetchedItems));
+    if (fetchedItems) {
+      const filteredFetchedItems = fetchedItems!.filter(
+        (i) => i.archive === "undefined"
+      );
+      console.log("filteredFetchedItems: ", filteredFetchedItems);
+      dispatch(setItems(filteredFetchedItems));
+    }
   }, [dispatch, fetchedItems]);
 
   //TODO: Utilize items from redux for local rendering purposes
@@ -133,6 +140,7 @@ const ListPage: NextPage = () => {
       console.log("result: ", result);
 
       refetch();
+
       setShowItemOptions(false);
     } catch (error) {}
   };
