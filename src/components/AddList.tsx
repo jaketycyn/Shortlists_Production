@@ -30,8 +30,11 @@ const AddList: NextPage = () => {
     handleSubmit,
     register,
     // reset,
-    formState: { errors },
+    formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useForm<AddListSchema>({
+    defaultValues: {
+      listTitle: "",
+    },
     resolver,
   });
 
@@ -39,34 +42,26 @@ const AddList: NextPage = () => {
 
   const router = useRouter();
 
-  const onSubmit = useCallback(
-    async (data: AddListSchema) => {
-      try {
-        const result = await mutateAsync(data);
-        if (result) {
-          setShowToast(true);
-          setTimeout(() => {
-            router.push("/");
-          }, 500);
-        }
-        console.log("result: ", result);
-      } catch (err) {
-        console.error(err);
+  //TODO: custom callback hook to prevent double Submission
+
+  const onSubmit = async (data: AddListSchema) => {
+    try {
+      console.log("onsubmit fired: ");
+      const result = await mutateAsync(data);
+      if (result) {
+        setShowToast(true);
+        setTimeout(() => {
+          router.push("/");
+        }, 500);
       }
-    },
-    [mutateAsync, router]
-  );
+      console.log("result: ", result);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-  // const onSubmit: SubmitHandler<ListFormInputs> = (data) => {
-  //   console.log("data: ", data);
-
-  //   if (data) {
-  //     setShowToast(true);
-  //     return {
-  //       redirect: {},
-  //     };
-  //   }
-  // };
+  console.log("isSubmitting: ", isSubmitting);
+  console.log("SubmitSuccessful: ", isSubmitSuccessful);
 
   return (
     <div className="h-full">
@@ -82,7 +77,7 @@ const AddList: NextPage = () => {
           </Link>
           <div className="row-start-1">Create New List</div>
           <div className="row-start-1">
-            <button>
+            <button type="submit" disabled={isSubmitting}>
               {/* 
             1. Fire Submission of List
             2. Pop Up Toast saying incomplete items if rquired fields in form not fired
@@ -113,11 +108,11 @@ const AddList: NextPage = () => {
             )}
 
             {/* Toast: End */}
-            {errors?.listTitle && (
+            {/* {errors?.listTitle && (
               <p className="inline font-bold text-red-800">
                 ⚠{errors.listTitle.message}
               </p>
-            )}
+            )} */}
             <div // controls opacity of rest of active list when add item/list is selected
               className="container relative mx-auto flex h-full flex-row  p-6 px-4 pb-8 "
             >
