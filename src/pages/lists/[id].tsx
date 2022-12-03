@@ -2,23 +2,18 @@ import React, { useState, useCallback, useEffect } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useForm, Resolver, SubmitHandler } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 
-import {
-  HiOutlineChevronLeft,
-  HiX,
-  HiOutlineCheck,
-  HiPlus,
-  HiTrash,
-} from "react-icons/hi";
+import { HiPlus } from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
 
 import { trpc } from "../../utils/trpc";
 import {
-  ArchiveItemSchema,
+  type ArchiveItemSchema,
   type AddItemSchema,
 } from "../../server/schema/itemSchema";
 import { type Item, setItems } from "../../slices/itemSlice";
+import { setShareListId } from "../../slices/listSlice";
 
 const resolver: Resolver<AddItemSchema> = async (values) => {
   return {
@@ -41,7 +36,7 @@ const ListPage: NextPage = () => {
   const [showItemOptions, setShowItemOptions] = useState(false);
   const [activeItemIndex, setActiveItemIndex] = useState<any>();
   const [hasFocus, setFocus] = useState(false);
-  const [listItems, setListItems] = useState([]);
+  //const [listItems, setListItems] = useState([]);
   const [showToast, setShowToast] = React.useState<boolean>(false);
 
   const listId = router.query.id as string;
@@ -64,7 +59,7 @@ const ListPage: NextPage = () => {
     register,
     reset,
     formState,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors },
   } = useForm<AddItemSchema>({
     resolver,
     defaultValues: { itemTitle: "", listId: listId },
@@ -89,7 +84,7 @@ const ListPage: NextPage = () => {
         console.log(err);
       }
     },
-    [router]
+    [mutateAsync]
     //might need to add something for test firing
   );
 
@@ -200,7 +195,10 @@ const ListPage: NextPage = () => {
           </div>
           {/* Share Form Link */}
           <div className="col-start-7 row-start-1 flex flex-col items-end">
-            <Link href="/share">
+            <Link
+              href="/share"
+              //onClick={() => dispatch(setActiveItems(*all items attached to active list))}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
