@@ -140,19 +140,21 @@ const Shareform: NextPage = () => {
               className="container relative mx-auto flex h-full flex-col  p-6 px-4 pb-8 "
             >
               {/* Toast: Start*/}
-              <div className="mb-12 flex flex-col items-center space-x-4 ">
+              <div className="mb-4 flex flex-col items-center space-x-4 ">
                 {showToast ? (
-                  <div className="">
-                    <div
-                      id="toast-simple"
-                      className="flex h-14 w-60 items-center divide-x  divide-black  rounded-lg bg-green-500 pl-6 text-black shadow"
-                    >
-                      <HiPlus />
-                      <div className="pl-10 font-normal">List Shared</div>
-                    </div>
+                  <div
+                    id="toast-simple"
+                    className="flex h-14 w-60 items-center divide-x  divide-black  rounded-lg bg-green-500 pl-4 text-black shadow"
+                  >
+                    <HiPlus className="mr-1" />
+                    <div className="pl-10 font-normal">List Shared</div>
                   </div>
                 ) : (
-                  <div className="flex">{activeList!.title}</div>
+                  <div className="flex h-14 w-60 flex-col items-center  rounded-lg">
+                    <h1 className="mt-2 text-2xl font-bold">
+                      {activeList!.title}
+                    </h1>
+                  </div>
                 )}
               </div>
 
