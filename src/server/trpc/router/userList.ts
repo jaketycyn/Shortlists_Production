@@ -122,6 +122,8 @@ export const userListRouter = router({
 
       // use targetEmail and search DB and retrieve userID corresponding to targetEmail
 
+      //! will create list before checking for item errors - kinda an issue
+
       //! Will want a way to prevent password from coming back for security reasons in the future
       const FoundUser = await ctx.prisma.user.findFirst({
         where: { email: targetEmail },
@@ -177,18 +179,48 @@ export const userListRouter = router({
         } else if (sentItems.length > 1) {
           console.log(`create ${items.length}  items`);
           //! create many test
-          //   const newItems = await ctx.prisma.userItem.createMany({
-          //     data: [
-          //       { title: itemTitle, listId: newList.id, userId: FoundUser!.id },
-          //       { title: itemTitle2, listId: newList.id, userId: FoundUser!.id },
-          //     ],
-          //     skipDuplicates: true,
-          //   });
+
+          console.log("sent items: ", sentItems);
+          console.log("sent items: ", sentItems);
+          console.log("sent items: ", sentItems);
+          //map out only title from original items
+          const sentItemsTitleArray = sentItems.map(
+            (i: any) =>
+              new Object({
+                title: i.title,
+                userId: "",
+                listId: "",
+              })
+          );
+          console.log(
+            "sentItemsTitle: ",
+            JSON.stringify(sentItemsTitleArray, 0, 2)
+          );
+
+          //add props to new array - listId: newList.id & userId: FoundUser!.id
+          console.log("newList.id: ", newList.id);
+          console.log(" FoundUser!.id: ", FoundUser!.id);
+
+          const newListId = newList.id;
+          //
+          sentItemsTitleArray.forEach((i: any) => {
+            (i.listId = newListId), (i.userId = FoundUser!.id);
+          });
+          console.log(
+            "newItemsObjectArray: ",
+            JSON.stringify(sentItemsTitleArray, 0, 2)
+          );
+
+          const newItems = await ctx.prisma.userItem.createMany({
+            data: sentItemsTitleArray,
+            skipDuplicates: true,
+          });
+
           return {
             status: 201,
             message: "List shared successfully",
             newList,
-            //newItem,
+            newItems,
           };
         }
       }
