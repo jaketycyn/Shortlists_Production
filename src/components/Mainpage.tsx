@@ -18,7 +18,7 @@ import {
   ArchiveListSchema,
   type DeleteListSchema,
 } from "../server/schema/listSchema";
-import { getLists, setLists, type List } from "../slices/listSlice";
+import { setActiveList, setLists, type List } from "../slices/listSlice";
 
 const Mainpage: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -71,6 +71,12 @@ const Mainpage: NextPage = () => {
 
   //filtering out lists in Redux with archive set as "archive" these will be displayed in a trash bin for permanent deletion later
   const filteredArchivedLists = lists?.filter((i) => i.archive !== "trash");
+
+  //set Active List in Redux
+  const setActiveListFunction = async (activeList: List) => {
+    console.log("activeList: ", activeList);
+    await dispatch(setActiveList(activeList));
+  };
 
   //if (isLoading) return <div>Loading ...</div>;
   return (
@@ -148,9 +154,8 @@ const Mainpage: NextPage = () => {
                             href={`/lists/${encodeURIComponent(list.id)}`}
                             key={index}
                             onClick={() =>
-                              console.log(
-                                "LISTCLICK: ",
-                                filteredArchivedLists[index]?.title
+                              setActiveListFunction(
+                                filteredArchivedLists[index]!
                               )
                             }
                             className="h-full w-full "
