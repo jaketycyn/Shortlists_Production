@@ -6,6 +6,7 @@ import {
   shareListSchema,
   updateListSchema,
 } from "../../schema/listSchema";
+import { title } from "process";
 
 export const userListRouter = router({
   addList: protectedProcedure
@@ -115,6 +116,9 @@ export const userListRouter = router({
       const itemTitle = "Chicken";
       const itemTitle2 = "Broccoli";
       const items = [itemTitle, itemTitle2];
+      const dataArray = Array.from([items]).map(() => {
+        title: items;
+      });
       // console.log("SHARELIST - inputs: ", input);
 
       // use targetEmail and search DB and retrieve userID corresponding to targetEmail

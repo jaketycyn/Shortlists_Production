@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useAppSelector } from "../hooks/useTypedSelector";
 
 import { useForm, Resolver, SubmitHandler } from "react-hook-form";
 
@@ -26,6 +27,8 @@ const resolver: Resolver<ShareListSchema> = async (values) => {
 
 const Shareform: NextPage = () => {
   const [showToast, setShowToast] = React.useState<boolean>(false);
+  const { activeList, error, loading } = useAppSelector((state) => state.list);
+
   const {
     handleSubmit,
     register,
@@ -37,7 +40,6 @@ const Shareform: NextPage = () => {
 
   // swap with Share list TRPC
   const { mutateAsync } = trpc.userList.shareList.useMutation();
-
   const router = useRouter();
 
   const onSubmit = useCallback(
@@ -47,9 +49,10 @@ const Shareform: NextPage = () => {
         //   console.log("data found on sharing: ", data);
         // }
         //hardcode pass info via Redux
-        data.listId = "clb5g1i6s0000w3vw26p3t3ne";
-        data.listTitle = "Groceries";
-        data.userId = "claka9wo30000w3u45n16hnye";
+
+        data.listId = activeList!.id;
+        data.listTitle = activeList!.title;
+        data.userId = activeList!.userId;
         const result = await mutateAsync(data);
         // if (result) {
         //   setShowToast(true);
@@ -127,8 +130,9 @@ const Shareform: NextPage = () => {
               </p>
             )}
             <div // controls opacity of rest of active list when add item/list is selected
-              className="container relative mx-auto flex h-full flex-row  p-6 px-4 pb-8 "
+              className="container relative mx-auto flex h-full flex-row flex-col  p-6 px-4 pb-8 "
             >
+              <div className="m-4 pb-8 text-center">{activeList!.title}</div>
               <input
                 autoFocus
                 autoComplete="off"
