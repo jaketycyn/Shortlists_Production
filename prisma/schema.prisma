@@ -78,6 +78,9 @@ model UserItem {
 
 model UserList {
   id        String     @id @default(cuid())
+  //parentListId will be an ID related to 
+  parentListId String @default("undefined")
+  parentListUserId String @default("undefined")
   title     String?
   createdAt DateTime   @default(now())
   userId    String
