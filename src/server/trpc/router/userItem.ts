@@ -34,6 +34,7 @@ export const userItemRouter = router({
       const { itemId, listId, userId, archiveStatus } = input;
       // console.log("listId", listId)
       // console.log("userId", userId)
+      //TODO: later change archive "trash" to a seperate deleted status + deletedDate status for proper date of deleted items - allows recycle bin to have most recently deleted items at the top via a dateFilter.
       await ctx.prisma.userItem.updateMany({
         where: { id: itemId, listId: listId, userId: userId },
         data: {
@@ -79,7 +80,9 @@ export const userItemRouter = router({
         where: { userId: ctx.session.user.id, listId: listId },
       });
 
-      console.log("results: ", results);
+      //way to convert results .createdAT property from Date to string() - It's created as DateTime but when brought in via prisma it converts to Date object.
+
+      console.log("results within GETITEMS: ", results);
 
       return results;
       // return {
