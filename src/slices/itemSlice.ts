@@ -9,7 +9,7 @@ export interface Item {
   title: string;
   archive: string;
   //This date will force a serialization error every time Will need to be converted to a string later or omitted on storage.
-  createdAt: string;
+  createdAt: Date;
   //could add createdAt: string | Date
   // for now swapping it fully over to string since it gets converted to string on import
 }
