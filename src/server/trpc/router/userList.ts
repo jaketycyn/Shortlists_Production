@@ -110,15 +110,14 @@ export const userListRouter = router({
     .mutation(async ({ input, ctx }) => {
       //! NEED ITEM VALUES
       //? Do I pass items with a parentItemId to attach everyitem to another item at one point?
-      const { userId, listTitle, listId, targetEmail } = input;
-
+      const { userId, listTitle, listId, targetEmail, items } = input;
+      console.log("items: ", items);
       //!Hardcoded itemTitle
-      const itemTitle = "Chicken";
-      const itemTitle2 = "Broccoli";
-      const items = [itemTitle, itemTitle2];
-      const dataArray = Array.from([items]).map(() => {
-        title: items;
-      });
+
+      const sentItems = items as any;
+      // const dataArray = Array.from([items]).map(() => {
+      //   title: items;
+      // });
       // console.log("SHARELIST - inputs: ", input);
 
       // use targetEmail and search DB and retrieve userID corresponding to targetEmail
@@ -131,10 +130,18 @@ export const userListRouter = router({
       if (FoundUser) {
         console.log("FoundUser: ", FoundUser);
         console.log("ID: ", FoundUser?.id);
+        console.log("items: ", items);
         // with userId corresponding to targetEmail create a new list referencing the old listID, for the targetEmail user with its own unique ID
         //! will need to attach parentList value and add said value to scheme
         const newList = await ctx.prisma.userList.create({
-          data: { title: listTitle, userId: FoundUser!.id },
+          data: {
+            title: listTitle,
+            userId: FoundUser!.id,
+            parentListId: listId,
+            parentListUserId: userId,
+
+            // parentListId: listId,
+          },
         });
 
         console.log("newList: ", newList);
@@ -143,40 +150,42 @@ export const userListRouter = router({
         // create items inside list in the new List with reference to the original 'parent' id
 
         //depending on iTems array fire function
-        if (items.length === 0) {
+        if (sentItems.length === 0) {
           console.log("no items Found");
         }
-        if (items.length === 1) {
+        if (sentItems.length === 1) {
+          console.log("create 1 item");
           //! create 1 item
-          const newItem = await ctx.prisma.userItem.create({
-            data: {
-              title: itemTitle,
-              listId: newList.id,
-              userId: FoundUser!.id,
-            },
-          });
-          return {
-            status: 201,
-            message: "List shared successfully",
-            newList,
-            newItem,
-          };
+          // const newItem = await ctx.prisma.userItem.create({
+          //   data: {
+          //     title: itemTitle,
+          //     listId: newList.id,
+          //     userId: FoundUser!.id,
+          //   },
+          // });
+          // return {
+          //   status: 201,
+          //   message: "List shared successfully",
+          //   newList,
+          //   newItem,
+          // };
         }
-        if (items.length > 1) {
+        if (sentItems.length > 1) {
+          console.log(`create ${[items].length}  items`);
           //! create many test
-          const newItems = await ctx.prisma.userItem.createMany({
-            data: [
-              { title: itemTitle, listId: newList.id, userId: FoundUser!.id },
-              { title: itemTitle2, listId: newList.id, userId: FoundUser!.id },
-            ],
-            skipDuplicates: true,
-          });
-          return {
-            status: 201,
-            message: "List shared successfully",
-            newList,
-            newItems,
-          };
+          //   const newItems = await ctx.prisma.userItem.createMany({
+          //     data: [
+          //       { title: itemTitle, listId: newList.id, userId: FoundUser!.id },
+          //       { title: itemTitle2, listId: newList.id, userId: FoundUser!.id },
+          //     ],
+          //     skipDuplicates: true,
+          //   });
+          //   return {
+          //     status: 201,
+          //     message: "List shared successfully",
+          //     newList,
+          //     newItems,
+          //   };
         }
       }
     }),

@@ -28,6 +28,7 @@ const resolver: Resolver<ShareListSchema> = async (values) => {
 const Shareform: NextPage = () => {
   const [showToast, setShowToast] = React.useState<boolean>(false);
   const { activeList, error, loading } = useAppSelector((state) => state.list);
+  const { items } = useAppSelector((state) => state.item);
 
   const {
     handleSubmit,
@@ -53,6 +54,12 @@ const Shareform: NextPage = () => {
         data.listId = activeList!.id;
         data.listTitle = activeList!.title;
         data.userId = activeList!.userId;
+
+        if (items) {
+          data.items = items;
+          console.log("data.items: ", data.items);
+          const result = await mutateAsync(data);
+        }
         const result = await mutateAsync(data);
         // if (result) {
         //   setShowToast(true);

@@ -13,7 +13,6 @@ import {
   type AddItemSchema,
 } from "../../server/schema/itemSchema";
 import { type Item, setItems } from "../../slices/itemSlice";
-import { setShareListId } from "../../slices/listSlice";
 
 const resolver: Resolver<AddItemSchema> = async (values) => {
   return {
@@ -151,8 +150,6 @@ const ListPage: NextPage = () => {
   //console.log("ListIndex is: ", Listindex);
 
   const currentTitle = lists?.[Listindex!]?.title;
-
-  const currentItems = lists as Item[];
 
   //Display Item Options Function:
   const displayItemOptions = (index: number) => {
