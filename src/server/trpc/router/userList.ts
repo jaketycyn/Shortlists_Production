@@ -192,10 +192,7 @@ export const userListRouter = router({
                 listId: "",
               })
           );
-          console.log(
-            "sentItemsTitle: ",
-            JSON.stringify(sentItemsTitleArray, 0, 2)
-          );
+          console.log("sentItemsTitle: ");
 
           //add props to new array - listId: newList.id & userId: FoundUser!.id
           console.log("newList.id: ", newList.id);
@@ -206,10 +203,7 @@ export const userListRouter = router({
           sentItemsTitleArray.forEach((i: any) => {
             (i.listId = newListId), (i.userId = FoundUser!.id);
           });
-          console.log(
-            "newItemsObjectArray: ",
-            JSON.stringify(sentItemsTitleArray, 0, 2)
-          );
+          console.log("newItemsObjectArray: ");
 
           const newItems = await ctx.prisma.userItem.createMany({
             data: sentItemsTitleArray,
