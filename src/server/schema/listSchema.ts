@@ -25,7 +25,7 @@ export const shareListSchema = z.object({
       userId: z.string(),
       title: z.string(),
       archive: z.string(),
-      createdAt: z.string(),
+      createdAt: z.date(),
     })
   ),
 });
