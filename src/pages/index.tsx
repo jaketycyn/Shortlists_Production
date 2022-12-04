@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import LoginForm from "../components/Loginform";
 import Mainpage from "../components/Mainpage";
+import HomePageLayout from "../components/layouts/homepage/HomepageLayout";
 import { useAppDispatch } from "../hooks/useTypedSelector";
 import { setActiveList } from "../slices/listSlice";
 
@@ -34,7 +35,7 @@ const Home: NextPage = () => {
 
       <main className="h-screen">
         {session ? (
-          <Mainpage />
+          <HomePageLayout />
         ) : (
           <div className="">
             <LoginForm />
