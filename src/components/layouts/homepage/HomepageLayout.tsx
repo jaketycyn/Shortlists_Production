@@ -18,11 +18,11 @@ import { motion } from "framer-motion";
 import { trpc } from "../../../utils/trpc";
 
 import {
-  ArchiveListSchema,
-  type DeleteListSchema,
-} from "../server/schema/listSchema";
+  type ArchiveListSchema,
+  //type DeleteListSchema,
+} from "../../../server/schema/listSchema";
 import { setActiveList, setLists, type List } from "../../../slices/listSlice";
-import { Tabs } from "./HomepageTabs";
+
 import FooterNav from "../../navigation/FooterNav";
 
 const HomePageLayout: NextPage = () => {
