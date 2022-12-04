@@ -1,7 +1,8 @@
 import dynamic from "next/dynamic";
 
 const ProfileComponent = dynamic(
-  async () => await import("../components/layouts/profile/ProfilePageLayout"),
+  async () =>
+    await import("../components/layouts/profilepage/ProfilePageLayout"),
   {
     ssr: false,
   }

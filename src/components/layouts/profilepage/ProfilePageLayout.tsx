@@ -1,16 +1,19 @@
 import type { NextPage } from "next";
+import Image from "next/image";
 //import { useSession } from "next-auth/react";
 import Link from "next/link";
+import session from "redux-persist/lib/storage/session";
 import FooterNav from "../../navigation/FooterNav";
 
 const ProfilePageLayout: NextPage = () => {
   return (
     <>
-      <div className="flex h-screen flex-col justify-between">
+      <div className="flex h-screen w-full flex-col justify-between">
         {/* Header Nav: Start */}
         <header className="border-grey z-80 sticky top-0 grid h-14 w-full grid-cols-8 grid-rows-1 border-b p-4 text-center">
           {/* Back button - Home page link */}
           <div className="col-start-1 row-start-1">
+            {/* backpage route back to previous historical page I was on */}
             <Link href="/">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -29,9 +32,7 @@ const ProfilePageLayout: NextPage = () => {
             </Link>
           </div>
           {/* List Title */}
-          <div className="col-span-2 col-start-3 row-start-1 w-full items-center justify-between text-center">
-            Profile Page
-          </div>
+          <div className="col-span-2 col-start-3 row-start-1 w-full items-center justify-between text-center"></div>
           {/* Share Form Link */}
           <div className="col-start-7 row-start-1 flex flex-col items-end">
             <Link
@@ -74,10 +75,29 @@ const ProfilePageLayout: NextPage = () => {
           </div>
         </header>
         {/* Profile Section */}
-        <div>
-          <p>Profile Picture</p>
+        <div className="mt-2 h-screen">
+          <div className="flex w-full flex-col items-center justify-center">
+            {/* userProfile / Info to change */}
 
-          <p>Profile Picture</p>
+            <Image
+              src="/1.jpg"
+              alt="seattle"
+              width={250}
+              height={250}
+              className="h-20 w-20 rounded-full"
+            />
+            <ul>
+              <p>UsernamePlaceholder</p>
+              <p>Email/Contact Placeholder</p>
+            </ul>
+          </div>
+          {/* Friendslist/Finder Section */}
+          <div>
+            <h1>Friends</h1>
+            {/* Search database for username/email corresponding to said input + allow user to send friend request */}
+            <p>Search Bar</p>
+            {/* <p>Sync Contacts (find people you know) button</p> */}
+          </div>
         </div>
         <div>
           <FooterNav />
