@@ -9,7 +9,6 @@ import { Provider } from "react-redux";
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
 import { AnimatePresence } from "framer-motion";
-//removed for now transitions still work and removed a trpc query error
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

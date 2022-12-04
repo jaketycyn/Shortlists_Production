@@ -3,9 +3,8 @@ import { type NextPage } from "next";
 // import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import HomePageLayout from "../components/layouts/homepage/HomepageLayout";
+import HomePageLayout from "../components/layouts/homepage/HomePageLayout";
 import LoginForm from "../components/Loginform";
-HomePageLayout;
 import { useAppDispatch } from "../hooks/useTypedSelector";
 import { setActiveList } from "../slices/listSlice";
 

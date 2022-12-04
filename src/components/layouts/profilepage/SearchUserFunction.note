@@ -1,0 +1,67 @@
+
+const resolver: Resolver<any> = async (values) => {
+  return {
+    values: !values.email ? {} : values,
+    errors: !values.email
+      ? {
+          email: {
+            type: "required",
+            message: "An email is required",
+          },
+        }
+      : {},
+  };
+};
+
+const {
+    handleSubmit,
+    register,
+    // reset,
+    formState: { errors, isSubmitting, isSubmitSuccessful },
+  } = useForm<any>({
+    defaultValues: {
+      email: "",
+    },
+    resolver,
+  });
+
+  const { mutateAsync: findUserMutate } = trpc.user.findUser.useMutation();
+
+  const [usersExist, SetUsersExist] = useState();
+
+  const onSubmit = async (data: any) => {
+    try {
+      console.log("onsubmit fired: ");
+      const {
+        result: { user },
+      } = await findUserMutate(data);
+      // if (result) {
+      //   setShowToast(true);
+      //   setTimeout(() => {
+      //     router.push("/");
+      //   }, 500);
+      // }
+      console.log("found User INfo: ", user!.email);
+      console.log("found User Name: ", user!.id);
+      SetUsersExist(user);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
+  <div className="flex w-full flex-col items-center justify-center">
+              <p>Search Bar</p>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <input
+                  autoFocus
+                  autoComplete="off"
+                  className="flex h-20 w-full border-2 border-black text-center text-black"
+                  placeholder="Enter Friends Email"
+                  {...register("email")}
+                />
+                <input type="submit" />
+              </form>
+              <p>Display Users Searched/Found</p>
+              {usersExist ? <div>{usersExist.username}</div> : null}
+            </div>

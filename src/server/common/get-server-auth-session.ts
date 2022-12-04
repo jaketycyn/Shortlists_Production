@@ -17,17 +17,17 @@ export const getServerAuthSession = async (ctx: {
   // if (!authOptions.session) {
   //   return {
   //     redirect: {
-  //       destination: '/',
+  //       destination: "/",
   //       permanent: false,
   //     },
-  //   }
+  //   };
   // }
 
   // return {
   //   props: {
   //     session: authOptions.session,
   //   },
-  // }
+  // };
   // //end of new stuff experimenting
 
   return await unstable_getServerSession(ctx.req, ctx.res, authOptions);

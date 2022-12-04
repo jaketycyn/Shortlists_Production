@@ -61,7 +61,7 @@ export const authOptions: NextAuthOptions = {
           const result = await prisma.user.findFirst({
             where: { email },
           });
-          // console.log("result: ", result)
+          console.log("result in Authorize: ", result);
 
           if (!result) return null;
 

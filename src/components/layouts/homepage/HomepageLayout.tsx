@@ -41,8 +41,7 @@ const HomePageLayout: NextPage = () => {
   //console.log("results: ", results);
 
   console.log("typeofResults", typeof results);
-  const { data } = useSession();
-  //console.log("data from useSession: ", data);
+  //const { data } = useSession();
 
   //redux setting Lists
 
