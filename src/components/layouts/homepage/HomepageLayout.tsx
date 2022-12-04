@@ -274,12 +274,10 @@ const HomePageLayout: NextPage = () => {
                       <div className="flex h-3/5 w-full flex-col">
                         <div className="z-0 flex flex-col items-center rounded-md text-center">
                           <h1>You have received no lists :sad:</h1>
+                          <p className="mt-8">Make Friends Loser</p>
                           <p className="mt-8">
-                            To create your first lists and any future lists
-                            click the {"+"} in the bottom right hand corner
-                          </p>
-                          <p className="mt-8">
-                            Then select the option {"Add List"}
+                            Maybe send them a list and they will send you one
+                            back
                           </p>
                         </div>
                       </div>
@@ -366,14 +364,7 @@ const HomePageLayout: NextPage = () => {
                     className={openTab === 3 ? "block" : "hidden"}
                     id="link3"
                   >
-                    <p>
-                      Efficiently unleash cross-media information without
-                      cross-media value. Quickly maximize timely deliverables
-                      for real-time schemas.
-                      <br />
-                      <br /> Dramatically maintain clicks-and-mortar solutions
-                      without functional solutions.
-                    </p>
+                    <p>Sent Lists Placeholder Text</p>
                   </div>
                 </div>
               </div>

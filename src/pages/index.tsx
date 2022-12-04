@@ -4,7 +4,7 @@ import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import LoginForm from "../components/Loginform";
-import HomePageLayout from "../components/layouts/homepage/HomepageLayout";
+import HomePageLayout from "../components/layouts/homepage/HomePageLayout";
 import { useAppDispatch } from "../hooks/useTypedSelector";
 import { setActiveList } from "../slices/listSlice";
 

@@ -7,7 +7,7 @@ import { useAppSelector } from "../../hooks/useTypedSelector";
 
 //import { useAppContext } from "../context/appContext";
 
-const FooterNav: NextPage = () => {
+const ListFooterNav: NextPage = () => {
   const { lists } = useAppSelector((state) => state.list);
   const [showAdd, setShowAdd] = React.useState<boolean>(false);
   //console.log("showAdd", showAdd);
@@ -25,16 +25,12 @@ const FooterNav: NextPage = () => {
       <div className="mb-20 flex flex-col items-center justify-center text-center">
         {showAdd ? (
           <div className="" onBlur={() => setShowAdd(false)}>
-            <button className="btn m-2  sm:btn-sm md:btn-md lg:btn-lg">
-              <Link href="/addList" onClick={() => console.log("addList")}>
-                Add List
-              </Link>
-            </button>
             {nonArchiveLists!.length >= 1 ? (
-              <button className=" btn m-2 sm:btn-sm md:btn-md lg:btn-lg ">
-                <Link href="/" onClick={() => console.log("addItem")}>
-                  Add Item
-                </Link>
+              <button
+                className=" btn m-2 sm:btn-sm md:btn-md lg:btn-lg "
+                onClick={() => console.log("addItem")}
+              >
+                Add Item
               </button>
             ) : null}
           </div>
@@ -97,4 +93,4 @@ const FooterNav: NextPage = () => {
   );
 };
 
-export default FooterNav;
+export default ListFooterNav;
