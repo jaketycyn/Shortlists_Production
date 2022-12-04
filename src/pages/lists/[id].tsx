@@ -13,6 +13,7 @@ import {
   type AddItemSchema,
 } from "../../server/schema/itemSchema";
 import { type Item, setItems } from "../../slices/itemSlice";
+import ListFooterNav from "../../components/navigation/ListFooterNav";
 
 const resolver: Resolver<AddItemSchema> = async (values) => {
   return {
@@ -37,7 +38,7 @@ const ListPage: NextPage = () => {
   const [hasFocus, setFocus] = useState(false);
   //const [listItems, setListItems] = useState([]);
   const [showToast, setShowToast] = React.useState<boolean>(false);
-
+  const [showAdd, setShowAdd] = React.useState<boolean>(false);
   const listId = router.query.id as string;
 
   // const listItems = [
@@ -169,6 +170,14 @@ const ListPage: NextPage = () => {
   const filteredArchivedItems = items?.filter(
     (i) => i.archive !== "trash" && i.archive !== "archive"
   );
+  const nonArchiveLists = lists?.filter(
+    (i) =>
+      i.archive !== "trash" &&
+      i.archive !== "archive" &&
+      i.parentListUserId === "undefined"
+  );
+
+  //FooterNav - moved in here cause of specific state management needed
 
   return (
     <>
@@ -272,27 +281,6 @@ const ListPage: NextPage = () => {
                       <div className="col-start-6">
                         {showItemOptions && activeItemIndex === index ? (
                           <div className=" row-start-1 flex flex-row-reverse ">
-                            {/* hiding share for now - might switch to a drop down below the item itself due to scaling/movement issues */}
-                            {/* <button
-                              className="btn-sm btn  md:btn-md"
-                              id="shareBtn"
-                              onClick={() => console.log("share icon")}
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="h-6 w-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"
-                                />
-                              </svg>
-                            </button> */}
                             <button
                               className="btn-sm btn md:btn-md"
                               id="trashBtn"
@@ -431,6 +419,85 @@ const ListPage: NextPage = () => {
               </div>
               {/*   Add Item Module: End */}
             </div>
+          </div>
+        </div>
+        <div>
+          <div className="">
+            {/* AddItemOrList Component: Start*/}
+            <div className="mb-20 flex flex-col items-center justify-center text-center">
+              {showAdd ? (
+                <div className="" onBlur={() => setShowAdd(false)}>
+                  {nonArchiveLists!.length >= 1 ? (
+                    <button
+                      className=" btn m-2 sm:btn-sm md:btn-md lg:btn-lg "
+                      onClick={() => {
+                        setShowTextInput(!showTextInput);
+                        setShowItemOptions(false);
+                        setShowAdd(false);
+                      }}
+                    >
+                      Add Item
+                    </button>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+            {/* AddItemOrList Component: End*/}
+
+            {/* FooterBar Component: Start*/}
+            {/* This is below the AddItem/List and has its own separate forced bottom-0 position */}
+
+            <div className="btm-nav bottom-0  grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-black/30 text-center">
+              <div className="col-start-1 row-start-1 flex flex-col items-center justify-center">
+                <Link href="/" className="absolute bottom-3 text-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="h-6 w-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                    />
+                  </svg>
+                </Link>
+              </div>
+              <div className="col-start-2 row-start-1 flex flex-col items-center">
+                <button
+                  onClick={() => setShowAdd(!showAdd)}
+                  className="btn-circle btn absolute bottom-8 flex h-12 w-12 bg-black/40 "
+                >
+                  <HiPlus />
+                </button>
+              </div>
+              <div className="col-start-3 row-start-1">
+                <Link
+                  href="/profile"
+                  className="z-80 absolute bottom-3 text-center"
+                >
+                  {/* profile link */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="h-6 w-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+            {/* FooterBar Component: End*/}
           </div>
         </div>
       </div>
