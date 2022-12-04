@@ -13,7 +13,10 @@ const FooterNav: NextPage = () => {
   //console.log("showAdd", showAdd);
 
   const nonArchiveLists = lists?.filter(
-    (i) => i.archive !== "trash" && i.archive !== "archive"
+    (i) =>
+      i.archive !== "trash" &&
+      i.archive !== "archive" &&
+      i.parentListUserId === "undefined"
   );
 
   return (
