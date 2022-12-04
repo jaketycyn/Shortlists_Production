@@ -1,11 +1,24 @@
 import type { NextPage } from "next";
 import Image from "next/image";
-//import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-import session from "redux-persist/lib/storage/session";
 import FooterNav from "../../navigation/FooterNav";
+import { useForm, Resolver, SubmitHandler } from "react-hook-form";
+import { trpc } from "../../../utils/trpc";
+import { useState } from "react";
 
 const ProfilePageLayout: NextPage = () => {
+  const { data } = useSession();
+  console.log("data: ", data);
+
+  //query to Get All Users in DB
+  const { data: foundUsers } = trpc.user.getAllUsers.useQuery();
+  console.log("foundUsers: ", foundUsers);
+  //store all Users in DB
+
+  //search function using Stored Users to Display
+
   return (
     <>
       <div className="flex h-screen w-full flex-col justify-between">
@@ -93,9 +106,10 @@ const ProfilePageLayout: NextPage = () => {
           </div>
           {/* Friendslist/Finder Section */}
           <div>
+            <br className="divide divide-x-2" />
             <h1>Friends</h1>
             {/* Search database for username/email corresponding to said input + allow user to send friend request */}
-            <p>Search Bar</p>
+
             {/* <p>Sync Contacts (find people you know) button</p> */}
           </div>
         </div>
