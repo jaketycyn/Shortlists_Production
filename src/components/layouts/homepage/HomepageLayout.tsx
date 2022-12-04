@@ -71,7 +71,9 @@ const HomePageLayout: NextPage = () => {
   };
 
   //filtering out lists in Redux with archive set as "archive" these will be displayed in a trash bin for permanent deletion later
-  const filteredArchivedLists = lists?.filter((i) => i.archive !== "trash");
+  const createdfilteredArchivedLists = lists?.filter(
+    (i) => i.archive !== "trash" && i.parentListUserId === "undefined"
+  );
 
   //set Active List in Redux
   const setActiveListFunction = async (activeList: List) => {
@@ -96,8 +98,8 @@ const HomePageLayout: NextPage = () => {
             {/* Setup Grid - layout later for spacing of Back, list name, share icon & more options icon w/ redirect to options page like Notion*/}
           </header>
 
-          {filteredArchivedLists === undefined ||
-          filteredArchivedLists?.length === 0 ? (
+          {createdfilteredArchivedLists === undefined ||
+          createdfilteredArchivedLists?.length === 0 ? (
             <div className="z-0 m-2 mt-40 flex flex-col items-center rounded-md text-center">
               <h1>You have no Lists created</h1>
               <p className="mt-8">
@@ -182,8 +184,8 @@ const HomePageLayout: NextPage = () => {
                             className={openTab === 1 ? "block" : "hidden"}
                             id="link1"
                           >
-                            {filteredArchivedLists === undefined ||
-                            filteredArchivedLists?.length === 0 ? (
+                            {createdfilteredArchivedLists === undefined ||
+                            createdfilteredArchivedLists?.length === 0 ? (
                               <div className="z-0 m-2 mt-40 flex flex-col items-center rounded-md text-center">
                                 <h1>You have no Lists created</h1>
                                 <p className="mt-8">
@@ -198,9 +200,10 @@ const HomePageLayout: NextPage = () => {
                             ) : (
                               <div className="container relative z-0 h-full items-center">
                                 {/* Display UserClassicLists Module: Starts*/}
-                                {filteredArchivedLists && userListsOpen ? (
+                                {createdfilteredArchivedLists &&
+                                userListsOpen ? (
                                   <div>
-                                    {filteredArchivedLists.map(
+                                    {createdfilteredArchivedLists.map(
                                       (list, index) => (
                                         <div
                                           className="relative mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
@@ -222,7 +225,9 @@ const HomePageLayout: NextPage = () => {
                                             key={index}
                                             onClick={() =>
                                               setActiveListFunction(
-                                                filteredArchivedLists[index]!
+                                                createdfilteredArchivedLists[
+                                                  index
+                                                ]!
                                               )
                                             }
                                             className="h-full w-full "

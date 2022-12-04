@@ -3,10 +3,12 @@ import Link from "next/link";
 
 import { HiPlus } from "react-icons/hi";
 import type { NextPage } from "next";
+import { useAppSelector } from "../../hooks/useTypedSelector";
 
 //import { useAppContext } from "../context/appContext";
 
 const FooterNav: NextPage = () => {
+  const { lists } = useAppSelector((state) => state.list);
   const [showAdd, setShowAdd] = React.useState<boolean>(false);
   //console.log("showAdd", showAdd);
 
@@ -21,11 +23,13 @@ const FooterNav: NextPage = () => {
                 Add List
               </Link>
             </button>
-            <button className=" btn m-2 sm:btn-sm md:btn-md lg:btn-lg ">
-              <Link href="/" onClick={() => console.log("addItem")}>
-                Add Item
-              </Link>
-            </button>
+            {lists!.length >= 1 ? (
+              <button className=" btn m-2 sm:btn-sm md:btn-md lg:btn-lg ">
+                <Link href="/" onClick={() => console.log("addItem")}>
+                  Add Item
+                </Link>
+              </button>
+            ) : null}
           </div>
         ) : null}
       </div>
