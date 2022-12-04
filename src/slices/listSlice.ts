@@ -10,8 +10,8 @@ export interface List {
   archive: string;
   //This date will force a serialization error every time Will need to be converted to a string later or omitted on storage.
   createdAt: Date;
-  parentlistId: string | undefined;
-  parentlistUserId: string | undefined;
+  parentListId: string | undefined;
+  parentListUserId: string | undefined;
 }
 
 //the entire Lists state (all things attributed to lists)

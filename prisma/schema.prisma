@@ -71,20 +71,19 @@ model UserItem {
   createdAt DateTime @default(now())
   userId    String
   listId    String
-  archive   String?   @default("undefined")
+  archive   String?  @default("undefined")
   userList  UserList @relation(fields: [listId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 }
 
 model UserList {
-  id        String     @id @default(cuid())
-  //parentListId will be an ID related to 
-  parentListId String @default("undefined")
-  parentListUserId String @default("undefined")
-  title     String?
-  createdAt DateTime   @default(now())
-  userId    String
-  archive   String?     @default("undefined")
-  user      User       @relation(fields: [userId], references: [id])
-  UserItem  UserItem[]
+  id               String     @id @default(cuid())
+  title            String?
+  createdAt        DateTime   @default(now())
+  userId           String
+  archive          String?    @default("undefined")
+  parentListId     String?    @default("undefined")
+  parentListUserId String?    @default("undefined")
+  user             User       @relation(fields: [userId], references: [id])
+  UserItem         UserItem[]
 }
