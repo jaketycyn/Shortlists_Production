@@ -12,6 +12,10 @@ const FooterNav: NextPage = () => {
   const [showAdd, setShowAdd] = React.useState<boolean>(false);
   //console.log("showAdd", showAdd);
 
+  const nonArchiveLists = lists?.filter(
+    (i) => i.archive !== "trash" && i.archive !== "archive"
+  );
+
   return (
     <div className="">
       {/* AddItemOrList Component: Start*/}
@@ -23,7 +27,7 @@ const FooterNav: NextPage = () => {
                 Add List
               </Link>
             </button>
-            {lists!.length >= 1 ? (
+            {nonArchiveLists!.length >= 1 ? (
               <button className=" btn m-2 sm:btn-sm md:btn-md lg:btn-lg ">
                 <Link href="/" onClick={() => console.log("addItem")}>
                   Add Item
