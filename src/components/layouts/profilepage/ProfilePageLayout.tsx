@@ -6,19 +6,33 @@ import Link from "next/link";
 import FooterNav from "../../navigation/FooterNav";
 import { useForm, Resolver, SubmitHandler } from "react-hook-form";
 import { trpc } from "../../../utils/trpc";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../hooks/useTypedSelector";
+import { setUsers } from "../../../slices/usersSlice";
 
 const ProfilePageLayout: NextPage = () => {
-  const { data } = useSession();
-  console.log("data: ", data);
+  const { data: session, status } = useSession();
+  console.log("session: ", session);
+  const dispatch = useAppDispatch();
+  const { users } = useAppSelector((state) => state.user);
 
   //query to Get All Users in DB
   const { data: foundUsers } = trpc.user.getAllUsers.useQuery();
   console.log("foundUsers: ", foundUsers);
   //store all Users in DB
 
+  useEffect(() => {
+    if (foundUsers) {
+      const users = foundUsers.results;
+      dispatch(setUsers(users));
+    }
+  }, [dispatch]);
   //search function using Stored Users to Display
-
+  const currentUser = users?.filter((i) => i.id === session?.user?.id);
+  console.log("currentUser: ", currentUser);
   return (
     <>
       <div className="flex h-screen w-full flex-col justify-between">
@@ -99,18 +113,99 @@ const ProfilePageLayout: NextPage = () => {
               height={250}
               className="h-20 w-20 rounded-full"
             />
-            <ul>
-              <p>UsernamePlaceholder</p>
-              <p>Email/Contact Placeholder</p>
-            </ul>
+            <div>
+              {currentUser ? (
+                <ul className="m-2 flex flex-col gap-2 text-center">
+                  <p>{currentUser[0]!.username}</p>
+
+                  <p>{currentUser[0]!.email}</p>
+                </ul>
+              ) : null}
+            </div>
           </div>
           {/* Friendslist/Finder Section */}
           <div>
-            <br className="divide divide-x-2" />
-            <h1>Friends</h1>
-            {/* Search database for username/email corresponding to said input + allow user to send friend request */}
+            <ul className="mt-2 mb-2 divide-y-8 divide-gray-200">
+              <form onSubmit={() => console.log("submitting")}>
+                <div className="relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="h-6 w-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="search"
+                    id="friend-search"
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 "
+                    placeholder="Search for Friends..."
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-2.5 bottom-2.5 rounded-lg bg-black/80 px-4 py-2 text-sm font-medium text-white"
+                  >
+                    Search
+                  </button>
+                </div>
+              </form>
+              {/* Display Users from Search */}
+              <h1 className="text-xl">Friends</h1>
+              <div>
+                {users ? (
+                  <div className="flex flex-col">
+                    <ul className="divide-y divide-gray-200">
+                      {users.map((user, key) => (
+                        <div className="" key={key}>
+                          <li className="flex flex-row items-center py-3 sm:py-4">
+                            <div className="mr-2 flex-shrink-0">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="h-6 w-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                                />
+                              </svg>
 
-            {/* <p>Sync Contacts (find people you know) button</p> */}
+                              {/* 
+                        Image Placeholder
+                      <Image className="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image"> */}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-sm font-medium ">
+                                {user.username}
+                              </p>
+                              <p className="truncate text-sm ">{user.email}</p>
+                              {/* <p className="truncate text-sm ">{user.status}</p> */}
+                            </div>
+                          </li>
+                        </div>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+              {/* Display Users with Friends Association */}
+
+              {/* <p>Sync Contacts (find people you know) button</p> */}
+            </ul>
           </div>
         </div>
         <div>
