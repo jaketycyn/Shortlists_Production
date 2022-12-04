@@ -108,338 +108,304 @@ const HomePageLayout: NextPage = () => {
             <h1 className="font-semibold">Shortlists</h1>
             {/* Setup Grid - layout later for spacing of Back, list name, share icon & more options icon w/ redirect to options page like Notion*/}
           </header>
-
-          {createdFilteredArchivedLists === undefined ||
-          createdFilteredArchivedLists?.length === 0 ? (
-            <div className="z-0 m-2 mt-40 flex flex-col items-center rounded-md text-center">
-              <h1>You have no Lists created</h1>
-              <p className="mt-8">
-                To create your first lists and any future lists click the {"+"}{" "}
-                in the bottom right hand corner
-              </p>
-              <p className="mt-8">Then select the option {"Add List"}</p>
-            </div>
-          ) : (
-            <div className="z-0 m-2 flex flex-col items-center rounded-md text-black ">
-              <ul className="w-5/6 pt-2 ">
-                {/* New List Tab Module: Start */}
-                <div className="mt-8 flex flex-wrap">
-                  <div className="w-full">
-                    <ul
-                      className="mb-0 flex list-none flex-row flex-wrap pt-3 pb-4"
-                      role="tablist"
-                    >
-                      <li className="-mb-px mr-2 flex-auto text-center last:mr-0">
-                        <a
-                          className={
-                            "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                            (openTab === 1
-                              ? "bg-blue-600 text-white"
-                              : "bg-white text-blue-600")
-                          }
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setOpenTab(1);
-                          }}
-                          data-toggle="tab"
-                          href="#link1"
-                          role="tablist"
+          <div className="z-0 m-2 flex flex-col items-center rounded-md text-black ">
+            <ul className="w-5/6 pt-2 ">
+              {/* New List Tab Module: Start */}
+              <div className="mt-8 flex flex-wrap">
+                <div className="w-full">
+                  <ul
+                    className="mb-0 flex list-none flex-row flex-wrap pt-3 pb-4"
+                    role="tablist"
+                  >
+                    <li className="-mb-px mr-2 flex-auto text-center last:mr-0">
+                      <a
+                        className={
+                          "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                          (openTab === 1
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-blue-600")
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setOpenTab(1);
+                        }}
+                        data-toggle="tab"
+                        href="#link1"
+                        role="tablist"
+                      >
+                        My Lists
+                      </a>
+                    </li>
+                    <li className="-mb-px mr-2 flex-auto text-center last:mr-0">
+                      <a
+                        className={
+                          "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                          (openTab === 2
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-blue-600")
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setOpenTab(2);
+                        }}
+                        data-toggle="tab"
+                        href="#link2"
+                        role="tablist"
+                      >
+                        Received Lists
+                      </a>
+                    </li>
+                    <li className="-mb-px mr-2 flex-auto text-center last:mr-0">
+                      <a
+                        className={
+                          "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                          (openTab === 3
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-blue-600")
+                        }
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setOpenTab(3);
+                        }}
+                        data-toggle="tab"
+                        href="#link3"
+                        role="tablist"
+                      >
+                        Sent Lists
+                      </a>
+                    </li>
+                  </ul>
+                  <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded bg-white shadow-lg">
+                    <div className="flex-auto px-4 py-5">
+                      <div className="tab-content tab-space">
+                        {/*Tab 1 Selected*/}
+                        <div
+                          className={openTab === 1 ? "block" : "hidden"}
+                          id="link1"
                         >
-                          My Lists
-                        </a>
-                      </li>
-                      <li className="-mb-px mr-2 flex-auto text-center last:mr-0">
-                        <a
-                          className={
-                            "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                            (openTab === 2
-                              ? "bg-blue-600 text-white"
-                              : "bg-white text-blue-600")
-                          }
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setOpenTab(2);
-                          }}
-                          data-toggle="tab"
-                          href="#link2"
-                          role="tablist"
-                        >
-                          Received Lists
-                        </a>
-                      </li>
-                      <li className="-mb-px mr-2 flex-auto text-center last:mr-0">
-                        <a
-                          className={
-                            "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                            (openTab === 3
-                              ? "bg-blue-600 text-white"
-                              : "bg-white text-blue-600")
-                          }
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setOpenTab(3);
-                          }}
-                          data-toggle="tab"
-                          href="#link3"
-                          role="tablist"
-                        >
-                          Sent Lists
-                        </a>
-                      </li>
-                    </ul>
-                    <div className="relative mb-6 flex w-full min-w-0 flex-col break-words rounded bg-white shadow-lg">
-                      <div className="flex-auto px-4 py-5">
-                        <div className="tab-content tab-space">
-                          {/*Tab 1 Selected*/}
-                          <div
-                            className={openTab === 1 ? "block" : "hidden"}
-                            id="link1"
-                          >
-                            {createdFilteredArchivedLists === undefined ||
-                            createdFilteredArchivedLists?.length === 0 ? (
-                              <div className="z-0 m-2 mt-40 flex flex-col items-center rounded-md text-center">
-                                <h1>You have no Lists created</h1>
-                                <p className="mt-8">
-                                  To create your first lists and any future
-                                  lists click the {"+"} in the bottom right hand
-                                  corner
-                                </p>
-                                <p className="mt-8">
-                                  Then select the option {"Add List"}
-                                </p>
-                              </div>
-                            ) : (
-                              <div className="container relative z-0 h-full items-center">
-                                {/* Display UserClassicLists Module: Starts*/}
-                                {createdFilteredArchivedLists &&
-                                userListsOpen ? (
-                                  <div>
-                                    {createdFilteredArchivedLists.map(
-                                      (list, index) => (
-                                        <div
-                                          className="relative mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
+                          {createdFilteredArchivedLists === undefined ||
+                          createdFilteredArchivedLists?.length === 0 ? (
+                            <div className="z-0 flex flex-col items-center rounded-md text-center">
+                              <h1>You have no Lists created</h1>
+                              <p className="mt-8">
+                                To create your first lists and any future lists
+                                click the {"+"} in the bottom right hand corner
+                              </p>
+                              <p className="mt-8">
+                                Then select the option {"Add List"}
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="container relative z-0 h-full items-center">
+                              {/* Display UserClassicLists Module: Starts*/}
+                              {createdFilteredArchivedLists && userListsOpen ? (
+                                <div>
+                                  {createdFilteredArchivedLists.map(
+                                    (list, index) => (
+                                      <div
+                                        className="relative mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
+                                        key={index}
+                                      >
+                                        <button className="relative flex h-10 w-10 items-center  p-2">
+                                          <HiOutlineChevronRight
+                                            //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
+                                            className="h-4 w-4"
+                                            // onClick={() => {
+                                            //   toggleSubMenu(index, subMenuIndexes);
+                                            // }
+                                          />
+                                        </button>
+                                        <Link
+                                          href={`/lists/${encodeURIComponent(
+                                            list.id
+                                          )}`}
                                           key={index}
+                                          onClick={() =>
+                                            setActiveListFunction(
+                                              createdFilteredArchivedLists[
+                                                index
+                                              ]!
+                                            )
+                                          }
+                                          className="h-full w-full "
                                         >
-                                          <button className="relative flex h-10 w-10 items-center  p-2">
-                                            <HiOutlineChevronRight
-                                              //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
-                                              className="h-4 w-4"
-                                              // onClick={() => {
-                                              //   toggleSubMenu(index, subMenuIndexes);
-                                              // }
-                                            />
-                                          </button>
-                                          <Link
-                                            href={`/lists/${encodeURIComponent(
-                                              list.id
-                                            )}`}
-                                            key={index}
-                                            onClick={() =>
-                                              setActiveListFunction(
-                                                createdFilteredArchivedLists[
-                                                  index
-                                                ]!
-                                              )
-                                            }
-                                            className="h-full w-full "
-                                          >
-                                            {list.title}
-                                          </Link>
+                                          {list.title}
+                                        </Link>
 
-                                          {/* DropDown: Begin */}
-                                          <div className="dropdown-left dropdown">
-                                            <label
-                                              tabIndex={0}
-                                              className="btn m-1"
+                                        {/* DropDown: Begin */}
+                                        <div className="dropdown-left dropdown">
+                                          <label
+                                            tabIndex={0}
+                                            className="btn m-1"
+                                          >
+                                            ...
+                                          </label>
+                                          <ul
+                                            tabIndex={0}
+                                            className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
+                                          >
+                                            <li
+                                              className="p-1 "
+                                              onClick={() =>
+                                                console.log("Share")
+                                              }
                                             >
-                                              ...
-                                            </label>
-                                            <ul
-                                              tabIndex={0}
-                                              className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
+                                              Share
+                                            </li>
+                                            <li
+                                              className="p-1"
+                                              // onClick={() => console.log("Trash: ", list.id, list.userId)}
+                                              onClick={
+                                                async () =>
+                                                  ArchiveList({
+                                                    listId: list.id,
+                                                    userId: list.userId,
+                                                    archiveStatus: "trash",
+                                                  })
+                                                // set reQuery to ture
+                                              }
                                             >
-                                              <li
-                                                className="p-1 "
-                                                onClick={() =>
-                                                  console.log("Share")
-                                                }
-                                              >
-                                                Share
-                                              </li>
-                                              <li
-                                                className="p-1"
-                                                // onClick={() => console.log("Trash: ", list.id, list.userId)}
-                                                onClick={
-                                                  async () =>
-                                                    ArchiveList({
-                                                      listId: list.id,
-                                                      userId: list.userId,
-                                                      archiveStatus: "trash",
-                                                    })
-                                                  // set reQuery to ture
-                                                }
-                                              >
-                                                Trash
-                                              </li>
-                                            </ul>
-                                          </div>
-                                          {/* DropDown: End */}
+                                              Trash
+                                            </li>
+                                          </ul>
                                         </div>
-                                      )
-                                    )}
-                                  </div>
-                                ) : (
-                                  <div></div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                          {/* Display UserClassicLists Module: Ends*/}
-                          {/*Tab 2 Selected*/}
-                          <div
-                            className={openTab === 2 ? "block" : "hidden"}
-                            id="link2"
-                          >
-                            {receivedFilteredArchivedLists === undefined ||
-                            receivedFilteredArchivedLists?.length === 0 ? (
-                              <div className="z-0 m-2 mt-40 flex flex-col items-center rounded-md text-center">
-                                <h1>You have received no lists :sad:</h1>
-                                <p className="mt-8">
-                                  To create your first lists and any future
-                                  lists click the {"+"} in the bottom right hand
-                                  corner
-                                </p>
-                                <p className="mt-8">
-                                  Then select the option {"Add List"}
-                                </p>
-                              </div>
-                            ) : (
-                              <div className="container relative z-0 h-full items-center">
-                                {/* Display UserClassicLists Module: Starts*/}
-                                {receivedFilteredArchivedLists &&
-                                userListsOpen ? (
-                                  <div>
-                                    {receivedFilteredArchivedLists.map(
-                                      (list, index) => (
-                                        <div
-                                          className="relative mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
+                                        {/* DropDown: End */}
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              ) : (
+                                <div></div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        {/* Display UserClassicLists Module: Ends*/}
+                        {/*Tab 2 Selected*/}
+                        <div
+                          className={openTab === 2 ? "block" : "hidden"}
+                          id="link2"
+                        >
+                          {receivedFilteredArchivedLists === undefined ||
+                          receivedFilteredArchivedLists?.length === 0 ? (
+                            <div className="z-0 flex flex-col items-center rounded-md text-center">
+                              <h1>You have received no lists :sad:</h1>
+                              <p className="mt-8">
+                                To create your first lists and any future lists
+                                click the {"+"} in the bottom right hand corner
+                              </p>
+                              <p className="mt-8">
+                                Then select the option {"Add List"}
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="container relative z-0 h-full items-center">
+                              {/* Display UserClassicLists Module: Starts*/}
+                              {receivedFilteredArchivedLists &&
+                              userListsOpen ? (
+                                <div>
+                                  {receivedFilteredArchivedLists.map(
+                                    (list, index) => (
+                                      <div
+                                        className="relative mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
+                                        key={index}
+                                      >
+                                        <button className="relative flex h-10 w-10 items-center  p-2">
+                                          <HiOutlineChevronRight
+                                            //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
+                                            className="h-4 w-4"
+                                            // onClick={() => {
+                                            //   toggleSubMenu(index, subMenuIndexes);
+                                            // }
+                                          />
+                                        </button>
+                                        <Link
+                                          href={`/lists/${encodeURIComponent(
+                                            list.id
+                                          )}`}
                                           key={index}
+                                          onClick={() =>
+                                            setActiveListFunction(
+                                              receivedFilteredArchivedLists[
+                                                index
+                                              ]!
+                                            )
+                                          }
+                                          className="h-full w-full "
                                         >
-                                          <button className="relative flex h-10 w-10 items-center  p-2">
-                                            <HiOutlineChevronRight
-                                              //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
-                                              className="h-4 w-4"
-                                              // onClick={() => {
-                                              //   toggleSubMenu(index, subMenuIndexes);
-                                              // }
-                                            />
-                                          </button>
-                                          <Link
-                                            href={`/lists/${encodeURIComponent(
-                                              list.id
-                                            )}`}
-                                            key={index}
-                                            onClick={() =>
-                                              setActiveListFunction(
-                                                receivedFilteredArchivedLists[
-                                                  index
-                                                ]!
-                                              )
-                                            }
-                                            className="h-full w-full "
-                                          >
-                                            {list.title}
-                                          </Link>
+                                          {list.title}
+                                        </Link>
 
-                                          {/* DropDown: Begin */}
-                                          <div className="dropdown-left dropdown">
-                                            <label
-                                              tabIndex={0}
-                                              className="btn m-1"
+                                        {/* DropDown: Begin */}
+                                        <div className="dropdown-left dropdown">
+                                          <label
+                                            tabIndex={0}
+                                            className="btn m-1"
+                                          >
+                                            ...
+                                          </label>
+                                          <ul
+                                            tabIndex={0}
+                                            className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
+                                          >
+                                            <li
+                                              className="p-1 "
+                                              onClick={() =>
+                                                console.log("Share")
+                                              }
                                             >
-                                              ...
-                                            </label>
-                                            <ul
-                                              tabIndex={0}
-                                              className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
+                                              Share
+                                            </li>
+                                            <li
+                                              className="p-1"
+                                              // onClick={() => console.log("Trash: ", list.id, list.userId)}
+                                              onClick={
+                                                async () =>
+                                                  ArchiveList({
+                                                    listId: list.id,
+                                                    userId: list.userId,
+                                                    archiveStatus: "trash",
+                                                  })
+                                                // set reQuery to ture
+                                              }
                                             >
-                                              <li
-                                                className="p-1 "
-                                                onClick={() =>
-                                                  console.log("Share")
-                                                }
-                                              >
-                                                Share
-                                              </li>
-                                              <li
-                                                className="p-1"
-                                                // onClick={() => console.log("Trash: ", list.id, list.userId)}
-                                                onClick={
-                                                  async () =>
-                                                    ArchiveList({
-                                                      listId: list.id,
-                                                      userId: list.userId,
-                                                      archiveStatus: "trash",
-                                                    })
-                                                  // set reQuery to ture
-                                                }
-                                              >
-                                                Trash
-                                              </li>
-                                            </ul>
-                                          </div>
-                                          {/* DropDown: End */}
+                                              Trash
+                                            </li>
+                                          </ul>
                                         </div>
-                                      )
-                                    )}
-                                  </div>
-                                ) : (
-                                  <div></div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                          {/*Tab 3 Selected*/}
-                          <div
-                            className={openTab === 3 ? "block" : "hidden"}
-                            id="link3"
-                          >
-                            <p>
-                              Efficiently unleash cross-media information
-                              without cross-media value. Quickly maximize timely
-                              deliverables for real-time schemas.
-                              <br />
-                              <br /> Dramatically maintain clicks-and-mortar
-                              solutions without functional solutions.
-                            </p>
-                          </div>
+                                        {/* DropDown: End */}
+                                      </div>
+                                    )
+                                  )}
+                                </div>
+                              ) : (
+                                <div></div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        {/*Tab 3 Selected*/}
+                        <div
+                          className={openTab === 3 ? "block" : "hidden"}
+                          id="link3"
+                        >
+                          <p>
+                            Efficiently unleash cross-media information without
+                            cross-media value. Quickly maximize timely
+                            deliverables for real-time schemas.
+                            <br />
+                            <br /> Dramatically maintain clicks-and-mortar
+                            solutions without functional solutions.
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </ul>
-            </div>
-          )}
+              </div>
+            </ul>
+          </div>
         </div>
-
-        {/* Counter Slice Redux Example: Start */}
-        {/* <div className="flex flex-col items-center">
-        <h1>{count}</h1>
-        <button
-          className="mt-2 w-40 bg-green-900/80"
-          onClick={() => dispatch(increment())}
-        >
-          +
-        </button>
-        <button
-          className="mt-2 w-40 bg-red-900/80"
-          onClick={() => dispatch(decrement())}
-        >
-          -
-        </button>
-      </div> */}
-        {/*  Counter Slice Redux Example: End */}
         <div className="absolute bottom-0 z-40 flex w-full flex-col text-center">
           <FooterNav />
         </div>
