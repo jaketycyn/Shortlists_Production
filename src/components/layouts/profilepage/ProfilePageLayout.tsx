@@ -34,7 +34,7 @@ const ProfilePageLayout: NextPage = () => {
 
   //search Function
   const [searchInput, setSearchInput] = useState("");
-  const [filteredResults, setFilteredResults] = useState([]);
+  const [filteredResults, setFilteredResults] = useState<any>([]);
 
   const searchUsers = (searchValue: string) => {
     setSearchInput(searchValue);
@@ -50,6 +50,7 @@ const ProfilePageLayout: NextPage = () => {
           .includes(searchInput.toLowerCase());
       });
       //console.log("filteredUsers: ", filteredUsers);
+
       setFilteredResults(filteredUsers);
       //console.log("setFilteredResults: ", filteredResults);
     } else {
