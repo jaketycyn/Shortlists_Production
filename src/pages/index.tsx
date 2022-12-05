@@ -14,7 +14,7 @@ const Home: NextPage = () => {
   const { data: session, status } = useSession();
 
   const HomepageLayoutComponent = dynamic(
-    async () => await import("./../components/layouts/homepage/HomePageLayout"),
+    async () => await import("../components/layouts/homepage/HomePageLayout"),
     {
       ssr: false,
     }
