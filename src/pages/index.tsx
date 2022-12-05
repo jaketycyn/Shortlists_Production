@@ -4,6 +4,7 @@ import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
+import HomePageLayout from "../components/layouts/homepage/HomePageLayout";
 import LoginForm from "../components/Loginform";
 import { useAppDispatch } from "../hooks/useTypedSelector";
 import { setActiveList } from "../slices/listSlice";
@@ -13,12 +14,12 @@ import { trpc } from "../utils/trpc";
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
 
-  const HomepageLayoutComponent = dynamic(
-    async () => await import("../components/layouts/homepage/HomePageLayout"),
-    {
-      ssr: false,
-    }
-  );
+  // const HomepageLayoutComponent = dynamic(
+  //   async () => await import("../components/layouts/homepage/HomePageLayout"),
+  //   {
+  //     ssr: false,
+  //   }
+  // );
   // console.log("session: ", session);
   // console.log("status: ", status);
   //const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
@@ -40,7 +41,7 @@ const Home: NextPage = () => {
 
       <main className="h-screen">
         {session ? (
-          <HomepageLayoutComponent />
+          <HomePageLayout />
         ) : (
           <div className="">
             <LoginForm />
