@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Image from "next/image";
+import React, { useRef } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -24,44 +25,80 @@ const ProfilePageLayout: NextPage = () => {
   //console.log("foundUsers: ", foundUsers);
   //store all Users in DB
 
-  const { handleSubmit, register } = useForm<any>();
+  const { handleSubmit, register, watch } = useForm<any>({
+    defaultValues: {
+      friendIdentifier: "",
+    },
+  });
 
   useEffect(() => {
     if (foundUsers) {
       const users = foundUsers.results;
       dispatch(setUsers(users));
     }
-  }, [dispatch]);
+  }, [dispatch, []]);
   //search function using Stored Users to Display
 
   //search Function
   const [searchInput, setSearchInput] = useState("");
   const [filteredResults, setFilteredResults] = useState<any>([]);
 
-  const searchUsers = (searchValue: string) => {
-    setSearchInput(searchValue);
-    console.log("searchInput: ", searchInput);
-    //filtering users based on Search Input
-    //?Possible way to exclude the ID portion of this filtering just to prevent fishing for IDs from search maybe?
+  // Debounce Search Users Input
+  type Timer = ReturnType<typeof setTimeout>;
+  //type SomeFunction = (...args: any[]) => void;
 
-    if (searchInput !== "") {
+  function useDebounce<T>(value: T, delay: number): T {
+    const timer = useRef<T>();
+
+    //TODO: might need to change UseState to a ref to handle react batching
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+    useEffect(
+      () => {
+        // Update debounced value after delay
+        const handler = setTimeout(() => {
+          setDebouncedValue(value);
+        }, delay);
+        // Cancel the timeout if value changes (also on delay change or unmount)
+        // This is how we prevent debounced value from updating if value is changed ...
+        // .. within the delay period. Timeout gets cleared and restarted.
+        return () => {
+          clearTimeout(handler);
+        };
+      },
+      [value, delay] // Only re-call effect if value or delay changes
+    );
+
+    return debouncedValue;
+  }
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const debouncedSearchTerm: string = useDebounce<string>(searchTerm, 500);
+
+  console.log("debouncedSearchTerm: ", debouncedSearchTerm);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
       const filteredUsers = users?.filter((user) => {
         return Object.values(user)
           .join("")
           .toLowerCase()
-          .includes(searchInput.toLowerCase());
+          .includes(debouncedSearchTerm.toLowerCase());
       });
-      //console.log("filteredUsers: ", filteredUsers);
 
       setFilteredResults(filteredUsers);
-      //console.log("setFilteredResults: ", filteredResults);
+      console.log("filteredUsers: ", filteredUsers);
+
+      //searchdata
     } else {
       setFilteredResults([]);
     }
-  };
+  }, [debouncedSearchTerm]);
 
   const currentUser = users?.filter((i) => i.id === session?.user?.id);
   //console.log("currentUser: ", currentUser);
+  const onSubmit = (data: any) => console.log(data);
+
   return (
     <>
       <div className="flex h-screen w-full flex-col justify-between">
@@ -155,7 +192,7 @@ const ProfilePageLayout: NextPage = () => {
           {/* Friendslist/Finder Section */}
           <div>
             <ul className="mt-2 mb-2 divide-y-8 divide-gray-200">
-              <form onSubmit={() => console.log("submitting")}>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="relative flex flex-col">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <svg
@@ -178,18 +215,14 @@ const ProfilePageLayout: NextPage = () => {
                     id="friend-search"
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 "
                     placeholder="Search for Friends..."
-                    {...register("test", {
-                      onChange: (e) => {
-                        searchUsers(e.target.value);
-                      },
-                    })}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
-                  <button
+                  {/* <button
                     type="submit"
                     className="absolute right-2.5 bottom-2.5 rounded-lg bg-black/80 px-4 py-2 text-sm font-medium text-white"
                   >
                     Search
-                  </button>
+                  </button> */}
                 </div>
                 {/* Display Users from Search */}
                 <div>
@@ -228,6 +261,16 @@ const ProfilePageLayout: NextPage = () => {
                                 </p>
                                 {/* <p className="truncate text-sm ">{user.status}</p> */}
                               </div>
+
+                              <button
+                                className="mr-1 mb-1 rounded bg-pink-500 px-4 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                type="button"
+                                onClick={() =>
+                                  console.log("friendRequest CLicked")
+                                }
+                              >
+                                Send Request
+                              </button>
                             </li>
                           </div>
                         ))}
@@ -239,7 +282,7 @@ const ProfilePageLayout: NextPage = () => {
               {/* Display All Users - Will change to friends later */}
               <h1 className="text-xl">Friends</h1>
               <div>
-                {users ? (
+                {users?.length === 0 ? (
                   <div className="flex flex-col">
                     <ul className="divide-y divide-gray-200">
                       {users.map((user, key) => (
