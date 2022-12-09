@@ -273,10 +273,16 @@ const HomePageLayout: NextPage = () => {
                       <div className="flex h-3/5 w-full flex-col">
                         <div className="z-0 flex flex-col items-center rounded-md text-center">
                           <h1>You have received no lists :sad:</h1>
-                          <p className="mt-8">Make Friends Loser</p>
                           <p className="mt-8">
-                            Maybe send them a list and they will send you one
+                            Make some friends and have them send you a list
+                          </p>
+                          <p className="mt-8">
+                            Or send them a list and maybe they will send you one
                             back
+                          </p>
+                          <p className="mt-8">
+                            Use the profile section in the bottom right to find
+                            and add friends
                           </p>
                         </div>
                       </div>
