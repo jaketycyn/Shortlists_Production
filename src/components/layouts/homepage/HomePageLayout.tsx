@@ -284,6 +284,11 @@ const HomePageLayout: NextPage = () => {
                             Use the profile section in the bottom right to find
                             and add friends
                           </p>
+                          <p className="mt-8">
+                            If you are looking for a friend send a list to
+                            Bob@gmail.com. He loves being sent new lists and may
+                            send you one back.
+                          </p>
                         </div>
                       </div>
                     ) : (
@@ -369,7 +374,10 @@ const HomePageLayout: NextPage = () => {
                     className={openTab === 3 ? "block" : "hidden"}
                     id="link3"
                   >
-                    <p>Sent Lists Placeholder Text</p>
+                    <div>
+                      <p>You have not sent any lists to anybody</p>
+                      <p>Send a list to a friend to see it here</p>
+                    </div>
                   </div>
                 </div>
               </div>
