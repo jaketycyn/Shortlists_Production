@@ -97,7 +97,6 @@ const ProfilePageLayout: NextPage = () => {
 
   const currentUser = users?.filter((i) => i.id === session?.user?.id);
   //console.log("currentUser: ", currentUser);
-  const onSubmit = (data: any) => console.log(data);
 
   return (
     <>
@@ -192,7 +191,7 @@ const ProfilePageLayout: NextPage = () => {
           {/* Friendslist/Finder Section */}
           <div>
             <ul className="mt-2 mb-2 divide-y-8 divide-gray-200">
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form>
                 <div className="relative flex flex-col">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                     <svg
