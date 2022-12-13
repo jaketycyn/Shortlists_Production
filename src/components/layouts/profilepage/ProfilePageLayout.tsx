@@ -79,7 +79,7 @@ const ProfilePageLayout: NextPage = () => {
 
   useEffect(() => {
     if (debouncedSearchTerm) {
-      const filteredUsers = users?.filter((user) => {
+      const filteredUsers = usersNotCurrent?.filter((user) => {
         return Object.values(user)
           .join("")
           .toLowerCase()
@@ -96,7 +96,15 @@ const ProfilePageLayout: NextPage = () => {
   }, [debouncedSearchTerm]);
 
   const currentUser = users?.filter((i) => i.id === session?.user?.id);
-  //console.log("currentUser: ", currentUser);
+  const usersNotCurrent = users?.filter((i) => i.id !== session?.user?.id);
+
+  console.log("currentUser: ", currentUser);
+  //console.log("users: ", users);
+  //console.log("usersNotCurrent: ", usersNotCurrent);
+
+  const sendFriendRequestFunction = () => {
+    console.log("friendRequest CLicked");
+  };
 
   return (
     <>
@@ -264,9 +272,7 @@ const ProfilePageLayout: NextPage = () => {
                               <button
                                 className="mr-1 mb-1 rounded bg-pink-500 px-4 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
                                 type="button"
-                                onClick={() =>
-                                  console.log("friendRequest CLicked")
-                                }
+                                onClick={() => sendFriendRequestFunction()}
                               >
                                 Send Request
                               </button>
