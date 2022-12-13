@@ -98,12 +98,19 @@ const ProfilePageLayout: NextPage = () => {
   const currentUser = users?.filter((i) => i.id === session?.user?.id);
   const usersNotCurrent = users?.filter((i) => i.id !== session?.user?.id);
 
-  console.log("currentUser: ", currentUser);
+  //console.log("currentUser: ", currentUser);
   //console.log("users: ", users);
   //console.log("usersNotCurrent: ", usersNotCurrent);
 
-  const sendFriendRequestFunction = () => {
+  const sendFriendRequestFunction = (targetUser: any) => {
+    //button fired
     console.log("friendRequest CLicked");
+    //using info of user from search send status update to database with currentUser.id & targetUser.id
+    console.log("targetUser:", targetUser);
+
+    //await response and use status string change to "requested" to update button && use "friend" status as a way of demonstrating someone cannot send another request
+
+    //also prevent subsequent sends/disable button if requested already exists - will need to add a side area for demonstrating outgoing friend requests
   };
 
   return (
@@ -272,7 +279,7 @@ const ProfilePageLayout: NextPage = () => {
                               <button
                                 className="mr-1 mb-1 rounded bg-pink-500 px-4 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
                                 type="button"
-                                onClick={() => sendFriendRequestFunction()}
+                                onClick={() => sendFriendRequestFunction(user)}
                               >
                                 Send Request
                               </button>
