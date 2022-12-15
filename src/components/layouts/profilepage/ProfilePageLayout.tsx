@@ -13,6 +13,7 @@ import {
   useAppSelector,
 } from "../../../hooks/useTypedSelector";
 import { setUsers } from "../../../slices/usersSlice";
+import { User } from "@prisma/client";
 
 const ProfilePageLayout: NextPage = () => {
   const { data: session, status } = useSession();
@@ -107,8 +108,6 @@ const ProfilePageLayout: NextPage = () => {
   const { mutateAsync: mutateSendFriendRequest } =
     trpc.friendship.sendFriendRequest.useMutation();
 
-  const { data } = trpc.friendship.getFriendships.useQuery();
-  console.log("data from Friendships: ", data);
   const sendFriendRequestFunction = async (targetUserId: any) => {
     //button fired
     console.log("friendRequest CLicked");
@@ -117,6 +116,7 @@ const ProfilePageLayout: NextPage = () => {
 
     try {
       const result = await mutateSendFriendRequest(targetUserId);
+      refetchFriendships();
       console.log("message:", result.message);
       console.log("result:", result.results);
     } catch (err) {
@@ -126,6 +126,29 @@ const ProfilePageLayout: NextPage = () => {
 
     //also prevent subsequent sends/disable button if requested already exists - will need to add a side area for demonstrating outgoing friend requests
   };
+
+  //getFriendShipQuery
+  const { data: friendshipData, refetch: refetchFriendships } =
+    trpc.friendship.getFriendships.useQuery();
+  console.log("data from Friendships: ", friendshipData);
+  const friendshipExist = true;
+
+  const friendshipExistFunction = (userId: string) => {
+    const status = friendshipData?.results.filter(
+      (user) => user.senderId === userId || user.receiverId === userId
+    );
+    console.log("status: ", status);
+    if (status?.length === 1) {
+      if (status[0]?.status === "pending") {
+        const response = "added";
+        return response;
+      }
+      if (status[0]?.status === "friend") {
+      }
+      return false;
+    }
+  };
+  //store friendships in redux store
 
   return (
     <>
@@ -297,7 +320,31 @@ const ProfilePageLayout: NextPage = () => {
                                   sendFriendRequestFunction(user.id)
                                 }
                               >
-                                Send Request
+                                {(() => {
+                                  const id = user.id;
+
+                                  const status = friendshipData?.results.filter(
+                                    (u) =>
+                                      u.senderId === id || u.receiverId === id
+                                  );
+
+                                  const friendShipStatus = "test";
+                                  console.log("status: ", status);
+                                  if (status?.length === 1) {
+                                    if (status[0]?.status === "pending") {
+                                      const friendShipStatus = "pending";
+                                      return friendShipStatus;
+                                    }
+                                    if (status[0]?.status === "friend") {
+                                      const friendShipStatus = "friend";
+                                      return friendShipStatus;
+                                    }
+                                  }
+
+                                  //const friendShipStatus = "friend";
+
+                                  return <p>{friendShipStatus}</p>;
+                                })()}
                               </button>
                             </li>
                           </div>
