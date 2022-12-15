@@ -282,44 +282,39 @@ const ProfilePageLayout: NextPage = () => {
                       <ul className="divide-y divide-gray-200">
                         {filteredResults.map((user: any, key: any) => (
                           <div className="" key={key}>
-                            <li className="flex flex-row items-center py-3 sm:py-4">
-                              <div className="mr-2 flex-shrink-0">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth={1.5}
-                                  stroke="currentColor"
-                                  className="h-6 w-6"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                                  />
-                                </svg>
+                            <li className="grid grid-cols-7 grid-rows-1 items-center py-3 sm:py-4">
+                              <div className="col-span-5 col-start-1 row-start-1 flex flex-row">
+                                <div className="row-start-1 mr-2 flex-shrink-0">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="h-6 w-6"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                  </svg>
 
-                                {/* 
+                                  {/* 
                         Image Placeholder
                       <Image className="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image"> */}
+                                </div>
+                                <div className=" row-start-1 min-w-0 flex-1 ">
+                                  <p className="truncate text-sm font-medium ">
+                                    {user.username}
+                                  </p>
+                                  <p className="truncate text-sm ">
+                                    {user.email}
+                                  </p>
+                                  {/* <p className="truncate text-sm ">{user.status}</p> */}
+                                </div>
                               </div>
-                              <div className="min-w-0 flex-1">
-                                <p className="truncate text-sm font-medium ">
-                                  {user.username}
-                                </p>
-                                <p className="truncate text-sm ">
-                                  {user.email}
-                                </p>
-                                {/* <p className="truncate text-sm ">{user.status}</p> */}
-                              </div>
-
-                              <button
-                                className="mr-1 mb-1 rounded bg-pink-500 px-4 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
-                                type="button"
-                                onClick={() =>
-                                  sendFriendRequestFunction(user.id)
-                                }
-                              >
+                              <div className="col-span-2 col-end-7 row-start-1">
                                 {(() => {
                                   const id = user.id;
 
@@ -328,24 +323,75 @@ const ProfilePageLayout: NextPage = () => {
                                       u.senderId === id || u.receiverId === id
                                   );
 
-                                  const friendShipStatus = "test";
+                                  const friendShipStatus = "Add";
                                   console.log("status: ", status);
                                   if (status?.length === 1) {
                                     if (status[0]?.status === "pending") {
-                                      const friendShipStatus = "pending";
-                                      return friendShipStatus;
+                                      //check pending to see if current user is receiver or sender to determine button
+
+                                      if (status[0]?.receiverId === id) {
+                                        const friendShipStatus = "pending";
+                                        return (
+                                          <button
+                                            className="mr-1 mb-1 h-full w-full rounded bg-black/30 px-4 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                            type="button"
+                                            disabled
+                                            onClick={() =>
+                                              sendFriendRequestFunction(user.id)
+                                            }
+                                          >
+                                            <p>{friendShipStatus}</p>
+                                          </button>
+                                        );
+                                      }
+                                      if (status[0]?.senderId === id) {
+                                        const friendShipStatus = "accept";
+                                        return (
+                                          <button
+                                            className="mr-1 mb-1 h-full w-full rounded bg-black/30 px-4 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-green-600"
+                                            type="button"
+                                            onClick={() =>
+                                              console.log(
+                                                "accept friend request"
+                                              )
+                                            }
+                                          >
+                                            <p>{friendShipStatus}</p>
+                                          </button>
+                                        );
+                                      }
                                     }
                                     if (status[0]?.status === "friend") {
                                       const friendShipStatus = "friend";
-                                      return friendShipStatus;
+                                      return (
+                                        <button
+                                          className="mr-1 mb-1 h-full w-full rounded bg-black/70 px-4 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                          type="button"
+                                          disabled
+                                          //can add redirect maybe in future for friend
+                                          onClick={() =>
+                                            sendFriendRequestFunction(user.id)
+                                          }
+                                        >
+                                          <p>{friendShipStatus}</p>
+                                        </button>
+                                      );
                                     }
                                   }
-
                                   //const friendShipStatus = "friend";
-
-                                  return <p>{friendShipStatus}</p>;
+                                  return (
+                                    <button
+                                      className="mr-1 mb-1 h-full w-full rounded bg-black px-4 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                      type="button"
+                                      onClick={() =>
+                                        sendFriendRequestFunction(user.id)
+                                      }
+                                    >
+                                      <p>{friendShipStatus}</p>
+                                    </button>
+                                  );
                                 })()}
-                              </button>
+                              </div>
                             </li>
                           </div>
                         ))}
