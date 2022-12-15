@@ -67,7 +67,9 @@ const HomePageLayout: NextPage = () => {
       console.log("result: ", result);
       console.log("itemResult: ", itemResult);
       refetch();
-    } catch (error) {}
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   //filtering out lists in Redux with archive set as "archive" these will be displayed in a trash bin for permanent deletion later

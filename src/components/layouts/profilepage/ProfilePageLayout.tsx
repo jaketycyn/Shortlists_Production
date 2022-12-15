@@ -20,10 +20,12 @@ const ProfilePageLayout: NextPage = () => {
   const dispatch = useAppDispatch();
   const { users } = useAppSelector((state) => state.user);
 
-  //query to Get All Users in DB
+  //query to Get All Users in DB - users stored in Redux through useEffect below
   const { data: foundUsers } = trpc.user.getAllUsers.useQuery();
   //console.log("foundUsers: ", foundUsers);
-  //store all Users in DB
+
+  //query to Get All currentUsers relationships in DB - relationships stored in Redux through useEffect below
+  //TODO: setting in Redux State usersRelationships for buttons/display
 
   const { handleSubmit, register, watch } = useForm<any>({
     defaultValues: {
@@ -32,10 +34,12 @@ const ProfilePageLayout: NextPage = () => {
   });
 
   useEffect(() => {
+    //setting in Redux State users for searching
     if (foundUsers) {
       const users = foundUsers.results;
       dispatch(setUsers(users));
     }
+    //TODO: setting in Redux State usersRelationships for buttons/display
   }, [dispatch, []]);
   //search function using Stored Users to Display
 
@@ -74,8 +78,7 @@ const ProfilePageLayout: NextPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const debouncedSearchTerm: string = useDebounce<string>(searchTerm, 500);
-
-  console.log("debouncedSearchTerm: ", debouncedSearchTerm);
+  //console.log("debouncedSearchTerm: ", debouncedSearchTerm);
 
   useEffect(() => {
     if (debouncedSearchTerm) {
@@ -101,13 +104,24 @@ const ProfilePageLayout: NextPage = () => {
   //console.log("currentUser: ", currentUser);
   //console.log("users: ", users);
   //console.log("usersNotCurrent: ", usersNotCurrent);
+  const { mutateAsync: mutateSendFriendRequest } =
+    trpc.friendship.sendFriendRequest.useMutation();
 
-  const sendFriendRequestFunction = (targetUser: any) => {
+  const { data } = trpc.friendship.getFriendships.useQuery();
+  console.log("data from Friendships: ", data);
+  const sendFriendRequestFunction = async (targetUserId: any) => {
     //button fired
     console.log("friendRequest CLicked");
     //using info of user from search send status update to database with currentUser.id & targetUser.id
-    console.log("targetUser:", targetUser);
+    console.log("targetUser:", targetUserId);
 
+    try {
+      const result = await mutateSendFriendRequest(targetUserId);
+      console.log("message:", result.message);
+      console.log("result:", result.results);
+    } catch (err) {
+      console.error(err);
+    }
     //await response and use status string change to "requested" to update button && use "friend" status as a way of demonstrating someone cannot send another request
 
     //also prevent subsequent sends/disable button if requested already exists - will need to add a side area for demonstrating outgoing friend requests
@@ -279,7 +293,9 @@ const ProfilePageLayout: NextPage = () => {
                               <button
                                 className="mr-1 mb-1 rounded bg-pink-500 px-4 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
                                 type="button"
-                                onClick={() => sendFriendRequestFunction(user)}
+                                onClick={() =>
+                                  sendFriendRequestFunction(user.id)
+                                }
                               >
                                 Send Request
                               </button>
