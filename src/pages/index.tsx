@@ -39,11 +39,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head> */}
 
-      <main className="h-screen">
+      <main className="h-screen w-full">
         {session ? (
           <HomePageLayout />
         ) : (
-          <div className="">
+          <div className="h-screen w-full">
             <LoginForm />
           </div>
         )}

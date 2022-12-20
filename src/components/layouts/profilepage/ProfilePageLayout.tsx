@@ -155,7 +155,7 @@ const ProfilePageLayout: NextPage = () => {
     <>
       <div className="flex h-screen w-full flex-col justify-between">
         {/* Header Nav: Start */}
-        <header className="border-grey z-80 sticky top-0 grid h-14 w-full grid-cols-8 grid-rows-1 border-b p-4 text-center">
+        <header className="border-grey z-80 sticky top-0 grid h-14 w-full grid-cols-8 grid-rows-1 border-b bg-red-900 p-4 text-center">
           {/* Back button - Home page link */}
           <div className="col-start-1 row-start-1">
             {/* backpage route back to previous historical page I was on */}
@@ -581,9 +581,6 @@ const ProfilePageLayout: NextPage = () => {
               {/* <p>Sync Contacts (find people you know) button</p> */}
             </ul>
           </div>
-        </div>
-        <div>
-          <FooterNav />
         </div>
       </div>
     </>
