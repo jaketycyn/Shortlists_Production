@@ -155,7 +155,7 @@ const ProfilePageLayout: NextPage = () => {
     <>
       <div className="flex h-screen w-full flex-col justify-between">
         {/* Header Nav: Start */}
-        <header className="border-grey z-80 sticky top-0 grid h-14 w-full grid-cols-8 grid-rows-1 border-b bg-red-900 p-4 text-center">
+        <header className="border-grey z-80 sticky top-0 grid h-14 w-full grid-cols-8 grid-rows-1 border-b bg-gray-400 p-4 text-center">
           {/* Back button - Home page link */}
           <div className="col-start-1 row-start-1">
             {/* backpage route back to previous historical page I was on */}
@@ -290,7 +290,7 @@ const ProfilePageLayout: NextPage = () => {
               {/* Display Users with Friends Association */}
               <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
                 <ul
-                  className="mb-0 flex list-none flex-row  pb-4 "
+                  className="mr-2 mb-0 flex list-none flex-row pb-4"
                   role="tablist"
                 >
                   <li className="-mb-px mr-2  text-center last:mr-0">
