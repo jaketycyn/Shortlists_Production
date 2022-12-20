@@ -101,7 +101,7 @@ const HomePageLayout: NextPage = () => {
       transition={{ duration: 0.3 }}
       exit={{ x: -2000 }}
     >
-      <div className="flex h-screen flex-col justify-between ">
+      <div className="flex h-screen w-full flex-col justify-between ">
         <div>
           {/* userLists ({getLists.status}):{" "}
         <pre>{JSON.stringify(usersLists, null, 2)}</pre> */}
@@ -200,15 +200,6 @@ const HomePageLayout: NextPage = () => {
                                 className="mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
                                 key={index}
                               >
-                                <button className=" flex h-10 w-10 items-center  p-2">
-                                  <HiOutlineChevronRight
-                                    //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
-                                    className="h-4 w-4"
-                                    // onClick={() => {
-                                    //   toggleSubMenu(index, subMenuIndexes);
-                                    // }
-                                  />
-                                </button>
                                 <Link
                                   href={`/lists/${encodeURIComponent(list.id)}`}
                                   key={index}
@@ -217,9 +208,18 @@ const HomePageLayout: NextPage = () => {
                                       createdFilteredArchivedLists[index]!
                                     )
                                   }
-                                  className="h-full w-full "
+                                  className="flex h-full w-full flex-row items-center text-center"
                                 >
-                                  {list.title}
+                                  <button className=" flex h-10 w-10 items-center  p-2">
+                                    <HiOutlineChevronRight
+                                      //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
+                                      className="h-4 w-4"
+                                      // onClick={() => {
+                                      //   toggleSubMenu(index, subMenuIndexes);
+                                      // }
+                                    />
+                                  </button>
+                                  <h5 className="ml-4">{list.title}</h5>
                                 </Link>
 
                                 {/* DropDown: Begin */}
@@ -305,13 +305,7 @@ const HomePageLayout: NextPage = () => {
                                   key={index}
                                 >
                                   <button className=" flex h-10 w-10 items-center  p-2">
-                                    <HiOutlineChevronRight
-                                      //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
-                                      className="h-4 w-4"
-                                      // onClick={() => {
-                                      //   toggleSubMenu(index, subMenuIndexes);
-                                      // }
-                                    />
+                                    <HiOutlineChevronRight className="h-4 w-4" />
                                   </button>
                                   <Link
                                     href={`/lists/${encodeURIComponent(
