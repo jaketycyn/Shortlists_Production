@@ -471,7 +471,7 @@ const ProfilePageLayout: NextPage = () => {
                                           {/* <p className="truncate text-sm ">{user.status}</p> */}
                                         </div>
                                       </div>
-                                      <div className="col-span-2 col-end-7 row-start-1">
+                                      <div className="col-span-2 col-end-7 row-start-1 ml-8 w-full justify-end">
                                         {(() => {
                                           const id = user.id;
 
