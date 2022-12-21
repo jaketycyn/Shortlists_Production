@@ -151,7 +151,29 @@ const ProfilePageLayout: NextPage = () => {
   };
   //store friendships in redux store
 
+  //filter for friends, pending and incoming relationships
+
+  //friends
+  console.log("users: ", users);
+  const usersWithStatusFriend = friendshipData?.results.filter(
+    (u) => u.status === "friend"
+  );
+  console.log("usersWithStatusFriend: ", usersWithStatusFriend);
+
+  //const userFriends = users?.filter(u => u.id === )
+  //pending
+  const usersWithStatusPending = friendshipData?.results.filter(
+    (u) => u.status === "pending" && u.receiverId === session?.user?.id
+  );
+  console.log("usersWithStatusPending: ", usersWithStatusPending);
+  //requested
+
+  const usersWithStatusRequested = friendshipData?.results.filter(
+    (u) => u.status === "pending" && u.senderId === session?.user?.id
+  );
+  console.log("usersWithStatusRequested: ", usersWithStatusRequested);
   //testing new branch comment
+
   return (
     <>
       <div className="flex h-screen w-full flex-col justify-between">
