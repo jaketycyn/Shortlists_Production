@@ -80,7 +80,7 @@ const ProfilePageLayout: NextPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const debouncedSearchTerm: string = useDebounce<string>(searchTerm, 500);
-  console.log("debouncedSearchTerm: ", debouncedSearchTerm);
+  //console.log("debouncedSearchTerm: ", debouncedSearchTerm);
 
   useEffect(() => {
     if (debouncedSearchTerm) {
@@ -92,7 +92,7 @@ const ProfilePageLayout: NextPage = () => {
       });
 
       setFilteredResults(filteredUsers);
-      console.log("filteredUsers: ", filteredUsers);
+      //console.log("filteredUsers: ", filteredUsers);
 
       //searchdata
     } else {
@@ -103,8 +103,8 @@ const ProfilePageLayout: NextPage = () => {
   const currentUser = users?.filter((i) => i.id === session?.user?.id);
   const usersNotCurrent = users?.filter((i) => i.id !== session?.user?.id);
 
-  console.log("currentUser: ", currentUser);
-  console.log("users: ", users);
+  //console.log("currentUser: ", currentUser);
+  // console.log("users: ", users);
   //console.log("usersNotCurrent: ", usersNotCurrent);
   const { mutateAsync: mutateSendFriendRequest } =
     trpc.friendship.sendFriendRequest.useMutation();
@@ -131,8 +131,8 @@ const ProfilePageLayout: NextPage = () => {
     //console.log("friendRequest CLicked");
     //using info of user from search send status update to database with currentUser.id & targetUser.id
     //console.log("targetUser:", targetUserId);
-    console.log("accept friend request");
-    console.log("targetUserId: ", targetUserId);
+    // console.log("accept friend request");
+    // console.log("targetUserId: ", targetUserId);
     try {
       const result = await mutateAcceptFriendRequest(targetUserId);
       refetchFriendships();
@@ -149,7 +149,7 @@ const ProfilePageLayout: NextPage = () => {
   //getFriendShipQuery
   const { data: friendshipData, refetch: refetchFriendships } =
     trpc.friendship.getFriendships.useQuery();
-  console.log("data from Friendships: ", friendshipData);
+  //console.log("data from Friendships: ", friendshipData);
   const friendshipExist = true;
 
   const friendshipExistFunction = (userId: string) => {
@@ -172,28 +172,32 @@ const ProfilePageLayout: NextPage = () => {
   //filter for friends, pending and incoming relationships
 
   //friends
-  console.log("users: ", users);
+  //console.log("users: ", users);
   const usersWithStatusFriend = friendshipData?.results.filter(
-    (u) => u.status === "friend"
+    (r) => r.status === "friend"
   );
   //console.log("usersWithStatusFriend: ", usersWithStatusFriend);
 
   const usersFriends: any = [];
-  const NewArrayFriends = usersWithStatusFriend?.forEach(function (u) {
-    const newmethod = users?.filter((i) => i.id === u.receiverId);
-    console.log("newmethod: ", newmethod);
-  });
-
   if (users) {
     const NewArrayFriends = usersWithStatusFriend?.forEach(function (u) {
-      const NewArrayPendingMethod = users?.filter((i) => i.id === u.senderId);
-      console.log("NewArrayPendingMethod: ", NewArrayPendingMethod![0]);
+      const NewArrayFriendReceiver = users?.filter(
+        (i) => i.id === u.receiverId
+      );
+      console.log("NewArrayFriendReceiver: ", NewArrayFriendReceiver![0]);
+      const NewArrayFriendSender = users?.filter((i) => i.id === u.senderId);
 
-      const objCopy: any = { ...NewArrayPendingMethod![0] };
-      objCopy.relationship = "pending";
-      console.log(objCopy);
+      console.log("NewArrayFriendSender: ", NewArrayFriendSender![0]);
 
-      usersFriends.push(objCopy);
+      if (NewArrayFriendReceiver![0]?.id !== currentUser![0]?.id) {
+        const objCopy: any = { ...NewArrayFriendReceiver![0] };
+        usersFriends.push(objCopy);
+      }
+      if (NewArrayFriendSender![0]?.id !== currentUser![0]?.id) {
+        const objCopy: any = { ...NewArrayFriendSender![0] };
+        usersFriends.push(objCopy);
+      }
+      //console.log(objCopy);
     });
   }
 
@@ -206,24 +210,24 @@ const ProfilePageLayout: NextPage = () => {
   );
 
   const usersPending: any = [];
-  console.log("usersPending: ", usersPending);
+  //console.log("usersPending: ", usersPending);
 
   //useArray of Pending Status & where u.senderId !== currentUser
   //find userColumn and update said user in Redux
 
   const NewArrayPending = usersWithStatusPending?.forEach(function (u) {
     const newmethod = users?.filter((i) => i.id === u.receiverId);
-    console.log("newmethod: ", newmethod);
+    //console.log("newmethod: ", newmethod);
   });
 
   if (users) {
     const NewArrayPending = usersWithStatusPending?.forEach(function (u) {
       const NewArrayPendingMethod = users?.filter((i) => i.id === u.senderId);
-      console.log("NewArrayPendingMethod: ", NewArrayPendingMethod![0]);
+      //console.log("NewArrayPendingMethod: ", NewArrayPendingMethod![0]);
 
       const objCopy: any = { ...NewArrayPendingMethod![0] };
       objCopy.relationship = "pending";
-      console.log(objCopy);
+      //console.log(objCopy);
 
       usersPending.push(objCopy);
     });
@@ -238,16 +242,16 @@ const ProfilePageLayout: NextPage = () => {
   );
 
   const usersRequested: any = [];
-  console.log("usersRequested: ", usersRequested); //
+  //console.log("usersRequested: ", usersRequested); //
 
   if (users) {
     const NewArrayRequest = usersWithStatusRequested?.forEach(function (u) {
       const newArrayRequestMethod = users?.filter((i) => i.id === u.receiverId);
-      console.log("NewArrayRequestMethod: ", newArrayRequestMethod![0]);
+      //console.log("NewArrayRequestMethod: ", newArrayRequestMethod![0]);
 
       const objCopy: any = { ...newArrayRequestMethod![0] }; // 👈️ create copy
       objCopy.relationship = "requested";
-      console.log(objCopy); //
+      //console.log(objCopy); //
 
       usersRequested.push(objCopy);
 
@@ -670,7 +674,7 @@ const ProfilePageLayout: NextPage = () => {
                                         );
 
                                       const friendShipStatus = "Add";
-                                      console.log("status: ", status);
+                                      //console.log("status: ", status);
                                       if (status?.length === 1) {
                                         if (status[0]?.status === "pending") {
                                           //check pending to see if current user is receiver or sender to determine button
@@ -837,7 +841,7 @@ const ProfilePageLayout: NextPage = () => {
                                             );
 
                                           const friendShipStatus = "Add";
-                                          console.log("status: ", status);
+                                          //console.log("status: ", status);
                                           if (status?.length === 1) {
                                             if (
                                               status[0]?.status === "pending"
