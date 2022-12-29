@@ -12,7 +12,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../../hooks/useTypedSelector";
-import { setUsers, updateUser } from "../../../slices/usersSlice";
+import { setUsers } from "../../../slices/usersSlice";
 import { User } from "@prisma/client";
 
 const ProfilePageLayout: NextPage = () => {
