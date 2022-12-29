@@ -189,7 +189,7 @@ const ProfilePageLayout: NextPage = () => {
       const NewArrayPendingMethod = users?.filter((i) => i.id === u.senderId);
       console.log("NewArrayPendingMethod: ", NewArrayPendingMethod![0]);
 
-      const objCopy = { ...NewArrayPendingMethod![0] };
+      const objCopy: any = { ...NewArrayPendingMethod![0] };
       objCopy.relationship = "pending";
       console.log(objCopy);
 
@@ -221,7 +221,7 @@ const ProfilePageLayout: NextPage = () => {
       const NewArrayPendingMethod = users?.filter((i) => i.id === u.senderId);
       console.log("NewArrayPendingMethod: ", NewArrayPendingMethod![0]);
 
-      const objCopy = { ...NewArrayPendingMethod![0] };
+      const objCopy: any = { ...NewArrayPendingMethod![0] };
       objCopy.relationship = "pending";
       console.log(objCopy);
 
@@ -245,7 +245,7 @@ const ProfilePageLayout: NextPage = () => {
       const newArrayRequestMethod = users?.filter((i) => i.id === u.receiverId);
       console.log("NewArrayRequestMethod: ", newArrayRequestMethod![0]);
 
-      const objCopy = { ...newArrayRequestMethod![0] }; // 👈️ create copy
+      const objCopy: any = { ...newArrayRequestMethod![0] }; // 👈️ create copy
       objCopy.relationship = "requested";
       console.log(objCopy); //
 
