@@ -12,7 +12,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../../hooks/useTypedSelector";
-import { setUsers } from "../../../slices/usersSlice";
+import { setUsers, updateUser } from "../../../slices/usersSlice";
 import { User } from "@prisma/client";
 
 const ProfilePageLayout: NextPage = () => {
@@ -80,7 +80,7 @@ const ProfilePageLayout: NextPage = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const debouncedSearchTerm: string = useDebounce<string>(searchTerm, 500);
-  //console.log("debouncedSearchTerm: ", debouncedSearchTerm);
+  console.log("debouncedSearchTerm: ", debouncedSearchTerm);
 
   useEffect(() => {
     if (debouncedSearchTerm) {
@@ -103,20 +103,38 @@ const ProfilePageLayout: NextPage = () => {
   const currentUser = users?.filter((i) => i.id === session?.user?.id);
   const usersNotCurrent = users?.filter((i) => i.id !== session?.user?.id);
 
-  //console.log("currentUser: ", currentUser);
-  //console.log("users: ", users);
+  console.log("currentUser: ", currentUser);
+  console.log("users: ", users);
   //console.log("usersNotCurrent: ", usersNotCurrent);
   const { mutateAsync: mutateSendFriendRequest } =
     trpc.friendship.sendFriendRequest.useMutation();
 
-  const sendFriendRequestFunction = async (targetUserId: any) => {
-    //button fired
-    console.log("friendRequest CLicked");
-    //using info of user from search send status update to database with currentUser.id & targetUser.id
-    console.log("targetUser:", targetUserId);
+  const { mutateAsync: mutateAcceptFriendRequest } =
+    trpc.friendship.acceptFriendRequest.useMutation();
 
+  const sendFriendRequestFunction = async (targetUserId: any) => {
     try {
       const result = await mutateSendFriendRequest(targetUserId);
+      refetchFriendships();
+      // console.log("message:", result.message);
+      // console.log("result:", result.results);
+    } catch (err) {
+      console.error(err);
+    }
+    //await response and use status string change to "requested" to update button && use "friend" status as a way of demonstrating someone cannot send another request
+
+    //also prevent subsequent sends/disable button if requested already exists - will need to add a side area for demonstrating outgoing friend requests
+  };
+
+  const acceptFriendRequestFunction = async (targetUserId: any) => {
+    //button fired
+    //console.log("friendRequest CLicked");
+    //using info of user from search send status update to database with currentUser.id & targetUser.id
+    //console.log("targetUser:", targetUserId);
+    console.log("accept friend request");
+    console.log("targetUserId: ", targetUserId);
+    try {
+      const result = await mutateAcceptFriendRequest(targetUserId);
       refetchFriendships();
       console.log("message:", result.message);
       console.log("result:", result.results);
@@ -138,7 +156,7 @@ const ProfilePageLayout: NextPage = () => {
     const status = friendshipData?.results.filter(
       (user) => user.senderId === userId || user.receiverId === userId
     );
-    console.log("status: ", status);
+    //console.log("status: ", status);
     if (status?.length === 1) {
       if (status[0]?.status === "pending") {
         const response = "added";
@@ -158,20 +176,87 @@ const ProfilePageLayout: NextPage = () => {
   const usersWithStatusFriend = friendshipData?.results.filter(
     (u) => u.status === "friend"
   );
-  console.log("usersWithStatusFriend: ", usersWithStatusFriend);
+  //console.log("usersWithStatusFriend: ", usersWithStatusFriend);
 
-  //const userFriends = users?.filter(u => u.id === )
+  const usersFriends: any = [];
+  const NewArrayFriends = usersWithStatusFriend?.forEach(function (u) {
+    const newmethod = users?.filter((i) => i.id === u.receiverId);
+    console.log("newmethod: ", newmethod);
+  });
+
+  if (users) {
+    const NewArrayFriends = usersWithStatusFriend?.forEach(function (u) {
+      const NewArrayPendingMethod = users?.filter((i) => i.id === u.senderId);
+      console.log("NewArrayPendingMethod: ", NewArrayPendingMethod![0]);
+
+      const objCopy = { ...NewArrayPendingMethod![0] };
+      objCopy.relationship = "pending";
+      console.log(objCopy);
+
+      usersFriends.push(objCopy);
+    });
+  }
+
+  //TODO: create new Array forEach status friend find from users matching iD and create new Array
+  //const userFriends =
   //pending
+
   const usersWithStatusPending = friendshipData?.results.filter(
     (u) => u.status === "pending" && u.receiverId === session?.user?.id
   );
-  console.log("usersWithStatusPending: ", usersWithStatusPending);
+
+  const usersPending: any = [];
+  console.log("usersPending: ", usersPending);
+
+  //useArray of Pending Status & where u.senderId !== currentUser
+  //find userColumn and update said user in Redux
+
+  const NewArrayPending = usersWithStatusPending?.forEach(function (u) {
+    const newmethod = users?.filter((i) => i.id === u.receiverId);
+    console.log("newmethod: ", newmethod);
+  });
+
+  if (users) {
+    const NewArrayPending = usersWithStatusPending?.forEach(function (u) {
+      const NewArrayPendingMethod = users?.filter((i) => i.id === u.senderId);
+      console.log("NewArrayPendingMethod: ", NewArrayPendingMethod![0]);
+
+      const objCopy = { ...NewArrayPendingMethod![0] };
+      objCopy.relationship = "pending";
+      console.log(objCopy);
+
+      usersPending.push(objCopy);
+    });
+  }
+
+  //TODO: create new Array forEach status Pending & where currentUser is receiverId find from users matching iD and create new Array
+
   //requested
 
   const usersWithStatusRequested = friendshipData?.results.filter(
     (u) => u.status === "pending" && u.senderId === session?.user?.id
   );
-  console.log("usersWithStatusRequested: ", usersWithStatusRequested);
+
+  const usersRequested: any = [];
+  console.log("usersRequested: ", usersRequested); //
+
+  if (users) {
+    const NewArrayRequest = usersWithStatusRequested?.forEach(function (u) {
+      const newArrayRequestMethod = users?.filter((i) => i.id === u.receiverId);
+      console.log("NewArrayRequestMethod: ", newArrayRequestMethod![0]);
+
+      const objCopy = { ...newArrayRequestMethod![0] }; // 👈️ create copy
+      objCopy.relationship = "requested";
+      console.log(objCopy); //
+
+      usersRequested.push(objCopy);
+
+      //fire updateMethod to update the slice with this info
+    });
+  }
+
+  //console.log("usersWithStatusRequested: ", usersWithStatusRequested);
+  //TODO: create new Array forEach status Pending & where currentUser is senderId find from users matching iD and create new Array
   //testing new branch comment
 
   return (
@@ -394,29 +479,275 @@ const ProfilePageLayout: NextPage = () => {
                   </li>
                 </ul>
               </div>
-              <div className="mb-6 flex w-full min-w-0 flex-col break-words rounded bg-white text-center shadow-lg lg:w-3/5">
-                <div className=" px-4 py-5">
-                  <div className="tab-content tab-space">
+              <div className="mb-6 flex w-full min-w-0 flex-col content-center  items-center justify-center  break-words rounded bg-white text-center shadow-lg ">
+                <div className=" px-4 py-5 ">
+                  <div className="tab-content tab-space  ">
                     {/*Tab 1 My Friends - Selected*/}
                     <div
-                      className={openTab === 1 ? "block" : "hidden"}
+                      className={openTab === 1 ? "block " : "hidden"}
                       id="link1"
                     >
-                      MyFriends
+                      {usersFriends ? (
+                        <div className="flex flex-col">
+                          <ul className="divide-y divide-gray-200">
+                            {usersFriends.map((user: any, key: any) => (
+                              <div className="" key={key}>
+                                <li className="grid grid-cols-7 grid-rows-1 items-center py-3 sm:py-4">
+                                  <div className="col-span-5 col-start-1 row-start-1 flex flex-row items-center justify-center">
+                                    <div className="row-start-1 mr-1 flex-shrink-0">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="h-6 w-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                                        />
+                                      </svg>
+
+                                      {/* 
+                        Image Placeholder
+                      <Image className="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image"> */}
+                                    </div>
+                                    <div className=" row-start-1 min-w-0 flex-1 ">
+                                      <p className="truncate text-sm font-medium ">
+                                        {user.username}
+                                      </p>
+                                      <p className="mr-4 truncate text-sm">
+                                        {user.email}
+                                      </p>
+                                      {/* <p className="truncate text-sm ">{user.status}</p> */}
+                                    </div>
+                                  </div>
+                                  <div className="col-span-2 col-end-7 row-start-1 ml-8 w-full justify-end">
+                                    <button
+                                      className="mr-1 mb-1 h-full w-full rounded bg-black px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                      type="button"
+                                      // onClick={() =>
+                                      //   console.log(
+                                      //     "id: + accept friend request",
+                                      //     user.id
+                                      //   )
+                                      // }
+
+                                      onClick={() =>
+                                        console.log("Go into friend list")
+                                      }
+                                    >
+                                      <p>View</p>
+                                    </button>
+                                  </div>
+                                </li>
+                              </div>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
                     </div>
                     {/*Tab 2 Pending Requests - Selected*/}
                     <div
                       className={openTab === 2 ? "block" : "hidden"}
                       id="link1"
                     >
-                      Pending Requests
+                      {usersPending ? (
+                        <div className="flex flex-col">
+                          <ul className="divide-y divide-gray-200">
+                            {usersPending.map((user: any, key: any) => (
+                              <div className="" key={key}>
+                                <li className="grid grid-cols-7 grid-rows-1 items-center py-3 sm:py-4">
+                                  <div className="col-span-5 col-start-1 row-start-1 flex flex-row items-center justify-center">
+                                    <div className="row-start-1 mr-1 flex-shrink-0">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="h-6 w-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                                        />
+                                      </svg>
+
+                                      {/* 
+                        Image Placeholder
+                      <Image className="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image"> */}
+                                    </div>
+                                    <div className=" row-start-1 min-w-0 flex-1 ">
+                                      <p className="truncate text-sm font-medium ">
+                                        {user.username}
+                                      </p>
+                                      <p className="mr-4 truncate text-sm">
+                                        {user.email}
+                                      </p>
+                                      {/* <p className="truncate text-sm ">{user.status}</p> */}
+                                    </div>
+                                  </div>
+                                  <div className="col-span-2 col-end-7 row-start-1 ml-8 w-full justify-end">
+                                    <button
+                                      className="mr-1 mb-1 h-full w-full rounded bg-black px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                      type="button"
+                                      // onClick={() =>
+                                      //   console.log(
+                                      //     "id: + accept friend request",
+                                      //     user.id
+                                      //   )
+                                      // }
+
+                                      onClick={() =>
+                                        acceptFriendRequestFunction(user.id)
+                                      }
+                                    >
+                                      <p>Accept</p>
+                                    </button>
+                                  </div>
+                                </li>
+                              </div>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
                     </div>
                     {/*Tab 3 Sent Requests - Selected*/}
                     <div
                       className={openTab === 3 ? "block" : "hidden"}
                       id="link1"
                     >
-                      Sent Requests
+                      {usersRequested ? (
+                        <div className="flex flex-col">
+                          <ul className="divide-y divide-gray-200">
+                            {usersRequested.map((user: any, key: any) => (
+                              <div className="" key={key}>
+                                <li className="grid grid-cols-7 grid-rows-1 items-center py-3 sm:py-4">
+                                  <div className="col-span-5 col-start-1 row-start-1 flex flex-row items-center justify-center">
+                                    <div className="row-start-1 mr-1 flex-shrink-0">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth={1.5}
+                                        stroke="currentColor"
+                                        className="h-6 w-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                                        />
+                                      </svg>
+
+                                      {/* 
+                        Image Placeholder
+                      <Image className="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image"> */}
+                                    </div>
+                                    <div className=" row-start-1 min-w-0 flex-1 ">
+                                      <p className="truncate text-sm font-medium ">
+                                        {user.username}
+                                      </p>
+                                      <p className="mr-4 truncate text-sm">
+                                        {user.email}
+                                      </p>
+                                      {/* <p className="truncate text-sm ">{user.status}</p> */}
+                                    </div>
+                                  </div>
+                                  <div className="col-span-2 col-end-7 row-start-1 ml-8 w-full justify-end">
+                                    {(() => {
+                                      const id = user.id;
+
+                                      const status =
+                                        friendshipData?.results.filter(
+                                          (u) =>
+                                            u.senderId === id ||
+                                            u.receiverId === id
+                                        );
+
+                                      const friendShipStatus = "Add";
+                                      console.log("status: ", status);
+                                      if (status?.length === 1) {
+                                        if (status[0]?.status === "pending") {
+                                          //check pending to see if current user is receiver or sender to determine button
+
+                                          if (status[0]?.receiverId === id) {
+                                            const friendShipStatus = "pending";
+                                            return (
+                                              <button
+                                                className="mr-1 mb-1 h-full w-full rounded bg-black/30 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                                type="button"
+                                                disabled
+                                                onClick={() =>
+                                                  sendFriendRequestFunction(
+                                                    user.id
+                                                  )
+                                                }
+                                              >
+                                                <p>{friendShipStatus}</p>
+                                              </button>
+                                            );
+                                          }
+                                          if (status[0]?.senderId === id) {
+                                            const friendShipStatus = "accept";
+                                            return (
+                                              <button
+                                                className="mr-1 mb-1 h-full w-full rounded bg-black/30 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-green-600"
+                                                type="button"
+                                                onClick={() =>
+                                                  console.log(
+                                                    "accept friend request"
+                                                  )
+                                                }
+                                              >
+                                                <p>{friendShipStatus}</p>
+                                              </button>
+                                            );
+                                          }
+                                        }
+                                        if (status[0]?.status === "friend") {
+                                          const friendShipStatus = "friend";
+                                          return (
+                                            <button
+                                              className="mr-1 mb-1 h-full w-full rounded bg-black/70 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                              type="button"
+                                              disabled
+                                              //can add redirect maybe in future for friend
+                                              onClick={() =>
+                                                sendFriendRequestFunction(
+                                                  user.id
+                                                )
+                                              }
+                                            >
+                                              <p>{friendShipStatus}</p>
+                                            </button>
+                                          );
+                                        }
+                                      }
+                                      //const friendShipStatus = "friend";
+                                      return (
+                                        <button
+                                          className="mr-1 mb-1 h-full w-full rounded bg-black px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                          type="button"
+                                          onClick={() =>
+                                            sendFriendRequestFunction(user.id)
+                                          }
+                                        >
+                                          <p>{friendShipStatus}</p>
+                                        </button>
+                                      );
+                                    })()}
+                                  </div>
+                                </li>
+                              </div>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : null}
                     </div>
                     {/*Tab 4 Find Friends - Selected*/}
                     <div

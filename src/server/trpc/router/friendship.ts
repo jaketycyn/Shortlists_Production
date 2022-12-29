@@ -19,6 +19,34 @@ export const friendshipRouter = router({
   //   }),
 
   //findFriendships,
+  acceptFriendRequest: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ input, ctx }) => {
+      // console.log("inside acceptFriendRequest");
+      // console.log("receiverId: ", input);
+
+      // const findRelationship = await ctx.prisma.friendship.findMany({
+      //   where: {
+      //     receiverId: ctx.session.user.id,
+      //     senderId: input,
+      //   },
+      // });
+
+      // console.log("findRelationship: ", findRelationship);
+
+      const friendRequest = await ctx.prisma.friendship.updateMany({
+        where: { receiverId: ctx.session.user.id, senderId: input },
+        data: {
+          status: "friend",
+        },
+      });
+
+      return {
+        status: 201,
+        message: "Friend Request Accepted",
+        results: friendRequest,
+      };
+    }),
   getFriendships: protectedProcedure.query(async ({ ctx }) => {
     const results = await ctx.prisma.friendship.findMany({
       where: {
