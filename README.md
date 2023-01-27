@@ -101,6 +101,7 @@ This section should list any major frameworks/libraries used to bootstrap your p
 
 - [![Next][next.js]][next-url]
 - [![React][react.js]][react-url]
+- [![JavaScript][javascript.js]][javascript-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -238,3 +239,4 @@ Use this space to list resources you find helpful and would like to give credit 
 [next-url]: https://nextjs.org/
 [react.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [react-url]: https://reactjs.org/
+[javascript-url]: https://https:/javascript.com/
