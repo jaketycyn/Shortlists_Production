@@ -65,7 +65,7 @@ export const userItemRouter = router({
 
       return {
         //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200
-        // "The successful result of a PUT or a DELETE is often not a 200 OK but a 204 No Content (or a 201 Created when the resource is uploaded for the first time)."
+        // "The successful result of a PUT or a DELETE is often not a 200 OK but a 204 No Content (or a 201 Created when the resource is uploaded foxr the first time)."
         //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
         status: 204,
         message: "Archived user items successfully",

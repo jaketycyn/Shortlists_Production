@@ -47,7 +47,6 @@ model User {
   sentFriendRequests     Friendship[] @relation("sentRequests")
   LoginToken             LoginToken[]
   sessions               Session[]
-  UserItem               UserItem[]
   UserList               UserList[]
 }
 
@@ -86,6 +85,7 @@ model UserList {
   archive          String?    @default("undefined")
   parentListId     String?    @default("undefined")
   parentListUserId String?    @default("undefined")
+  category         String?    @default("undefined")
   user             User       @relation(fields: [userId], references: [id])
   UserItem         UserItem[]
 }
