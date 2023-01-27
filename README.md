@@ -240,4 +240,4 @@ Use this space to list resources you find helpful and would like to give credit 
 [react.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [react-url]: https://reactjs.org/
 [javascript.js]: https://camo.githubusercontent.com/0dc176976add53c960306227f875bdeb8b1f77a5db6b9fc8c86e227fce652c31/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a6176615363726970742532302d2532334637444631452e7376673f7374796c653d666f722d7468652d6261646765266c6f676f3d6a617661736372697074266c6f676f436f6c6f723d626c61636b
-[javascript-url]: https://https:/javascript.com/
+[javascript-url]: https://www.javascript.com/
