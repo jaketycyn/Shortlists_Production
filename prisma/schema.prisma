@@ -47,6 +47,7 @@ model User {
   sentFriendRequests     Friendship[] @relation("sentRequests")
   LoginToken             LoginToken[]
   sessions               Session[]
+  UserItem               UserItem[]
   UserList               UserList[]
 }
 
