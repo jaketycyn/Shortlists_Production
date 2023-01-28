@@ -24,7 +24,7 @@
 
 <!-- PROJECT LOGO -->
 <br />
-<a class="readme-top"/>
+<a id="#readme-top"/>
 <div align="center">
   <a href="https://shortlists-mobile-jaketycyn.vercel.app/">
     <img src="public/logo.png" alt="Logo" width="80" height="80">
