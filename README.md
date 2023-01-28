@@ -24,7 +24,7 @@
 
 <!-- PROJECT LOGO -->
 <br />
-<a class="#readme-top"/>
+<a class="readme-top"/>
 <div align="center">
   <a href="https://shortlists-mobile-jaketycyn.vercel.app/">
     <img src="public/logo.png" alt="Logo" width="80" height="80">
@@ -135,7 +135,7 @@ Project Link: [ShortLists](https://shortlists-mobile-jaketycyn.vercel.app/)
 - [Font Awesome](https://fontawesome.com)
 - [React Icons](https://react-icons.github.io/react-icons/search)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
