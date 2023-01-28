@@ -51,6 +51,8 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
+    </li>
+    <li>
       <a href="#about-the-coding-journey">About the Coding Journey</a>
     </li>
     <li>
