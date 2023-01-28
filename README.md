@@ -24,6 +24,7 @@
 
 <!-- PROJECT LOGO -->
 <br />
+<a class="#readme-top"/>
 <div align="center">
   <a href="https://shortlists-mobile-jaketycyn.vercel.app/">
     <img src="public/logo.png" alt="Logo" width="80" height="80">
@@ -77,29 +78,19 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Shortlists started as a longterm project to help me, as a self-taught developer, code in a more realistic environment. Taking the classic beginner project of making a todo list I sought out ways of expanding. The first step was to
+Shortlists is an application that allows users to create an account, create lists, attach items to those lists, and share them with other users. The longterm goal is to expand into allowing users to rank or pose lists with multiple options to friends. From here people will be able to 'prompt' friends/family,coworkers,etc on various things - favorite Disney film, places they want to go, what they want to do on the weekend, etc. This basic premise of probing people for information can be utilized to by someone to make more informed decisions.
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+On the more passive side, seeing a friends 'Top 10 Books/Movies/TvShows this year' list could benefit someone into exploring and experience entertainment they didn't know existed.
 
-Here's why:
+The distant and far reaching plan is to expand this into a social media platform that allows users to better find people with similar interests, communicate on those interests, discover new interests and find people incredibly knowledgeable on said interests.
 
-- Your time should be focused on creating something amazing. A project that solves a problem and helps others
-- You shouldn't be doing the same tasks over and over like creating a README from scratch
-- You should implement DRY principles to the rest of your life :smile:
+## About the Coding Journey
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
+Shortlists started as a diy project to help me, as a self-taught developer, code in a more realistic environment. Taking the classic beginner project of making a todo list I sought out ways of expanding it into a fullstack application.
 
-Use the `BLANK_README.md` to get started.
+The first major step was finding a way to store data long-term. I did this both locally for a user with Redux (utilizing Redux-persist) & by creating accounts with a backend comprised of Node, express, and Postgresql. For a brief time I used MongoDB before realizing all future data would be relational and the best long term solution was to take the gigantic hurdle into relational database management.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-### Built With
-
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-- [![Next][next.js]][next-url]
-- [![React][react.js]][react-url]
-- [![JavaScript][javascript.js]][javascript-url]
+The next major step was sharing lists between users. I discovered an interesting library called TRPC3 which allowed me to better control and communicate between my front and backend.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -124,12 +115,6 @@ This is an example of how to list things you need to use the software and how to
 **Client:** React, NextJs, TypeScript, Redux, TailwindCSS
 
 **Server:** Node, Express, Postgresql, TRPC3, Prisma
-
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -159,7 +144,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 Jake TyCyn Schmidt - jaketycyn@gmail.com
 
-Project Link: [https://github.com/jaketycyn/Shortlists_Production](https://github.com/jaketycyn/Shortlists_Production)
+Project Link: [ShortLists](https://shortlists-mobile-jaketycyn.vercel.app/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
