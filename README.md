@@ -47,7 +47,8 @@
 
 <!-- TABLE OF CONTENTS -->
 
-  <h3>Table of Contents</h3>
+## Table of Contents
+
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
