@@ -74,8 +74,6 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 Shortlists is an application that allows users to create an account, create lists, attach items to those lists, and share them with other users. The longterm goal is to expand into allowing users to rank or pose lists with multiple options to friends. From here people will be able to 'prompt' friends/family,coworkers,etc on various things - favorite Disney film, places they want to go, what they want to do on the weekend, etc. This basic premise of probing people for information can be utilized to by someone to make more informed decisions.
 
 On the more passive side, seeing a friends 'Top 10 Books/Movies/TvShows this year' list could benefit someone into exploring and experience entertainment they didn't know existed.
@@ -93,6 +91,12 @@ The next major step was sharing lists between users. I discovered an interesting
 <!-- GETTING STARTED -->
 
 ## Getting Started
+
+<!-- Account creation images -->
+<!-- list creation images -->
+<!-- adding items  images -->
+<!-- sharing lists  images -->
+<!-- adding friends  images -->
 
 <!-- ROADMAP -->
 
