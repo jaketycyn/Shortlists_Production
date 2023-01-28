@@ -92,32 +92,6 @@ The first major step was finding a way to store data long-term. I did this both 
 
 The next major step was sharing lists between users. I discovered an interesting library called TRPC3 which allowed me to better control and communicate between my front and backend.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- GETTING STARTED -->
-
-## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
-
-- npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-## Tech Stack
-
-**Client:** React, NextJs, TypeScript, Redux, TailwindCSS
-
-**Server:** Node, Express, Postgresql, TRPC3, Prisma
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- ROADMAP -->
 
 ## Roadmap
@@ -132,7 +106,11 @@ This is an example of how to list things you need to use the software and how to
 - [ ] Co-edited lists/items
 - [ ] List Ranking features
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+## Tech Stack
+
+**Client:** React, NextJs, TypeScript, Redux, TailwindCSS
+
+**Server:** Node, Express, Postgresql, TRPC3, Prisma
 
 <!-- CONTRIBUTING -->
 
@@ -146,15 +124,12 @@ Jake TyCyn Schmidt - jaketycyn@gmail.com
 
 Project Link: [ShortLists](https://shortlists-mobile-jaketycyn.vercel.app/)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- ACKNOWLEDGMENTS -->
 
 ## Acknowledgments
 
 Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
-- [Choose an Open Source License](https://choosealicense.com)
 - [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
 - [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
 - [Malven's Grid Cheatsheet](https://grid.malven.co/)
