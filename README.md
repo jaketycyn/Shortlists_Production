@@ -82,8 +82,6 @@ On the more passive side, seeing a friends 'Top 10 Books/Movies/TvShows this yea
 
 The distant and far reaching plan is to expand this into a social media platform that allows users to better find people with similar interests, communicate on those interests, discover new interests and find people incredibly knowledgeable on said interests.
 
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
-
 ## About the Coding Journey
 
 Shortlists started as a diy project to help me, as a self-taught developer, code in a more realistic environment. Taking the classic beginner project of making a todo list I sought out ways of expanding it into a fullstack application.
@@ -92,13 +90,9 @@ The first major step was finding a way to store data long-term. I did this both 
 
 The next major step was sharing lists between users. I discovered an interesting library called TRPC3 which allowed me to better control and communicate between my front and backend.
 
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
-
 <!-- GETTING STARTED -->
 
 ## Getting Started
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
 
 <!-- ROADMAP -->
 
@@ -114,15 +108,11 @@ The next major step was sharing lists between users. I discovered an interesting
 - [ ] Co-edited lists/items
 - [ ] List Ranking features
 
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
-
 ## Tech Stack
 
 **Client:** React, NextJs, TypeScript, Redux, TailwindCSS
 
 **Server:** Node, Express, Postgresql, TRPC3, Prisma
-
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
 
@@ -136,7 +126,6 @@ Jake TyCyn Schmidt - jaketycyn@gmail.com
 
 Project Link: [ShortLists](https://shortlists-mobile-jaketycyn.vercel.app/)
 
-<p align="right">(<a href="#table-of-contents">back to top</a>)</p>
 <!-- ACKNOWLEDGMENTS -->
 
 ## Acknowledgments
