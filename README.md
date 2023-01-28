@@ -36,15 +36,16 @@
   <h3 align="center">Shortlists</h3>
 
   <p align="center">
-   Responsive Designed Application for creating, sharing and ranking lists between friends
+   Responsive Designed Application for creating, sharing and ranking lists
     <br />
-
+    <a href="https://github.com/jaketycyn/Shortlists_Production"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
     <a href="https://shortlists-mobile-jaketycyn.vercel.app/">View Demo</a>
     ·
     <a href="https://github.com/jaketycyn/Shortlists_Production/issues">Report Bug</a>
     ·
     <a href="https://github.com/jaketycyn/Shortlists_Production/issues">Request Feature</a>
-
   </p>
 </div>
 
