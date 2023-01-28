@@ -59,9 +59,9 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#account-creation">Account Creation</a></li>
-        <li><a href="#creating-a-list">Creating a list</a></li>
-        <li><a href="#adding-items">Adding Items</a></li>
+        <li><a href="#getting-started">Account Creation</a></li>
+        <li><a href="#getting-started">Creating a list</a></li>
+        <li><a href="#getting-started">Adding Items</a></li>
       </ul>
     </li>
     <li><a href="#roadmap">Roadmap</a></li>
