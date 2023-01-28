@@ -88,6 +88,10 @@ The first major step was finding a way to store data long-term. I did this both 
 
 The next major step was sharing lists between users. I discovered an interesting library called TRPC3 which allowed me to better control and communicate between my front and backend.
 
+<!-- GETTING STARTED -->
+
+## Getting Started
+
 <!-- ROADMAP -->
 
 ## Roadmap
