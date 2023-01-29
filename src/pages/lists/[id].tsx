@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm, type Resolver } from "react-hook-form";
 
-import { HiPlus } from "react-icons/hi";
+import { HiPlus, HiX, HiDotsVertical } from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
 
 import { trpc } from "../../utils/trpc";
@@ -14,6 +14,10 @@ import {
 } from "../../server/schema/itemSchema";
 import { type Item, setItems } from "../../slices/itemSlice";
 import ListFooterNav from "../../components/navigation/ListFooterNav";
+
+//imports for slidein
+import { Fragment } from "react";
+import { Dialog, Menu, Transition } from "@headlessui/react";
 
 const resolver: Resolver<AddItemSchema> = async (values) => {
   return {
@@ -39,12 +43,35 @@ const ListPage: NextPage = () => {
   //const [listItems, setListItems] = useState([]);
   const [showToast, setShowToast] = React.useState<boolean>(false);
   const [showAdd, setShowAdd] = React.useState<boolean>(false);
+  const [open, setOpen] = useState(false);
   const listId = router.query.id as string;
 
   // const listItems = [
   //   { id: 123, title: "item1" },
   //   { id: 456, title: "item2" },
   // ];
+
+  //! Placeholders for testing and basic setup. Later will use actual profile page info
+  const tabs = [
+    { name: "All", href: "#", current: true },
+    { name: "Online", href: "#", current: false },
+    { name: "Offline", href: "#", current: false },
+  ];
+  const team = [
+    {
+      name: "Leslie Alexander",
+      handle: "lesliealexander",
+      href: "#",
+      imageUrl:
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      status: "online",
+    },
+    // More people...
+  ];
+
+  function classNames(...classes) {
+    return classes.filter(Boolean).join(" ");
+  }
 
   const clearItemInput = () => {
     setShowTextInput(!showTextInput);
@@ -181,6 +208,180 @@ const ListPage: NextPage = () => {
 
   return (
     <>
+      <Transition.Root show={open} as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={setOpen}>
+          <div className="fixed inset-0 bg-gray-400 bg-opacity-50 transition-opacity" />
+
+          <div className="fixed inset-0 overflow-hidden">
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pt-20 lg:pl-10 lg:pr-10">
+                <Transition.Child
+                  as={Fragment}
+                  enter="transform transition ease-in-out duration-500 sm:duration-700"
+                  enterFrom="translate-y-full"
+                  enterTo="translate-y-0 "
+                  leave="transform transition ease-in-out duration-500 sm:duration-700"
+                  leaveFrom="translate-y-0"
+                  leaveTo="translate-y-full"
+                >
+                  <Dialog.Panel className="max-w pointer-events-auto w-screen">
+                    <div className="flex h-full flex-col overflow-hidden bg-white shadow-xl ">
+                      <div className="p-6">
+                        <div className="flex items-start justify-between">
+                          <Dialog.Title className="text-lg font-medium text-gray-900">
+                            Share
+                          </Dialog.Title>
+                          <div className="ml-3 flex h-7 items-center">
+                            <button
+                              type="button"
+                              className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
+                              onClick={() => setOpen(false)}
+                            >
+                              <span className="sr-only">Close panel</span>
+                              <HiX className="h-6 w-6" aria-hidden="true" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="border-b border-gray-200">
+                        <div className="px-6">
+                          <nav
+                            className="-mb-px flex space-x-6"
+                            x-descriptions="Tab component"
+                          >
+                            {tabs.map((tab) => (
+                              <a
+                                key={tab.name}
+                                href={tab.href}
+                                className={classNames(
+                                  tab.current
+                                    ? "border-indigo-500 text-indigo-600"
+                                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+                                  "whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
+                                )}
+                              >
+                                {tab.name}
+                              </a>
+                            ))}
+                          </nav>
+                        </div>
+                      </div>
+
+                      <ul
+                        role="list"
+                        className="flex-1 divide-y divide-gray-200 overflow-y-auto"
+                      >
+                        {team.map((person) => (
+                          <li key={person.handle}>
+                            <div className="group relative flex items-center py-6 px-5">
+                              <a
+                                href={person.href}
+                                className="-m-1 block flex-1 p-1"
+                              >
+                                <div
+                                  className="absolute inset-0 group-hover:bg-gray-50"
+                                  aria-hidden="true"
+                                />
+                                <div className="relative flex min-w-0 flex-1 items-center">
+                                  <span className="relative inline-block flex-shrink-0">
+                                    <img
+                                      className="h-10 w-10 rounded-full"
+                                      src={person.imageUrl}
+                                      alt=""
+                                    />
+                                    <span
+                                      className={classNames(
+                                        person.status === "online"
+                                          ? "bg-green-400"
+                                          : "bg-gray-300",
+                                        "absolute top-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white"
+                                      )}
+                                      aria-hidden="true"
+                                    />
+                                  </span>
+                                  <div className="ml-4 truncate">
+                                    <p className="truncate text-sm font-medium text-gray-900">
+                                      {person.name}
+                                    </p>
+                                    <p className="truncate text-sm text-gray-500">
+                                      {"@" + person.handle}
+                                    </p>
+                                  </div>
+                                </div>
+                              </a>
+                              <Menu
+                                as="div"
+                                className="relative ml-2 inline-block flex-shrink-0 text-left"
+                              >
+                                <Menu.Button className="group relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                  <span className="sr-only">
+                                    Open options menu
+                                  </span>
+                                  <span className="flex h-full w-full items-center justify-center rounded-full">
+                                    <HiDotsVertical
+                                      className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
+                                      aria-hidden="true"
+                                    />
+                                  </span>
+                                </Menu.Button>
+                                <Transition
+                                  as={Fragment}
+                                  enter="transition ease-out duration-100"
+                                  enterFrom="transform opacity-0 scale-95"
+                                  enterTo="transform opacity-100 scale-100"
+                                  leave="transition ease-in duration-75"
+                                  leaveFrom="transform opacity-100 scale-100"
+                                  leaveTo="transform opacity-0 scale-95"
+                                >
+                                  <Menu.Items className="absolute top-0 right-9 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                    <div className="py-1">
+                                      <Menu.Item>
+                                        {({ active }) => (
+                                          <a
+                                            href="#"
+                                            className={classNames(
+                                              active
+                                                ? "bg-gray-100 text-gray-900"
+                                                : "text-gray-700",
+                                              "block px-4 py-2 text-sm"
+                                            )}
+                                          >
+                                            View profile
+                                          </a>
+                                        )}
+                                      </Menu.Item>
+                                      <Menu.Item>
+                                        {({ active }) => (
+                                          <a
+                                            href="#"
+                                            className={classNames(
+                                              active
+                                                ? "bg-gray-100 text-gray-900"
+                                                : "text-gray-700",
+                                              "block px-4 py-2 text-sm"
+                                            )}
+                                          >
+                                            Send message
+                                          </a>
+                                        )}
+                                      </Menu.Item>
+                                    </div>
+                                  </Menu.Items>
+                                </Transition>
+                              </Menu>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </div>
+        </Dialog>
+      </Transition.Root>
+
       <div className="flex h-screen flex-col justify-between">
         {/* Header Nav: Start */}
         <header className="border-grey z-80 sticky top-0 grid h-14 w-full grid-cols-8 grid-rows-1 border-b p-4 text-center">
@@ -209,9 +410,11 @@ const ListPage: NextPage = () => {
           </div>
           {/* Share Form Link */}
           <div className="col-start-7 row-start-1 flex flex-col items-end">
-            <Link
-              href="/share"
+            <button
+              //href="/share"
               //onClick={() => dispatch(setActiveItems(*all items attached to active list))}
+
+              onClick={() => setOpen(true)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -227,7 +430,7 @@ const ListPage: NextPage = () => {
                   d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
                 />
               </svg>
-            </Link>
+            </button>
           </div>
           {/* Options */}
           <div className="col-start-8 row-start-1 flex flex-col items-end">
@@ -249,7 +452,7 @@ const ListPage: NextPage = () => {
           </div>
         </header>
         {/* Header Nav: End */}
-        <div className="z-0 m-2 grid h-full grid-flow-row auto-rows-max items-center overflow-scroll p-2">
+        <div className="z-0 m-2 grid h-full grid-flow-row auto-rows-max items-center overflow-hidden p-2">
           <div className="relative grid">
             <div className="items-center py-1 text-center">
               <h3 className="mb-4 text-lg font-semibold">{currentTitle}</h3>
