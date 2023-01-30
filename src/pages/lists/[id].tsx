@@ -354,6 +354,7 @@ const ListPage: NextPage = () => {
                           <input
                             type="search"
                             id="friend-search"
+                            autoComplete="off"
                             className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 "
                             placeholder="Search for Friends..."
                             onChange={(e) => setSearchTerm(e.target.value)}
