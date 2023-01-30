@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm, type Resolver } from "react-hook-form";
@@ -34,6 +35,7 @@ const resolver: Resolver<AddItemSchema> = async (values) => {
 };
 
 const ListPage: NextPage = () => {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [showTextInput, setShowTextInput] = useState(false);
@@ -45,6 +47,8 @@ const ListPage: NextPage = () => {
   const [showAdd, setShowAdd] = React.useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const listId = router.query.id as string;
+
+  const { users } = useAppSelector((state) => state.user);
 
   // const listItems = [
   //   { id: 123, title: "item1" },
@@ -206,6 +210,66 @@ const ListPage: NextPage = () => {
 
   //FooterNav - moved in here cause of specific state management needed
 
+  //!Searching for Friends/users logic
+
+  //search Function
+  const [filteredResults, setFilteredResults] = useState<any>([]);
+
+  // Debounce Search Users Input
+
+  //type SomeFunction = (...args: any[]) => void;
+
+  function useDebounce<T>(value: T, delay: number): T {
+    const timer = useRef<T>();
+
+    //TODO: might need to change UseState to a ref to handle react batching
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+    useEffect(
+      () => {
+        // Update debounced value after delay
+        const handler = setTimeout(() => {
+          setDebouncedValue(value);
+        }, delay);
+        // Cancel the timeout if value changes (also on delay change or unmount)
+        // This is how we prevent debounced value from updating if value is changed ...
+        // .. within the delay period. Timeout gets cleared and restarted.
+        return () => {
+          clearTimeout(handler);
+        };
+      },
+      [value, delay] // Only re-call effect if value or delay changes
+    );
+
+    return debouncedValue;
+  }
+
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
+  const debouncedSearchTerm: string = useDebounce<string>(searchTerm, 500);
+  //console.log("debouncedSearchTerm: ", debouncedSearchTerm);
+
+  const currentUser = users?.filter((i) => i.id === session?.user?.id);
+  const usersNotCurrent = users?.filter((i) => i.id !== session?.user?.id);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      const filteredUsers = usersNotCurrent?.filter((user) => {
+        return Object.values(user)
+          .join("")
+          .toLowerCase()
+          .includes(debouncedSearchTerm.toLowerCase());
+      });
+
+      setFilteredResults(filteredUsers);
+      //console.log("filteredUsers: ", filteredUsers);
+
+      //searchdata
+    } else {
+      setFilteredResults([]);
+    }
+  }, [debouncedSearchTerm]);
+
+  //main Function
   return (
     <>
       <Transition.Root show={open} as={Fragment}>
@@ -225,7 +289,7 @@ const ListPage: NextPage = () => {
                   leaveTo="translate-y-full"
                 >
                   <Dialog.Panel className="max-w pointer-events-auto w-screen">
-                    <div className="flex h-full flex-col overflow-hidden bg-white shadow-xl ">
+                    <div className="flex h-full flex-col  bg-white shadow-xl ">
                       <div className="p-6">
                         <div className="flex items-start justify-between">
                           <Dialog.Title className="text-lg font-medium text-gray-900">
@@ -267,112 +331,102 @@ const ListPage: NextPage = () => {
                         </div>
                       </div>
 
-                      <ul
-                        role="list"
-                        className="flex-1 divide-y divide-gray-200 overflow-y-auto"
-                      >
-                        {team.map((person) => (
-                          <li key={person.handle}>
-                            <div className="group relative flex items-center py-6 px-5">
-                              <a
-                                href={person.href}
-                                className="-m-1 block flex-1 p-1"
+                      {/* Start - Search for Friend/Person to share list with */}
+                      {/* Bring from profile page component the share logic over - will need to slightly tweak parts of it to add in a favor friends aspect. Will most likely use the logic from the seperate tabs (friends/pending/sent) most notably the friends tab to prioritize those users */}
+                      <form>
+                        <div className="relative flex flex-col">
+                          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth={1.5}
+                              stroke="currentColor"
+                              className="h-6 w-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                              />
+                            </svg>
+                          </div>
+                          <input
+                            type="search"
+                            id="friend-search"
+                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 "
+                            placeholder="Search for Friends..."
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                          />
+                          {/* <button
+                    type="submit"
+                    className="absolute right-2.5 bottom-2.5 rounded-lg bg-black/80 px-4 py-2 text-sm font-medium text-white"
+                  >
+                    Search
+                  </button> */}
+                        </div>
+                        {/* Display Users from Search */}
+                        <div>
+                          {filteredResults ? (
+                            <div className="flex flex-col">
+                              <ul
+                                role="list"
+                                className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
                               >
-                                <div
-                                  className="absolute inset-0 group-hover:bg-gray-50"
-                                  aria-hidden="true"
-                                />
-                                <div className="relative flex min-w-0 flex-1 items-center">
-                                  <span className="relative inline-block flex-shrink-0">
-                                    <img
-                                      className="h-10 w-10 rounded-full"
-                                      src={person.imageUrl}
-                                      alt=""
-                                    />
-                                    <span
-                                      className={classNames(
-                                        person.status === "online"
-                                          ? "bg-green-400"
-                                          : "bg-gray-300",
-                                        "absolute top-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white"
-                                      )}
-                                      aria-hidden="true"
-                                    />
-                                  </span>
-                                  <div className="ml-4 truncate">
-                                    <p className="truncate text-sm font-medium text-gray-900">
-                                      {person.name}
-                                    </p>
-                                    <p className="truncate text-sm text-gray-500">
-                                      {"@" + person.handle}
-                                    </p>
-                                  </div>
-                                </div>
-                              </a>
-                              <Menu
-                                as="div"
-                                className="relative ml-2 inline-block flex-shrink-0 text-left"
-                              >
-                                <Menu.Button className="group relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                  <span className="sr-only">
-                                    Open options menu
-                                  </span>
-                                  <span className="flex h-full w-full items-center justify-center rounded-full">
-                                    <HiDotsVertical
-                                      className="h-5 w-5 text-gray-400 group-hover:text-gray-500"
-                                      aria-hidden="true"
-                                    />
-                                  </span>
-                                </Menu.Button>
-                                <Transition
-                                  as={Fragment}
-                                  enter="transition ease-out duration-100"
-                                  enterFrom="transform opacity-0 scale-95"
-                                  enterTo="transform opacity-100 scale-100"
-                                  leave="transition ease-in duration-75"
-                                  leaveFrom="transform opacity-100 scale-100"
-                                  leaveTo="transform opacity-0 scale-95"
-                                >
-                                  <Menu.Items className="absolute top-0 right-9 z-10 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                    <div className="py-1">
-                                      <Menu.Item>
-                                        {({ active }) => (
-                                          <a
-                                            href="#"
-                                            className={classNames(
-                                              active
-                                                ? "bg-gray-100 text-gray-900"
-                                                : "text-gray-700",
-                                              "block px-4 py-2 text-sm"
-                                            )}
-                                          >
-                                            View profile
-                                          </a>
-                                        )}
-                                      </Menu.Item>
-                                      <Menu.Item>
-                                        {({ active }) => (
-                                          <a
-                                            href="#"
-                                            className={classNames(
-                                              active
-                                                ? "bg-gray-100 text-gray-900"
-                                                : "text-gray-700",
-                                              "block px-4 py-2 text-sm"
-                                            )}
-                                          >
-                                            Send message
-                                          </a>
-                                        )}
-                                      </Menu.Item>
+                                {filteredResults.map((user: any, key: any) => (
+                                  <li key={key}>
+                                    <div className="group relative flex items-center py-6 px-5">
+                                      <a className="-m-1 block flex-1 p-1">
+                                        <div
+                                          className="absolute "
+                                          aria-hidden="true"
+                                        />
+                                        <div className="relative flex min-w-0 flex-1 items-center">
+                                          <span className="relative inline-block flex-shrink-0">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              strokeWidth={1.5}
+                                              stroke="currentColor"
+                                              className="h-6 w-6"
+                                            >
+                                              <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                                              />
+                                            </svg>
+                                          </span>
+                                          <div className="ml-4 truncate">
+                                            <p className="truncate text-sm font-medium text-gray-900">
+                                              {user.username}
+                                            </p>
+                                            <p className="truncate text-sm text-gray-500">
+                                              {user.email}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </a>
+                                      <div className="ml-4 border-2">
+                                        <button
+                                          className="hover:bg-green-200"
+                                          onClick={() =>
+                                            console.log("send list")
+                                          }
+                                        >
+                                          Send
+                                        </button>
+                                      </div>
                                     </div>
-                                  </Menu.Items>
-                                </Transition>
-                              </Menu>
+                                  </li>
+                                ))}
+                              </ul>
                             </div>
-                          </li>
-                        ))}
-                      </ul>
+                          ) : null}
+                        </div>
+                      </form>
+                      {/* End - Search for Friend/Person to share list with */}
                     </div>
                   </Dialog.Panel>
                 </Transition.Child>
@@ -452,7 +506,7 @@ const ListPage: NextPage = () => {
           </div>
         </header>
         {/* Header Nav: End */}
-        <div className="z-0 m-2 grid h-full grid-flow-row auto-rows-max items-center overflow-hidden p-2">
+        <div className="z-0 m-2 grid h-screen grid-flow-row auto-rows-max items-center overflow-hidden p-2">
           <div className="relative grid">
             <div className="items-center py-1 text-center">
               <h3 className="mb-4 text-lg font-semibold">{currentTitle}</h3>
