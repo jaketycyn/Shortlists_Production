@@ -274,10 +274,8 @@ const ListPage: NextPage = () => {
 
       console.log("filteredUsers: ", filteredUsers);
 
-      //setResults from usersNotCurrentWOIdEmail
-      //setFilteredResults(filteredUsers);
+      //? https://stackoverflow.com/questions/31005396/filter-array-of-objects-with-another-array-of-objects
       //setResults from a filtering of usernames from usersNotCurrentWOIdEmail but including emails/ids
-
       const newFilteredResults = usersNotCurrent?.filter((el) => {
         return filteredUsers?.some((u) => {
           return u.username === el.username;
