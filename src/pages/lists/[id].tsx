@@ -326,6 +326,7 @@ const ListPage: NextPage = () => {
   });
 
   console.log("filteredFriends", filteredFriends);
+  console.log("filteredResults", filteredResults);
   //main Function
   return (
     <>
@@ -430,7 +431,7 @@ const ListPage: NextPage = () => {
                         {/* Display Users from Search */}
                         {/* test */}
                         <div>
-                          {filteredResults ? (
+                          {filteredResults.length > 0 ? (
                             <div className="flex flex-col">
                               <ul
                                 role="list"
@@ -486,13 +487,15 @@ const ListPage: NextPage = () => {
                                 ))}
                               </ul>
                             </div>
-                          ) : filteredFriends ? (
+                          ) : filteredFriends!.length > 0 ||
+                            filteredFriends === undefined ||
+                            null ? (
                             <div className="flex flex-col">
                               <ul
                                 role="list"
                                 className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
                               >
-                                {filteredFriends.map((user: any, key: any) => (
+                                {filteredFriends!.map((user: any, key: any) => (
                                   <li key={key}>
                                     <div className="group relative flex items-center py-6 px-5">
                                       <a className="-m-1 block flex-1 p-1">
