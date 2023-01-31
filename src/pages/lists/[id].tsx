@@ -1,9 +1,15 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, {
+  Fragment,
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+} from "react";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useForm, type Resolver } from "react-hook-form";
+import { useForm, type Resolver, SubmitHandler } from "react-hook-form";
 
 import { HiPlus, HiX, HiDotsVertical } from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
@@ -13,11 +19,10 @@ import {
   type ArchiveItemSchema,
   type AddItemSchema,
 } from "../../server/schema/itemSchema";
+import { type ShareListSchema } from "../../server/schema/listSchema";
 import { type Item, setItems } from "../../slices/itemSlice";
 import ListFooterNav from "../../components/navigation/ListFooterNav";
 
-//imports for slidein
-import { Fragment } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 
 const resolver: Resolver<AddItemSchema> = async (values) => {
@@ -48,8 +53,12 @@ const ListPage: NextPage = () => {
   const [open, setOpen] = useState(false);
   const listId = router.query.id as string;
 
+  // Retrieve state variables from Redux
   const { users } = useAppSelector((state) => state.user);
-
+  const { items } = useAppSelector((state) => state.item);
+  const { activeList, lists, error, loading } = useAppSelector(
+    (state) => state.list
+  );
   // const listItems = [
   //   { id: 123, title: "item1" },
   //   { id: 456, title: "item2" },
@@ -180,10 +189,6 @@ const ListPage: NextPage = () => {
 
   //TODO: Share Items
 
-  //Retrieve items through redux
-  const { items } = useAppSelector((state) => state.item);
-  //Retrieve lists through redux
-  const { lists, error, loading } = useAppSelector((state) => state.list);
   //console.log("lists inside [id]: ", lists);
 
   const Listindex = lists?.findIndex((item) => item.id === listId);
@@ -317,7 +322,9 @@ const ListPage: NextPage = () => {
     (r) => r.status === "friend"
   );
 
-  console.log("usersWithStatusFriend: ", usersWithStatusFriend);
+  //console.log("usersWithStatusFriend: ", usersWithStatusFriend);
+
+  //TODO: Add more indicators of friend strength or recency to change which friends are shown first or in higher priority
 
   const filteredFriends = usersNotCurrent?.filter((el) => {
     return usersWithStatusFriend?.some((u) => {
@@ -325,8 +332,64 @@ const ListPage: NextPage = () => {
     });
   });
 
-  console.log("filteredFriends", filteredFriends);
-  console.log("filteredResults", filteredResults);
+  //console.log("filteredFriends", filteredFriends);
+  //console.log("filteredResults", filteredResults);
+
+  // share function
+
+  const { mutateAsync: mutateShareListAsync } =
+    trpc.userList.shareList.useMutation();
+
+  const shareListOnSubmit = useCallback(
+    async (data: ShareListSchema) => {
+      try {
+        const { email, id, name } = data;
+        data.targetEmail = email;
+        data.listId = activeList!.id;
+        data.listTitle = activeList!.title;
+        data.userId = activeList!.userId;
+
+        console.log("email: ", email);
+        if (items) {
+          //filter out archived/trash items so they aren't sent/copied over
+          const filteredItems = items.filter(
+            (i) => i.archive == "archive" || "trash"
+          );
+          console.log("filteredItems: ", filteredItems);
+
+          data.items = filteredItems;
+          console.log("data.items: ", data.items);
+          const result = await mutateShareListAsync(data);
+          console.log("result in Onsubmit share form: ", result);
+          //old toast notification for sending
+          // if (result) {
+          //   setShowToast(true);
+          //   setTimeout(() => {
+          //     setShowToast(false);
+          //   }, 1000);
+          // }
+        } else {
+          const result = await mutateShareListAsync(data);
+          console.log("result in Onsubmit share form: ", result);
+          //old toast notification for sending
+          // if (result) {
+          //   setShowToast(true);
+          //   setTimeout(() => {
+          //     setShowToast(false);
+          //   }, 1000);
+          // }
+          //redirection if needed
+          // setTimeout(() => {
+          //   router.push("/");
+          // }, 500);
+        }
+        //setShowToast(false);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [mutateShareListAsync]
+  );
   //main Function
   return (
     <>
@@ -473,11 +536,11 @@ const ListPage: NextPage = () => {
                                         </div>
                                       </a>
                                       <div className="ml-4 border-2">
+                                        {/* //! Actually send Data to users on button press - prevent default of reloading page on sending once */}
                                         <button
                                           className="hover:bg-green-200"
-                                          onClick={() =>
-                                            console.log("send list")
-                                          }
+                                          type="button"
+                                          onClick={() => handleSubmit(onSubmit)}
                                         >
                                           Send
                                         </button>
@@ -533,8 +596,9 @@ const ListPage: NextPage = () => {
                                       <div className="ml-4 border-2">
                                         <button
                                           className="hover:bg-green-200"
+                                          type="button"
                                           onClick={() =>
-                                            console.log("send list")
+                                            shareListOnSubmit(user)
                                           }
                                         >
                                           Send
