@@ -289,6 +289,43 @@ const ListPage: NextPage = () => {
     }
   }, [debouncedSearchTerm]);
 
+  //getFriendShipQuery
+  const { data: friendshipData, refetch: refetchFriendships } =
+    trpc.friendship.getFriendships.useQuery();
+  //console.log("data from Friendships: ", friendshipData);
+  const friendshipExist = true;
+
+  const friendshipExistFunction = (userId: string) => {
+    const status = friendshipData?.results.filter(
+      (user) => user.senderId === userId || user.receiverId === userId
+    );
+    //console.log("status: ", status);
+    if (status?.length === 1) {
+      if (status[0]?.status === "pending") {
+        const response = "added";
+        return response;
+      }
+      if (status[0]?.status === "friend") {
+      }
+      return false;
+    }
+  };
+
+  //friends
+  //console.log("users: ", users);
+  const usersWithStatusFriend = friendshipData?.results.filter(
+    (r) => r.status === "friend"
+  );
+
+  console.log("usersWithStatusFriend: ", usersWithStatusFriend);
+
+  const filteredFriends = usersNotCurrent?.filter((el) => {
+    return usersWithStatusFriend?.some((u) => {
+      return u.receiverId === el.id || u.senderId === el.id;
+    });
+  });
+
+  console.log("filteredFriends", filteredFriends);
   //main Function
   return (
     <>
@@ -319,7 +356,10 @@ const ListPage: NextPage = () => {
                             <button
                               type="button"
                               className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
-                              onClick={() => setOpen(false)}
+                              onClick={() => {
+                                setOpen(false);
+                                setSearchTerm("");
+                              }}
                             >
                               <span className="sr-only">Close panel</span>
                               <HiX className="h-6 w-6" aria-hidden="true" />
@@ -327,7 +367,8 @@ const ListPage: NextPage = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="border-b border-gray-200">
+                      {/* Tabs for future */}
+                      {/* <div className="border-b border-gray-200">
                         <div className="px-6">
                           <nav
                             className="-mb-px flex space-x-6"
@@ -349,7 +390,7 @@ const ListPage: NextPage = () => {
                             ))}
                           </nav>
                         </div>
-                      </div>
+                      </div> */}
 
                       {/* Start - Search for Friend/Person to share list with */}
                       {/* Bring from profile page component the share logic over - will need to slightly tweak parts of it to add in a favor friends aspect. Will most likely use the logic from the seperate tabs (friends/pending/sent) most notably the friends tab to prioritize those users */}
@@ -396,6 +437,62 @@ const ListPage: NextPage = () => {
                                 className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
                               >
                                 {filteredResults.map((user: any, key: any) => (
+                                  <li key={key}>
+                                    <div className="group relative flex items-center py-6 px-5">
+                                      <a className="-m-1 block flex-1 p-1">
+                                        <div
+                                          className="absolute "
+                                          aria-hidden="true"
+                                        />
+                                        <div className="relative flex min-w-0 flex-1 items-center">
+                                          <span className="relative inline-block flex-shrink-0">
+                                            <svg
+                                              xmlns="http://www.w3.org/2000/svg"
+                                              fill="none"
+                                              viewBox="0 0 24 24"
+                                              strokeWidth={1.5}
+                                              stroke="currentColor"
+                                              className="h-6 w-6"
+                                            >
+                                              <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                                              />
+                                            </svg>
+                                          </span>
+                                          <div className="ml-4 truncate">
+                                            <p className="truncate text-sm font-medium text-gray-900">
+                                              {user.username}
+                                            </p>
+                                            <p className="truncate text-sm text-gray-500">
+                                              {user.email}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </a>
+                                      <div className="ml-4 border-2">
+                                        <button
+                                          className="hover:bg-green-200"
+                                          onClick={() =>
+                                            console.log("send list")
+                                          }
+                                        >
+                                          Send
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : filteredFriends ? (
+                            <div className="flex flex-col">
+                              <ul
+                                role="list"
+                                className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
+                              >
+                                {filteredFriends.map((user: any, key: any) => (
                                   <li key={key}>
                                     <div className="group relative flex items-center py-6 px-5">
                                       <a className="-m-1 block flex-1 p-1">
