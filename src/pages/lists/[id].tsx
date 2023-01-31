@@ -251,19 +251,41 @@ const ListPage: NextPage = () => {
   const currentUser = users?.filter((i) => i.id === session?.user?.id);
   const usersNotCurrent = users?.filter((i) => i.id !== session?.user?.id);
 
+  //console.log("usersNotCurrent: ," + JSON.stringify(usersNotCurrent, 0, 2));
+
   useEffect(() => {
     if (debouncedSearchTerm) {
-      const filteredUsers = usersNotCurrent?.filter((user) => {
+      //changes usersNotCurrent to not include id - prevents the odd issue of the debounce term showing names that do not match the lettering typed into the search bar:
+      //ex: typing in "l" looking for levi and seeing sarah because her Id contains an 'l'
+      //decided to exclude emails as well since the letters in gmail or yahoo, etc would be included in search. Can look into changing this later if people go for more funky names, or having a separate lookup of email for sending.
+      const usersNotCurrentWOIdEmail = usersNotCurrent?.map(
+        ({ id, email, ...rest }) => ({
+          ...rest,
+        })
+      );
+
+      //console.log("newFilteredUsers: ," + JSON.stringify(newFilteredUsers, 0, 2));
+      const filteredUsers = usersNotCurrentWOIdEmail?.filter((user) => {
         return Object.values(user)
           .join("")
           .toLowerCase()
           .includes(debouncedSearchTerm.toLowerCase());
       });
 
-      setFilteredResults(filteredUsers);
-      //console.log("filteredUsers: ", filteredUsers);
+      console.log("filteredUsers: ", filteredUsers);
 
-      //searchdata
+      //setResults from usersNotCurrentWOIdEmail
+      //setFilteredResults(filteredUsers);
+      //setResults from a filtering of usernames from usersNotCurrentWOIdEmail but including emails/ids
+
+      const newFilteredResults = usersNotCurrent?.filter((el) => {
+        return filteredUsers?.some((u) => {
+          return u.username === el.username;
+        });
+      });
+      console.log("newFilteredResults: ", newFilteredResults);
+
+      setFilteredResults(newFilteredResults);
     } else {
       setFilteredResults([]);
     }
