@@ -341,9 +341,9 @@ const ListPage: NextPage = () => {
     trpc.userList.shareList.useMutation();
 
   const shareListOnSubmit = useCallback(
-    async (data: ShareListSchema) => {
+    async (data: any) => {
       try {
-        const { email, id, name } = data;
+        const { email } = data;
         data.targetEmail = email;
         data.listId = activeList!.id;
         data.listTitle = activeList!.title;
