@@ -12,6 +12,8 @@ export interface Item {
   createdAt: Date;
   //could add createdAt: string | Date
   // for now swapping it fully over to string since it gets converted to string on import
+  initialRanking: null | number;
+  currentRanking: null | number;
 }
 
 //the entire Items state (all things attributed to items)
@@ -38,6 +40,7 @@ export const itemSlice = createSlice({
     setItems: (state, action: PayloadAction<Item[]>) => {
       state.items = action.payload;
     },
+    setItemRank: (state, action: PayloadAction<Item>) => {},
   },
 });
 

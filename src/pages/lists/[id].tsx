@@ -24,6 +24,7 @@ import { type Item, setItems } from "../../slices/itemSlice";
 import ListFooterNav from "../../components/navigation/ListFooterNav";
 
 import { Dialog, Menu, Transition } from "@headlessui/react";
+import { RankItems } from "../../components/RankItems";
 
 const resolver: Resolver<AddItemSchema> = async (values) => {
   return {
@@ -496,6 +497,7 @@ const ListPage: NextPage = () => {
                         <div>
                           {filteredResults.length > 0 ? (
                             <div className="flex flex-col">
+                              <p>hi</p>
                               <ul
                                 role="list"
                                 className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
@@ -648,6 +650,7 @@ const ListPage: NextPage = () => {
           <div className="col-span-2 col-start-3 row-start-1 w-full items-center justify-between text-center">
             {lists ? <h1> {currentTitle}</h1> : null}
           </div>
+
           {/* Share Form Link */}
           <div className="col-start-7 row-start-1 flex flex-col items-end">
             <button
@@ -696,6 +699,7 @@ const ListPage: NextPage = () => {
           <div className="relative grid">
             <div className="items-center py-1 text-center">
               <h3 className="mb-4 text-lg font-semibold">{currentTitle}</h3>
+              <RankItems />
 
               {/* https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type */}
               {/* react fragments solve error  */}
@@ -783,10 +787,8 @@ const ListPage: NextPage = () => {
                   ))
                 )}
               </>
-
               {/*   Display Items Module: End */}
               {/*   Add Item Module: Start */}
-
               <div className="text-gray-dark my-8 items-center rounded">
                 <button
                   className={`cursor pointer btn-wide btn mt-8   justify-center rounded-lg border-2 border-solid border-black bg-primary p-2 hover:bg-gray-400 ${
