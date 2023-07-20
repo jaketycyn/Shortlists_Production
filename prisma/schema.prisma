@@ -74,6 +74,8 @@ model UserItem {
   userId    String
   listId    String
   archive   String?  @default("undefined")
+  currentRank Int @default(0)
+  initialRank Int @default(0)
   userList  UserList @relation(fields: [listId], references: [id])
   user      User     @relation(fields: [userId], references: [id])
 }
