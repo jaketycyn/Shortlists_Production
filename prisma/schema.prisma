@@ -68,16 +68,16 @@ model VerificationToken {
 }
 
 model UserItem {
-  id        String   @id @default(cuid())
-  title     String
-  createdAt DateTime @default(now())
-  userId    String
-  listId    String
-  archive   String?  @default("undefined")
-  currentRank Int @default(0)
-  initialRank Int @default(0)
-  userList  UserList @relation(fields: [listId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  id            String   @id @default(cuid())
+  title         String
+  createdAt     DateTime @default(now())
+  userId        String
+  listId        String
+  archive       String?  @default("undefined")
+  currentRank   Int      @default(0)
+  potentialRank Int      @default(0)
+  userList      UserList @relation(fields: [listId], references: [id])
+  user          User     @relation(fields: [userId], references: [id])
 }
 
 model UserList {
@@ -89,8 +89,8 @@ model UserList {
   parentListId     String?    @default("undefined")
   parentListUserId String?    @default("undefined")
   category         String?    @default("undefined")
-  user             User       @relation(fields: [userId], references: [id])
   UserItem         UserItem[]
+  user             User       @relation(fields: [userId], references: [id])
 }
 
 model Friendship {
