@@ -1,9 +1,11 @@
+import { Item } from "./itemSlice";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { trpc } from "../utils/trpc";
 
 // individual item
 export interface Item {
+  listId: string | undefined;
   id: string;
   userId: string;
   title: string;
@@ -12,8 +14,8 @@ export interface Item {
   createdAt: Date;
   //could add createdAt: string | Date
   // for now swapping it fully over to string since it gets converted to string on import
-  initialRanking: null | number;
-  currentRanking: null | number;
+  potentialRank: null | number;
+  currentRank: null | number;
 }
 
 //the entire Items state (all things attributed to items)
@@ -40,9 +42,16 @@ export const itemSlice = createSlice({
     setItems: (state, action: PayloadAction<Item[]>) => {
       state.items = action.payload;
     },
-    setItemRank: (state, action: PayloadAction<Item>) => {},
+    //change current item Rank
+    setItemPotentialRank: (state, action: PayloadAction<Object>) => {
+      const { index, rank } = action.payload;
+      console.log("hi - inside itemSlice", action.payload);
+      console.log("index", index);
+      console.log("rank", rank);
+      state.items[index].potentialRank = rank;
+    },
   },
 });
 
 export default itemSlice.reducer;
-export const { setItems } = itemSlice.actions;
+export const { setItems, setItemPotentialRank } = itemSlice.actions;
