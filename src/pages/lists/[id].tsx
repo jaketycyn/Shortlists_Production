@@ -20,7 +20,7 @@ import {
   type AddItemSchema,
 } from "../../server/schema/itemSchema";
 import { type ShareListSchema } from "../../server/schema/listSchema";
-import { type Item, setItems } from "../../slices/itemSlice";
+import { type Item, resetItemsTest, setItems } from "../../slices/itemSlice";
 import ListFooterNav from "../../components/navigation/ListFooterNav";
 
 import { Dialog, Menu, Transition } from "@headlessui/react";
@@ -700,6 +700,12 @@ const ListPage: NextPage = () => {
             <div className="items-center py-1 text-center">
               <h3 className="mb-4 text-lg font-semibold">{currentTitle}</h3>
               <RankItems />
+              <div
+                className="bg-pink-400"
+                onClick={() => dispatch(resetItemsTest())}
+              >
+                resetItemsTest
+              </div>
 
               {/* https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type */}
               {/* react fragments solve error  */}

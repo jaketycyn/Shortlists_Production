@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useSession } from "next-auth/react";
 
@@ -19,18 +19,21 @@ import {
   type Item,
   setItems,
   setItemPotentialRank,
+  setInitialItemsPotentialRank,
 } from "../../slices/itemSlice";
 import ListFooterNav from "../../components/navigation/ListFooterNav";
 
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { current } from "@reduxjs/toolkit";
 import { AnyAaaaRecord } from "dns";
+import { match } from "assert";
 
 const ranking = () => {
   //imports - remove unnecsarry later
   const { data: session, status } = useSession();
   const router = useRouter();
   const dispatch = useAppDispatch();
+
   const [showTextInput, setShowTextInput] = useState(false);
   const [showItemOptions, setShowItemOptions] = useState(false);
   const [activeItemIndex, setActiveItemIndex] = useState<any>();
@@ -48,6 +51,8 @@ const ranking = () => {
   const { activeList, lists, error, loading } = useAppSelector(
     (state) => state.list
   );
+
+  let contentText;
 
   //console.log("lists inside [id]: ", lists);
 
@@ -67,37 +72,62 @@ const ranking = () => {
   const rankedItems = items?.filter(
     (i) => i.potentialRank !== null && i.potentialRank > 0
   );
-  console.log("rankedItems:", JSON.stringify(rankedItems, 0, 2));
+  //?console.log("rankedItems:", JSON.stringify(rankedItems, 0, 2));
 
   const unRankedItems = items?.filter(
     (i) =>
       i.potentialRank !== null && i.potentialRank === 0 && i.currentRank === 0
   );
-  console.log("unRankedItems:", JSON.stringify(unRankedItems, 0, 2));
+  //?console.log("unRankedItems:", JSON.stringify(unRankedItems, 0, 2));
 
-  //? sorting algo:
+  //* sorting algo:
   const sortingAlgo = () => {
     //use item base ranking
     //assign new ranking based upon ranking/selection & dependence
     //print that ranking/force refresh for new item
   };
 
-  const setItemPotentialRankTest = (currentItem: any, opponentItem: any) => {
-    let botBound = 1;
-    let topBound = 10000;
+  //!
+  //Going to keep logic outside the slice as much as possible and only pass to the slice information that is needed
+  // that info will be
+  //* Params needed for ranking:
+  // 1. itemId
+  // 2. itemWinStatus
+  // 3. ItemsHistory of opponents (separate table/column)
+  // 4. potential Opponents (separate table/column)
+  const changeRankUnrankedItems = (optionSelected: any) => {
+    let winningRank = 100000;
+    let losingRank = 10000;
 
-    console.log("currentItem,", currentItem);
-    console.log("opponentItem,", opponentItem);
+    console.log("unrankedMatchup", unrankedMatchup);
+    console.log("optionSelected: ", optionSelected);
+    //know both items are unranked can hardcore using bounds
+    if (unrankedMatchup.length >= 2) {
+      //find Index of Losing Option
+      const losingIndex = unrankedMatchup.findIndex(
+        (i: any) => i.id !== optionSelected.id
+      );
+      //assign Losing Option Variable
+      const losingOption = unrankedMatchup[losingIndex];
+      //console.log("losingOption: ", losingOption);
 
-    console.log("fired - setItemRank1Test ");
-    dispatch(setItemPotentialRank({ index: 1, rank: 0 }));
+      dispatch(
+        setInitialItemsPotentialRank({
+          optionSelected,
+          winningRank,
+          losingOption,
+          losingRank,
+        })
+      );
+      console.log("unranked matchup here");
+    }
   };
 
   /* Phase 1: Unranked vs Unranked */
 
-  let contentText;
-  let matchupSlotA;
-  let matchupSlotB;
+  let optionA: any;
+  let optionB: any;
+  let unrankedMatchup: any;
   // do we have any ranked items?
   if (rankedItems?.length === 0 || 1) {
     if (unRankedItems?.length === 0) {
@@ -105,8 +135,10 @@ const ranking = () => {
     } else if (unRankedItems?.length === 1) {
       contentText = "List is has only 1 item";
     } else {
-      matchupSlotA = unRankedItems?.[0];
-      matchupSlotB = unRankedItems?.[1];
+      unrankedMatchup = unRankedItems?.slice(0, 2);
+      //console.log("unrankedMatchup", unrankedMatchup);
+      optionA = unRankedItems?.[0];
+      optionB = unRankedItems?.[1];
     }
 
     return (
@@ -114,15 +146,15 @@ const ranking = () => {
         <p>{contentText}</p>
         <div
           className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => setItemPotentialRankTest(matchupSlotA, matchupSlotB)}
+          onClick={() => changeRankUnrankedItems(optionA)}
         >
-          {matchupSlotA && <div>{matchupSlotA?.title}</div>}
+          {optionA && <div>{optionA?.title}</div>}
         </div>
         <div
           className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => setItemPotentialRankTest(matchupSlotB, matchupSlotA)}
+          onClick={() => changeRankUnrankedItems(optionB)}
         >
-          {matchupSlotB && <div>{matchupSlotB?.title}</div>}
+          {optionB && <div>{optionB?.title}</div>}
         </div>
       </div>
     );
