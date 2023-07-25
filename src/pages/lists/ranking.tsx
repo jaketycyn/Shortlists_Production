@@ -72,20 +72,40 @@ const ranking = () => {
   const rankedItems = items?.filter(
     (i) => i.potentialRank !== null && i.potentialRank > 0
   );
-  //?console.log("rankedItems:", JSON.stringify(rankedItems, 0, 2));
+  // console.log("rankedItems:", JSON.stringify(rankedItems, 0, 2));
 
   const unRankedItems = items?.filter(
     (i) =>
       i.potentialRank !== null && i.potentialRank === 0 && i.currentRank === 0
   );
-  //?console.log("unRankedItems:", JSON.stringify(unRankedItems, 0, 2));
+  // console.log("unRankedItems:", JSON.stringify(unRankedItems, 0, 2));
 
-  //* sorting algo:
-  const sortingAlgo = () => {
-    //use item base ranking
-    //assign new ranking based upon ranking/selection & dependence
-    //print that ranking/force refresh for new item
+  const sortAlgo = (field: any, reverse: any, primer: any) => {
+    const key = primer
+      ? function (x: any) {
+          return primer(x[field]);
+        }
+      : function (x: any) {
+          return x[field];
+        };
+    reverse = !reverse ? 1 : -1;
+
+    return function (a: any, b: any) {
+      return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+    };
   };
+
+  const sortedRankedItems = rankedItems
+    .slice()
+    // false = reversed order ; lowest # is highest rank
+    .sort(sortAlgo("potentialRank", true, parseInt));
+  //console.log("sortedRankedItems: ", sortedRankedItems);
+
+  const topBound =
+    sortedRankedItems[sortedRankedItems.length - 1]?.potentialRank;
+  const botBound = sortedRankedItems[0]?.potentialRank;
+  // console.log("newTopBound - ", topBound);
+  // console.log("newBotBound - ", botBound);
 
   //!
   //Going to keep logic outside the slice as much as possible and only pass to the slice information that is needed
@@ -95,10 +115,7 @@ const ranking = () => {
   // 2. itemWinStatus
   // 3. ItemsHistory of opponents (separate table/column)
   // 4. potential Opponents (separate table/column)
-  const changeRankUnrankedItems = (optionSelected: any) => {
-    let winningRank = 100000;
-    let losingRank = 10000;
-
+  const changeRankUnrankedItems = (optionSelected: any, combatants: any) => {
     console.log("unrankedMatchup", unrankedMatchup);
     console.log("optionSelected: ", optionSelected);
     //know both items are unranked can hardcore using bounds
@@ -114,13 +131,28 @@ const ranking = () => {
       dispatch(
         setInitialItemsPotentialRank({
           optionSelected,
-          winningRank,
-          losingOption,
-          losingRank,
+          combatants,
         })
       );
       console.log("unranked matchup here");
     }
+  };
+
+  const changeRankUnrankedItemVsRanked = (
+    optionSelected: number,
+    optionB: any
+  ) => {
+    //console.log("newTopBound - ", topBound);
+    //console.log("newBotBound - ", botBound);
+
+    const combatants = [optionA, optionB];
+
+    dispatch(
+      setItemPotentialRank({
+        optionSelected,
+        combatants,
+      })
+    );
   };
 
   /* Phase 1: Unranked vs Unranked */
@@ -129,7 +161,7 @@ const ranking = () => {
   let optionB: any;
   let unrankedMatchup: any;
   // do we have any ranked items?
-  if (rankedItems?.length === 0 || 1) {
+  if (rankedItems?.length <= 1) {
     if (unRankedItems?.length === 0) {
       contentText = "List is Empty we need Items";
     } else if (unRankedItems?.length === 1) {
@@ -146,13 +178,46 @@ const ranking = () => {
         <p>{contentText}</p>
         <div
           className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => changeRankUnrankedItems(optionA)}
+          onClick={() => changeRankUnrankedItems(optionA, unrankedMatchup)}
         >
           {optionA && <div>{optionA?.title}</div>}
         </div>
         <div
           className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => changeRankUnrankedItems(optionB)}
+          onClick={() => changeRankUnrankedItems(optionB, unrankedMatchup)}
+        >
+          {optionB && <div>{optionB?.title}</div>}
+        </div>
+      </div>
+    );
+  } else {
+    // we have unranked items and ranked items
+
+    //Figuring Out Option A
+    if (unRankedItems.length >= 1) {
+      optionA = unRankedItems[0];
+    }
+    //Figuring Out Option B
+    //basic sort algo
+    // ref: https://stackoverflow.com/questions/979256/sorting-an-array-of-objects-by-property-values
+
+    const optionBIndex = Math.floor(sortedRankedItems.length / 2);
+    //console.log("sortedRankedItemsLength: ", sortedRankedItems.length);
+    const optionB = sortedRankedItems[optionBIndex];
+    //console.log("option B: ", optionB);
+
+    return (
+      <div className="flex h-full flex-col items-center space-y-4">
+        <p>{contentText}</p>
+        <div
+          className="h-20 w-40 bg-blue-400 p-2"
+          onClick={() => changeRankUnrankedItemVsRanked(0, optionB)}
+        >
+          {optionA && <div>{optionA?.title}</div>}
+        </div>
+        <div
+          className="h-20 w-40 bg-pink-400 p-2"
+          onClick={() => changeRankUnrankedItemVsRanked(1, optionB)}
         >
           {optionB && <div>{optionB?.title}</div>}
         </div>

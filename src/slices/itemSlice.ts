@@ -20,9 +20,9 @@ export interface Item {
 
 export interface UnrankedObject {
   optionSelected: Item[];
-  winningRank: Number;
+  winningRank: number;
   losingOption: Item[];
-  losingRank: Number;
+  losingRank: number;
 }
 
 //the entire Items state (all things attributed to items)
@@ -30,6 +30,12 @@ export interface ItemState {
   items: Item[];
   loading: boolean;
   error: any;
+  round: number;
+}
+
+export interface T {
+  optionSelected: number;
+  combatants: any;
 }
 
 //initializing state preloading of any data
@@ -37,6 +43,7 @@ const initialState: ItemState = {
   items: null,
   loading: false,
   error: null,
+  round: 0,
 };
 
 // ACTIONS
@@ -49,10 +56,10 @@ export const itemSlice = createSlice({
     //hardcoded reset items rank
     //keep for when server is pinged
     resetItemsTest: (state) => {
-      state.items[0].potentialRank = 0;
-      state.items[1].potentialRank = 0;
-      state.items[2].potentialRank = 0;
-      state.items[3].potentialRank = 0;
+      // state.items[0].potentialRank = 0;
+      // state.items[1].potentialRank = 0;
+      // state.items[2].potentialRank = 0;
+      // state.items[3].potentialRank = 0;
     },
 
     setItems: (state, action: PayloadAction<Item[]>) => {
@@ -60,61 +67,90 @@ export const itemSlice = createSlice({
     },
 
     //change current item Rank
-    setItemPotentialRank: (state, action: PayloadAction<Object>) => {
-      //! hard code test - begin
-      // const { index, rank } = action.payload;
-      // console.log("hi - inside itemSlice", action.payload);
-      // console.log("index", index);
-      // console.log("rank", rank);
-      // state.items[index].potentialRank = rank;
-      //! hard code test - end
-      console.log("payload received - ", action.payload);
+    setItemPotentialRank: (state, action: PayloadAction<T>) => {
+      console.log("action.payload - setItemPotentialRank: ", action.payload);
 
-      //modifiying winning option
-      if (action.payload.optionSelected) {
-        console.log("optionSelected exists");
-        //find Item matching Option Selected
-        // const foundItem = state.items?.find(
-        //   (i) => i.id === action.payload.optionSelected.id
-        // );
-        //console.log("found Item: ", JSON.stringify(foundItem, 0, 2));
-        const foundItemIndex = state.items?.findIndex(
-          (i) => i.id === action.payload.optionSelected.id
-        );
-        console.log(
-          "found foundItemIndex: ",
-          JSON.stringify(foundItemIndex, 0, 2)
-        );
+      const sortAlgo = (field: any, reverse: any, primer: any) => {
+        const key = primer
+          ? function (x: any) {
+              return primer(x[field]);
+            }
+          : function (x: any) {
+              return x[field];
+            };
+        reverse = !reverse ? 1 : -1;
 
-        state.items[foundItemIndex].potentialRank = action.payload.rank;
-      }
+        return function (a: any, b: any) {
+          return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
+        };
+      };
 
-      //modifying losing option (only for 2 unranked items)
-      if (action.payload.losingUnrankedOption) {
-        // console.log(
-        //   "losingOption exists",
-        //   action.payload.losingUnrankedOption[0].id
-        // );
-        //find Item matching Option Selected
+      const rankedSortedItems = state.items
+        .filter((i) => i.potentialRank >= 1)
+        .slice()
+        .sort(sortAlgo("potentialRank", true, parseInt));
 
-        // const foundItem = state.items?.find(
-        //   (i) => i.id === action.payload.losingUnrankedOption[0].id
-        // );
-        //console.log("found Item: ", JSON.stringify(foundItem, 0, 2));
-        const foundItemIndex = state.items?.findIndex(
-          (i) => i.id === action.payload.losingUnrankedOption[0].id
-        );
-        console.log(
-          "lost foundItemIndex: ",
-          JSON.stringify(foundItemIndex, 0, 2)
-        );
+      // declaring variables based on action.payload
+      const optionA = action.payload.combatants[0];
+      const optionB = action.payload.combatants[1];
+      const optionSelected = action.payload.optionSelected;
+      const optionAIndex = state.items.findIndex((i) => i.id === optionA.id);
+      const optionBIndex = state.items.findIndex((i) => i.id === optionB.id);
+      // console.log("OptionA: " + JSON.stringify(optionA, 0, 2));
+      // console.log("OptionB: " + JSON.stringify(optionB, 0, 2));
 
-        console.log(
-          "asdfasdfasf - ",
-          action.payload.losingUnrankedOption.losingRank
-        );
+      state.round = 0;
 
-        //state.items[foundItemIndex].potentialRank = action.payload.losingRank;
+      //unranked vs ranked
+      if (optionA.potentialRank === 0 && optionB.potentialRank !== 0) {
+        // console.log("inside unranked vs ranked");
+        state.round += 1;
+        if (optionSelected === 0) {
+          //console.log("top selected");
+          // console.log(
+          //   "rankedSortedItems: ",
+          //   JSON.parse(JSON.stringify(rankedSortedItems))
+          // );
+          // console.log("all items: ", JSON.parse(JSON.stringify(state.items)));
+          // console.log(
+          //   "optionAIndex: ",
+          //   JSON.parse(JSON.stringify(optionAIndex))
+          // );
+          // console.log(
+          //   "optionBIndex: ",
+          //   JSON.parse(JSON.stringify(optionBIndex))
+          // );
+
+          //assign new potential rank
+          const newPotentialRank =
+            (rankedSortedItems[optionBIndex]?.potentialRank +
+              rankedSortedItems[optionBIndex - 1]?.potentialRank) /
+            2;
+
+          console.log(
+            "state.items[optionAIndex]?.potentialRank",
+            state.items[optionAIndex]?.potentialRank
+          );
+
+          console.log("newPotentialRank: ", newPotentialRank);
+          state.items[optionAIndex]!.potentialRank = newPotentialRank;
+          console.log(
+            "rankedSortedItems: ",
+            JSON.parse(JSON.stringify(rankedSortedItems))
+          );
+        }
+        if (optionSelected === 1) {
+          //console.log("bot selected");
+          console.log(
+            "rankedSortedItems: ",
+            JSON.parse(JSON.stringify(rankedSortedItems))
+          );
+
+          console.log(
+            "optionBIndex: ",
+            JSON.parse(JSON.stringify(optionBIndex))
+          );
+        }
       }
     },
     setInitialItemsPotentialRank: (
@@ -125,15 +161,31 @@ export const itemSlice = createSlice({
         "action.payload - setInitialItemsPotentialRank: ",
         action.payload
       );
+      const winningRank = 100000;
+      const losingRank = 10000;
+
+      const losingCombatantIndex = action.payload.combatants.findIndex(
+        (i: any) => i.id !== action.payload.optionSelected.id
+      );
+      console.log("losingItemIndex ", losingCombatantIndex);
+
+      const losingItem = state.items?.find(
+        (i) => i.id === action.payload.combatants[losingCombatantIndex].id
+      );
+      console.log("losingItem ", JSON.stringify(losingItem, 0, 2));
 
       const winningItemIndex = state.items?.findIndex(
         (i) => i.id === action.payload.optionSelected.id
       );
       const losingItemIndex = state.items?.findIndex(
-        (i) => i.id === action.payload.losingOption.id
+        (i) => i.id === losingItem.id
       );
-      state.items[winningItemIndex].potentialRank = action.payload.winningRank;
-      state.items[losingItemIndex].potentialRank = action.payload.losingRank;
+
+      // console.log("losingItem.id: ", JSON.stringify(losingItem.id, 0, 2));
+      // console.log("winningItemIndex: ", winningItemIndex);
+      // console.log("losingItemIndex: ", losingItemIndex);
+      state.items[winningItemIndex].potentialRank = winningRank;
+      state.items[losingItemIndex].potentialRank = losingRank;
     },
   },
 });
