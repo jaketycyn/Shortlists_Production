@@ -18,6 +18,8 @@ export interface Item {
   currentRank: null | number;
   //adding status value to rank items
   status: string;
+  botBound: number | string;
+  topBound: number | string;
 }
 
 export interface UnrankedObject {
@@ -93,25 +95,21 @@ export const itemSlice = createSlice({
         .sort(sortAlgo("potentialRank", true, parseInt));
 
       // declaring variables based on action.payload
-      const optionA = action.payload.combatants[0];
-      const optionB = action.payload.combatants[1];
+      const optA = action.payload.combatants[0];
+      const optB = action.payload.combatants[1];
       const optionSelected = action.payload.optionSelected;
-      const allItemsOptionAIndex = state.items.findIndex(
-        (i) => i.id === optionA.id
+      const allItemsOptAIndex = state.items.findIndex((i) => i.id === optA.id);
+      const allItemsOptBIndex = state.items.findIndex((i) => i.id === optB.id);
+      const rankedItemsOptBIndex = rankedSortedItems.findIndex(
+        (i) => i.id === optB.id
       );
-      const allItemsOptionBIndex = state.items.findIndex(
-        (i) => i.id === optionB.id
-      );
-      const rankedItemsOptionBIndex = rankedSortedItems.findIndex(
-        (i) => i.id === optionB.id
-      );
-      // console.log("OptionA: " + JSON.stringify(optionA, 0, 2));
-      // console.log("OptionB: " + JSON.stringify(optionB, 0, 2));
+      // console.log("optA: " + JSON.stringify(optA, 0, 2));
+      // console.log("OptionB: " + JSON.stringify(optB, 0, 2));
 
       state.round = 0;
 
       //*unranked vs ranked
-      if (optionA.potentialRank === 0 && optionB.potentialRank !== 0) {
+      if (optA.potentialRank === 0 && optB.potentialRank !== 0) {
         // console.log("inside unranked vs ranked");
         state.round += 1;
         if (optionSelected === 0) {
@@ -122,45 +120,49 @@ export const itemSlice = createSlice({
           // );
           // console.log("all items: ", JSON.parse(JSON.stringify(state.items)));
           // console.log(
-          //   "optionAIndex: ",
-          //   JSON.parse(JSON.stringify(optionAIndex))
+          //   "optAIndex: ",
+          //   JSON.parse(JSON.stringify(optAIndex))
           // );
           // console.log(
-          //   "optionBIndex: ",
-          //   JSON.parse(JSON.stringify(optionBIndex))
+          //   "optBIndex: ",
+          //   JSON.parse(JSON.stringify(optBIndex))
           // );
 
           //assign new potential rank
           const newPotentialRank =
-            (rankedSortedItems[rankedItemsOptionBIndex]?.potentialRank +
-              rankedSortedItems[rankedItemsOptionBIndex - 1]?.potentialRank) /
+            (rankedSortedItems[rankedItemsOptBIndex]?.potentialRank +
+              rankedSortedItems[rankedItemsOptBIndex - 1]?.potentialRank) /
             2;
 
-          state.items[allItemsOptionAIndex]!.potentialRank = newPotentialRank;
+          state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
 
           //update status to have item keep ranking
-          state.items[allItemsOptionAIndex]!.status = "won";
+          state.items[allItemsOptAIndex]!.status = "won";
+          state.items[allItemsOptAIndex]!.botBound = newPotentialRank;
         }
         if (optionSelected === 1) {
           //console.log("bot selected");
 
+          const newPotentialRank =
+            rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! / 2;
+
+          console.log("newPotentialRank", newPotentialRank);
+
+          state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
           //? more ranked items exist so it keeps getting ranked
-          if (rankedSortedItems[rankedItemsOptionBIndex - 1] !== undefined) {
+          if (rankedSortedItems[rankedItemsOptBIndex - 1] !== undefined) {
             console.log(
               "more items to compared - keep ranking - SHOULDNT SEE THIS MESSAGE YET"
             );
+
+            state.items[allItemsOptAIndex]!.status = "lost";
+            state.items[allItemsOptAIndex]!.topBound = newPotentialRank;
           }
-          //? optionA is now lowest ranked item - done ranking
+          //? optA is now lowest ranked item - done ranking
           else {
             console.log("done ranking");
           }
 
-          const newPotentialRank =
-            rankedSortedItems[rankedItemsOptionBIndex]?.potentialRank / 2;
-
-          console.log("newPotentialRank", newPotentialRank);
-
-          state.items[allItemsOptionAIndex]!.potentialRank = newPotentialRank;
           // console.log(
           //   "rankedSortedItems: ",
           //   JSON.parse(JSON.stringify(rankedSortedItems))
@@ -168,8 +170,26 @@ export const itemSlice = createSlice({
         }
       }
       //*ranked vs ranked
-      if (optionA.potentialRank !== 0 && optionB.potentialRank !== 0) {
-        console.log("ranked vs ranked");
+      if (optA.potentialRank !== 0 && optB.potentialRank !== 0) {
+        //console.log("ranked vs ranked");
+        if (optionSelected === 0) {
+          console.log("optA selected");
+          console.log("rankedItemsOptBIndex", rankedItemsOptBIndex);
+          if (rankedItemsOptBIndex === 0) {
+            console.log("This item is new top ranked item");
+
+            const newPotentialRank =
+              rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! * 2;
+
+            console.log("newPotentialRank: ", newPotentialRank);
+
+            state.items[allItemsOptAIndex]!.status = "";
+            state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
+          }
+        }
+        if (optionSelected === 1) {
+          console.log("optB selected");
+        }
       }
     },
     setInitialItemsPotentialRank: (

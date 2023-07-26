@@ -107,14 +107,14 @@ const ranking = () => {
   // console.log("newTopBound - ", topBound);
   // console.log("newBotBound - ", botBound);
 
-  // const wonlostitem = items?.filter((i) => (i.status === "won") | "lost");
-  // console.log("wonlostitem: ", wonlostitem);
+  // const activeItem = items?.filter((i) => (i.status === "won") | "lost");
+  // console.log("activeItem: ", activeItem);
 
-  // if (wonlostitem.length === 1) {
-  //   optionA = wonlostitem[0];
+  // if (activeItem.length === 1) {
+  //   optA = activeItem[0];
   // }
 
-  const wonlostitem = items?.filter(
+  const activeItem = items?.filter(
     (i) => (i.status === "won") | (i.status === "lost")
   );
 
@@ -151,12 +151,12 @@ const ranking = () => {
 
   const changeRankUnrankedItemVsRanked = (
     optionSelected: number,
-    optionB: any
+    optB: any
   ) => {
     //console.log("newTopBound - ", topBound);
     //console.log("newBotBound - ", botBound);
 
-    const combatants = [optionA, optionB];
+    const combatants = [optA, optB];
 
     dispatch(
       setItemPotentialRank({
@@ -168,8 +168,8 @@ const ranking = () => {
 
   /* Phase 1: Unranked vs Unranked */
 
-  let optionA: any;
-  let optionB: any;
+  let optA: any;
+  let optB: any;
   let unrankedMatchup: any;
 
   // do we have any ranked items?
@@ -181,59 +181,116 @@ const ranking = () => {
     } else {
       unrankedMatchup = unRankedItems?.slice(0, 2);
       //console.log("unrankedMatchup", unrankedMatchup);
-      optionA = unRankedItems?.[0];
-      optionB = unRankedItems?.[1];
+      optA = unRankedItems?.[0];
+      optB = unRankedItems?.[1];
     }
+
+    contentText = "unranked v unranked";
+    return (
+      <div className="flex h-full flex-col items-center space-y-4">
+        <p>{contentText}</p>
+        <div
+          className="h-20 w-40 bg-blue-400 p-2"
+          onClick={() => changeRankUnrankedItems(optA, unrankedMatchup)}
+        >
+          {optA && <div>{optA?.title}</div>}
+        </div>
+        <div
+          className="h-20 w-40 bg-pink-400 p-2"
+          onClick={() => changeRankUnrankedItems(optB, unrankedMatchup)}
+        >
+          {optB && <div>{optB?.title}</div>}
+        </div>
+      </div>
+    );
+  } else if (activeItem.length === 1) {
+    console.log("ranked v ranked scenario");
+
+    contentText = "ranked v ranked";
+
+    optA = activeItem[0];
+    console.log("optA - ", optA);
+
+    if (optA.status === "won") {
+      optB = { title: "winner bracket" };
+      //console.log("optA's bot bound:", optA.botBound);
+      const filtRankedItems = rankedItems.filter(
+        (i) => i.potentialRank! > optA.botBound
+      );
+      //console.log("filtRankedItems, ", filtRankedItems);
+      if (filtRankedItems.length === 1) {
+        optB = filtRankedItems[0];
+      } else {
+        console.log("some other optB");
+      }
+    }
+
+    if (optA.status === "lost") {
+      optB = { title: "loser bracket" };
+    }
+
+    // optB
+
+    //using potential rank of current item we need to deduce which direction it can go
+    //should add a bound variable, bot or top to the current won/lost item
+
+    // optB = rankedItems[0];
 
     return (
       <div className="flex h-full flex-col items-center space-y-4">
         <p>{contentText}</p>
         <div
           className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => changeRankUnrankedItems(optionA, unrankedMatchup)}
+          onClick={() => changeRankUnrankedItemVsRanked(0, optB)}
         >
-          {optionA && <div>{optionA?.title}</div>}
+          {optA && <div>{optA?.title}</div>}
         </div>
         <div
           className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => changeRankUnrankedItems(optionB, unrankedMatchup)}
+          onClick={() => changeRankUnrankedItemVsRanked(1, optB)}
         >
-          {optionB && <div>{optionB?.title}</div>}
+          {optB && <div>{optB?.title}</div>}
         </div>
       </div>
     );
-  } else if (wonlostitem.length === 1) {
-    console.log("ranked v ranked scenario");
+  } else if (unRankedItems?.length === 0 && rankedItems?.length >= 2) {
+    contentText = "No items left to rank";
+    return (
+      <div className="flex h-full flex-col items-center space-y-4">
+        <p>{contentText}</p>
+      </div>
+    );
   } else {
     // we have unranked items and ranked items
 
     //Figuring Out Option A
     if (unRankedItems.length >= 1) {
-      optionA = unRankedItems[0];
+      optA = unRankedItems[0];
     }
     //Figuring Out Option B
     //basic sort algo
     // ref: https://stackoverflow.com/questions/979256/sorting-an-array-of-objects-by-property-values
 
-    const optionBIndex = Math.floor(sortedRankedItems.length / 2);
+    const optBIndex = Math.floor(sortedRankedItems.length / 2);
     //console.log("sortedRankedItemsLength: ", sortedRankedItems.length);
-    const optionB = sortedRankedItems[optionBIndex];
-    //console.log("option B: ", optionB);
+    const optB = sortedRankedItems[optBIndex];
+    //console.log("option B: ", optB);
 
+    contentText = "unranked v ranked";
     return (
       <div className="flex h-full flex-col items-center space-y-4">
         <p>{contentText}</p>
         <div
           className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => changeRankUnrankedItemVsRanked(0, optionB)}
+          onClick={() => changeRankUnrankedItemVsRanked(0, optB)}
         >
-          {optionA && <div>{optionA?.title}</div>}
+          {optA && <div>{optA?.title}</div>}
         </div>
         <div
           className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => changeRankUnrankedItemVsRanked(1, optionB)}
+          onClick={() => changeRankUnrankedItemVsRanked(1, optB)}
         >
-          {optionB && <div>{optionB?.title}</div>}
+          {optB && <div>{optB?.title}</div>}
         </div>
       </div>
     );
