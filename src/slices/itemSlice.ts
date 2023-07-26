@@ -16,6 +16,8 @@ export interface Item {
   // for now swapping it fully over to string since it gets converted to string on import
   potentialRank: null | number;
   currentRank: null | number;
+  //adding status value to rank items
+  status: string;
 }
 
 export interface UnrankedObject {
@@ -86,7 +88,7 @@ export const itemSlice = createSlice({
       };
 
       const rankedSortedItems = state.items
-        .filter((i) => i.potentialRank >= 1)
+        .filter((i) => i.potentialRank > 0)
         .slice()
         .sort(sortAlgo("potentialRank", true, parseInt));
 
@@ -94,14 +96,21 @@ export const itemSlice = createSlice({
       const optionA = action.payload.combatants[0];
       const optionB = action.payload.combatants[1];
       const optionSelected = action.payload.optionSelected;
-      const optionAIndex = state.items.findIndex((i) => i.id === optionA.id);
-      const optionBIndex = state.items.findIndex((i) => i.id === optionB.id);
+      const allItemsOptionAIndex = state.items.findIndex(
+        (i) => i.id === optionA.id
+      );
+      const allItemsOptionBIndex = state.items.findIndex(
+        (i) => i.id === optionB.id
+      );
+      const rankedItemsOptionBIndex = rankedSortedItems.findIndex(
+        (i) => i.id === optionB.id
+      );
       // console.log("OptionA: " + JSON.stringify(optionA, 0, 2));
       // console.log("OptionB: " + JSON.stringify(optionB, 0, 2));
 
       state.round = 0;
 
-      //unranked vs ranked
+      //*unranked vs ranked
       if (optionA.potentialRank === 0 && optionB.potentialRank !== 0) {
         // console.log("inside unranked vs ranked");
         state.round += 1;
@@ -123,34 +132,44 @@ export const itemSlice = createSlice({
 
           //assign new potential rank
           const newPotentialRank =
-            (rankedSortedItems[optionBIndex]?.potentialRank +
-              rankedSortedItems[optionBIndex - 1]?.potentialRank) /
+            (rankedSortedItems[rankedItemsOptionBIndex]?.potentialRank +
+              rankedSortedItems[rankedItemsOptionBIndex - 1]?.potentialRank) /
             2;
 
-          console.log(
-            "state.items[optionAIndex]?.potentialRank",
-            state.items[optionAIndex]?.potentialRank
-          );
+          state.items[allItemsOptionAIndex]!.potentialRank = newPotentialRank;
 
-          console.log("newPotentialRank: ", newPotentialRank);
-          state.items[optionAIndex]!.potentialRank = newPotentialRank;
-          console.log(
-            "rankedSortedItems: ",
-            JSON.parse(JSON.stringify(rankedSortedItems))
-          );
+          //update status to have item keep ranking
+          state.items[allItemsOptionAIndex]!.status = "won";
         }
         if (optionSelected === 1) {
           //console.log("bot selected");
-          console.log(
-            "rankedSortedItems: ",
-            JSON.parse(JSON.stringify(rankedSortedItems))
-          );
 
-          console.log(
-            "optionBIndex: ",
-            JSON.parse(JSON.stringify(optionBIndex))
-          );
+          //? more ranked items exist so it keeps getting ranked
+          if (rankedSortedItems[rankedItemsOptionBIndex - 1] !== undefined) {
+            console.log(
+              "more items to compared - keep ranking - SHOULDNT SEE THIS MESSAGE YET"
+            );
+          }
+          //? optionA is now lowest ranked item - done ranking
+          else {
+            console.log("done ranking");
+          }
+
+          const newPotentialRank =
+            rankedSortedItems[rankedItemsOptionBIndex]?.potentialRank / 2;
+
+          console.log("newPotentialRank", newPotentialRank);
+
+          state.items[allItemsOptionAIndex]!.potentialRank = newPotentialRank;
+          // console.log(
+          //   "rankedSortedItems: ",
+          //   JSON.parse(JSON.stringify(rankedSortedItems))
+          // );
         }
+      }
+      //*ranked vs ranked
+      if (optionA.potentialRank !== 0 && optionB.potentialRank !== 0) {
+        console.log("ranked vs ranked");
       }
     },
     setInitialItemsPotentialRank: (

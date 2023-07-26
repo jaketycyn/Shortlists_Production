@@ -99,13 +99,24 @@ const ranking = () => {
     .slice()
     // false = reversed order ; lowest # is highest rank
     .sort(sortAlgo("potentialRank", true, parseInt));
-  //console.log("sortedRankedItems: ", sortedRankedItems);
+  console.log("sortedRankedItems - ranking.tsx: ", sortedRankedItems);
 
   const topBound =
     sortedRankedItems[sortedRankedItems.length - 1]?.potentialRank;
   const botBound = sortedRankedItems[0]?.potentialRank;
   // console.log("newTopBound - ", topBound);
   // console.log("newBotBound - ", botBound);
+
+  // const wonlostitem = items?.filter((i) => (i.status === "won") | "lost");
+  // console.log("wonlostitem: ", wonlostitem);
+
+  // if (wonlostitem.length === 1) {
+  //   optionA = wonlostitem[0];
+  // }
+
+  const wonlostitem = items?.filter(
+    (i) => (i.status === "won") | (i.status === "lost")
+  );
 
   //!
   //Going to keep logic outside the slice as much as possible and only pass to the slice information that is needed
@@ -160,6 +171,7 @@ const ranking = () => {
   let optionA: any;
   let optionB: any;
   let unrankedMatchup: any;
+
   // do we have any ranked items?
   if (rankedItems?.length <= 1) {
     if (unRankedItems?.length === 0) {
@@ -190,6 +202,8 @@ const ranking = () => {
         </div>
       </div>
     );
+  } else if (wonlostitem.length === 1) {
+    console.log("ranked v ranked scenario");
   } else {
     // we have unranked items and ranked items
 
@@ -224,25 +238,6 @@ const ranking = () => {
       </div>
     );
   }
-
-  // return (
-  //   <div className="flex h-full flex-col items-center">
-  //     <div className="mt-4">{activeListTitle}</div>
-  //     {/* Head to Headmatchup */}
-  //     {/* Item 1 */}
-  //     <div
-  //       className="mt-4 flex  h-40 w-1/2 bg-pink-400"
-  //       onClick={() => setItemRank1Test()}
-  //     ></div>
-  //     {/* Item 2 */}
-  //     <div
-  //       className="mt-4 flex  h-40 w-1/2 bg-blue-400"
-  //       onClick={() => sortingAlgo()}
-  //     >
-  //       Item 2
-  //     </div>
-  //   </div>
-  // );
 };
 
 export default ranking;
