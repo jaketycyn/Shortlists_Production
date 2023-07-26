@@ -96,6 +96,7 @@ export const itemSlice = createSlice({
 
       // declaring variables based on action.payload
       const optA = action.payload.combatants[0];
+      console.log("optA inside Redux: ", optA);
       const optB = action.payload.combatants[1];
       const optionSelected = action.payload.optionSelected;
       const allItemsOptAIndex = state.items.findIndex((i) => i.id === optA.id);
@@ -141,26 +142,33 @@ export const itemSlice = createSlice({
           state.items[allItemsOptAIndex]!.botBound = newPotentialRank;
         }
         if (optionSelected === 1) {
-          //console.log("bot selected");
-
-          const newPotentialRank =
-            rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! / 2;
-
-          console.log("newPotentialRank", newPotentialRank);
-
-          state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
           //? more ranked items exist so it keeps getting ranked
-          if (rankedSortedItems[rankedItemsOptBIndex - 1] !== undefined) {
+          if (rankedSortedItems[rankedItemsOptBIndex + 1] !== undefined) {
             console.log(
               "more items to compared - keep ranking - SHOULDNT SEE THIS MESSAGE YET"
             );
 
+            const newPotentialRank =
+              (rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! +
+                rankedSortedItems[rankedItemsOptBIndex + 1]?.potentialRank!) /
+              2;
+
+            console.log("newPotentialRank", newPotentialRank);
+
+            state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
+
             state.items[allItemsOptAIndex]!.status = "lost";
-            state.items[allItemsOptAIndex]!.topBound = newPotentialRank;
-          }
-          //? optA is now lowest ranked item - done ranking
-          else {
+            state.items[allItemsOptAIndex]!.topBound =
+              rankedSortedItems[rankedItemsOptBIndex]?.potentialRank!;
+          } else {
+            //? optA is now lowest ranked item - done ranking
             console.log("done ranking");
+
+            const newPotentialRank =
+              rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! / 2;
+
+            console.log("newPotentialRank: ", newPotentialRank);
+            state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
           }
 
           // console.log(
@@ -170,25 +178,85 @@ export const itemSlice = createSlice({
         }
       }
       //*ranked vs ranked
-      if (optA.potentialRank !== 0 && optB.potentialRank !== 0) {
+      if (optA.potentialRank > 0 && optB.potentialRank !== 0) {
         //console.log("ranked vs ranked");
-        if (optionSelected === 0) {
-          console.log("optA selected");
-          console.log("rankedItemsOptBIndex", rankedItemsOptBIndex);
-          if (rankedItemsOptBIndex === 0) {
-            console.log("This item is new top ranked item");
-
-            const newPotentialRank =
-              rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! * 2;
-
-            console.log("newPotentialRank: ", newPotentialRank);
-
-            state.items[allItemsOptAIndex]!.status = "";
-            state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
+        if (optA.status === "lost") {
+          if (optionSelected === 0) {
+            console.log("rankedItemsOptBIndex", rankedItemsOptBIndex);
+            if (rankedItemsOptBIndex === 0) {
+              //check if other opp. exist
+              //if no other opponent exists, exit
+              // const newPotentialRank =
+              //   rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! * 2;
+              // console.log("newPotentialRank: ", newPotentialRank);
+              // state.items[allItemsOptAIndex]!.status = "";
+              // state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
+              //! send update to database of rank for optA based on potentialRank
+            }
           }
-        }
-        if (optionSelected === 1) {
-          console.log("optB selected");
+          if (optionSelected === 1) {
+            console.log(
+              "rankedSortedItems: ",
+              JSON.parse(JSON.stringify(rankedSortedItems))
+            );
+
+            const possOpponents = rankedSortedItems.filter(
+              (i) => i.potentialRank! > optA.potentialRank
+            );
+
+            console.log(
+              "possOpponents: ",
+              JSON.parse(JSON.stringify(possOpponents))
+            );
+
+            //check if only 1 item left means its perfectly ranked where its potentiall rank currently is
+            if (possOpponents.length === 1) {
+              console.log("End");
+              state.items[allItemsOptAIndex]!.status = "";
+
+              //! send update to database of rank for optA based on potentialRank
+            }
+            //more possible items to face keep ranking
+          }
+        } else if (optA.status === "won") {
+          if (optionSelected === 0) {
+            //console.log("rankedItemsOptBIndex", rankedItemsOptBIndex);
+            if (rankedItemsOptBIndex === 0) {
+              console.log("This item is new top ranked item");
+
+              const newPotentialRank =
+                rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! * 2;
+
+              console.log("newPotentialRank: ", newPotentialRank);
+
+              state.items[allItemsOptAIndex]!.status = "";
+              state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
+              //! send update to database of rank for optA based on potentialRank
+            }
+          } else if (optionSelected === 1) {
+            console.log(
+              "rankedSortedItems: ",
+              JSON.parse(JSON.stringify(rankedSortedItems))
+            );
+
+            const possOpponents = rankedSortedItems.filter(
+              (i) => i.potentialRank! > optA.potentialRank
+            );
+
+            console.log(
+              "possOpponents: ",
+              JSON.parse(JSON.stringify(possOpponents))
+            );
+
+            //check if only 1 item left means its perfectly ranked where its potentiall rank currently is
+            // if (possOpponents.length === 1) {
+            //   console.log("End");
+            //   state.items[allItemsOptAIndex]!.status = "";
+
+            //   //! send update to database of rank for optA based on potentialRank
+            // }
+            //more possible items to face keep ranking
+          }
         }
       }
     },

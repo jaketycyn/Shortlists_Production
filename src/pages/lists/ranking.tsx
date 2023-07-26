@@ -101,21 +101,8 @@ const ranking = () => {
     .sort(sortAlgo("potentialRank", true, parseInt));
   console.log("sortedRankedItems - ranking.tsx: ", sortedRankedItems);
 
-  const topBound =
-    sortedRankedItems[sortedRankedItems.length - 1]?.potentialRank;
-  const botBound = sortedRankedItems[0]?.potentialRank;
-  // console.log("newTopBound - ", topBound);
-  // console.log("newBotBound - ", botBound);
-
-  // const activeItem = items?.filter((i) => (i.status === "won") | "lost");
-  // console.log("activeItem: ", activeItem);
-
-  // if (activeItem.length === 1) {
-  //   optA = activeItem[0];
-  // }
-
   const activeItem = items?.filter(
-    (i) => (i.status === "won") | (i.status === "lost")
+    (i) => i.status === "won" || i.status === "lost"
   );
 
   //!
@@ -149,10 +136,7 @@ const ranking = () => {
     }
   };
 
-  const changeRankUnrankedItemVsRanked = (
-    optionSelected: number,
-    optB: any
-  ) => {
+  const changeItemRank = (optionSelected: number, optB: any) => {
     //console.log("newTopBound - ", topBound);
     //console.log("newBotBound - ", botBound);
 
@@ -163,6 +147,25 @@ const ranking = () => {
         optionSelected,
         combatants,
       })
+    );
+  };
+
+  const RankedItemDisplay = () => {
+    sortedRankedItems;
+    return (
+      <div>
+        <h1>Item Rankings</h1>
+        <div>
+          {sortedRankedItems.map((i, index) => {
+            return (
+              <div className="inline-block flex">
+                <div className="mx-2">{index + 1}.</div>
+                <div>{i.title}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     );
   };
 
@@ -201,6 +204,7 @@ const ranking = () => {
         >
           {optB && <div>{optB?.title}</div>}
         </div>
+        <RankedItemDisplay />
       </div>
     );
   } else if (activeItem.length === 1) {
@@ -214,19 +218,35 @@ const ranking = () => {
     if (optA.status === "won") {
       optB = { title: "winner bracket" };
       //console.log("optA's bot bound:", optA.botBound);
-      const filtRankedItems = rankedItems.filter(
-        (i) => i.potentialRank! > optA.botBound
+      const filtRankedItems = sortedRankedItems.filter(
+        (i) => i.potentialRank! > optA.potentialRank
       );
-      //console.log("filtRankedItems, ", filtRankedItems);
+      console.log("filtRankedItems, ", filtRankedItems);
+      console.log("filtRankedItems LENGTH, ", filtRankedItems.length);
+      if (filtRankedItems.length === 1) {
+        optB = filtRankedItems[0];
+      } else {
+        console.log("some other optB");
+
+        const optBIndex = filtRankedItems.length;
+
+        // optB = filtRankedItems[optBIndex]
+      }
+    }
+
+    if (optA.status === "lost") {
+      const filtRankedItems = sortedRankedItems.filter(
+        (i) => i.potentialRank! < optA.potentialRank
+      );
+
+      console.log("filtRankedItems, ", filtRankedItems);
+      console.log("filtRankedItemslength, ", filtRankedItems.length);
+
       if (filtRankedItems.length === 1) {
         optB = filtRankedItems[0];
       } else {
         console.log("some other optB");
       }
-    }
-
-    if (optA.status === "lost") {
-      optB = { title: "loser bracket" };
     }
 
     // optB
@@ -241,16 +261,17 @@ const ranking = () => {
         <p>{contentText}</p>
         <div
           className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => changeRankUnrankedItemVsRanked(0, optB)}
+          onClick={() => changeItemRank(0, optB)}
         >
           {optA && <div>{optA?.title}</div>}
         </div>
         <div
           className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => changeRankUnrankedItemVsRanked(1, optB)}
+          onClick={() => changeItemRank(1, optB)}
         >
           {optB && <div>{optB?.title}</div>}
         </div>
+        <RankedItemDisplay />
       </div>
     );
   } else if (unRankedItems?.length === 0 && rankedItems?.length >= 2) {
@@ -258,6 +279,7 @@ const ranking = () => {
     return (
       <div className="flex h-full flex-col items-center space-y-4">
         <p>{contentText}</p>
+        <RankedItemDisplay />
       </div>
     );
   } else {
@@ -282,16 +304,17 @@ const ranking = () => {
         <p>{contentText}</p>
         <div
           className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => changeRankUnrankedItemVsRanked(0, optB)}
+          onClick={() => changeItemRank(0, optB)}
         >
           {optA && <div>{optA?.title}</div>}
         </div>
         <div
           className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => changeRankUnrankedItemVsRanked(1, optB)}
+          onClick={() => changeItemRank(1, optB)}
         >
           {optB && <div>{optB?.title}</div>}
         </div>
+        <RankedItemDisplay />
       </div>
     );
   }
