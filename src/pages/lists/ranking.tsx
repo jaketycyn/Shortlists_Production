@@ -99,7 +99,7 @@ const ranking = () => {
     .slice()
     // false = reversed order ; lowest # is highest rank
     .sort(sortAlgo("potentialRank", true, parseInt));
-  console.log("sortedRankedItems - ranking.tsx: ", sortedRankedItems);
+  // console.log("sortedRankedItems - ranking.tsx: ", sortedRankedItems);
 
   const activeItem = items?.filter(
     (i) => i.status === "won" || i.status === "lost"
@@ -154,7 +154,7 @@ const ranking = () => {
     sortedRankedItems;
     return (
       <div>
-        <h1>Item Rankings</h1>
+        <h1>Item Rankings off Potential</h1>
         <div>
           {sortedRankedItems.map((i, index) => {
             return (
@@ -208,35 +208,16 @@ const ranking = () => {
       </div>
     );
   } else if (activeItem.length === 1) {
-    console.log("ranked v ranked scenario");
-
     contentText = "ranked v ranked";
 
     optA = activeItem[0];
-    console.log("optA - ", optA);
+    //console.log("optA - ", optA);
 
     if (optA.status === "won") {
-      optB = { title: "winner bracket" };
-      //console.log("optA's bot bound:", optA.botBound);
       const filtRankedItems = sortedRankedItems.filter(
-        (i) => i.potentialRank! > optA.potentialRank
-      );
-      console.log("filtRankedItems, ", filtRankedItems);
-      console.log("filtRankedItems LENGTH, ", filtRankedItems.length);
-      if (filtRankedItems.length === 1) {
-        optB = filtRankedItems[0];
-      } else {
-        console.log("some other optB");
-
-        const optBIndex = filtRankedItems.length;
-
-        // optB = filtRankedItems[optBIndex]
-      }
-    }
-
-    if (optA.status === "lost") {
-      const filtRankedItems = sortedRankedItems.filter(
-        (i) => i.potentialRank! < optA.potentialRank
+        (i) =>
+          i.potentialRank! > optA.potentialRank &&
+          i.potentialRank! > optA.botBound
       );
 
       console.log("filtRankedItems, ", filtRankedItems);
@@ -245,7 +226,27 @@ const ranking = () => {
       if (filtRankedItems.length === 1) {
         optB = filtRankedItems[0];
       } else {
-        console.log("some other optB");
+        const newOppIndex = Math.floor(filtRankedItems.length / 2);
+        optB = filtRankedItems[newOppIndex];
+      }
+    }
+
+    if (optA.status === "lost") {
+      const filtRankedItems = sortedRankedItems.filter(
+        (i) => i.potentialRank! < optA.potentialRank
+      );
+
+      // console.log("filtRankedItems, ", filtRankedItems);
+      // console.log("filtRankedItemslength, ", filtRankedItems.length);
+
+      if (filtRankedItems.length === 1) {
+        optB = filtRankedItems[0];
+      } else {
+        const optIndex = Math.floor(filtRankedItems.length / 2);
+        //console.log("optIndex: ", optIndex);
+        optB = filtRankedItems[optIndex];
+
+        //optB =
       }
     }
 
