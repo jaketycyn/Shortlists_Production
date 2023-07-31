@@ -155,7 +155,7 @@ export const itemSlice = createSlice({
           state.items[allItemsOptAIndex]!.botBound =
             rankedSortedItems[rankedItemsOptBIndex]?.potentialRank!;
           state.items[allItemsOptAIndex]!.topBound =
-            rankedSortedItems[0]?.potentialRank!;
+            rankedSortedItems[0]?.potentialRank! + 1;
         }
         if (optionSelected === 1) {
           //? more ranked items exist so it keeps getting ranked
@@ -177,7 +177,8 @@ export const itemSlice = createSlice({
             state.items[allItemsOptAIndex]!.topBound =
               rankedSortedItems[rankedItemsOptBIndex]?.potentialRank!;
             state.items[allItemsOptAIndex]!.botBound =
-              rankedSortedItems[rankedSortedItems.length - 1]?.potentialRank!;
+              rankedSortedItems[rankedSortedItems.length - 1]?.potentialRank! -
+              1;
           } else {
             //? optA is now lowest ranked item - done ranking
             console.log("done ranking");
@@ -203,39 +204,25 @@ export const itemSlice = createSlice({
             //OPT A is selected
             console.log("rankedItemsOptBIndex", rankedItemsOptBIndex);
             let possOpponents;
-            let botBound = 1;
-            //console.log("botBound", botBound);
-            if (optA.botBound) {
-              botBound = optA.botBound;
-              //console.log("botBound", botBound);
-            } else {
-              botBound = optB.potentialRank;
-              //console.log("botBound", botBound);
-            }
 
+            //assign new botBound based on optB.rank to optA
+            const botBound: number = optB.potentialRank;
+
+            //find new opponents
             possOpponents = rankedSortedItemsExcludeOptA.filter(
-              (i) => i.potentialRank! > botBound
+              (i) =>
+                optA.topBound > i.potentialRank! && i.potentialRank! > botBound
             );
             console.log(
-              "possOpponents: ",
+              "possOpponents - coming off a loss - rvr - A selected: ",
               JSON.parse(JSON.stringify(possOpponents))
             );
 
             //scenario 1: no botBound on optA && no possOpps => this item faced the very bottom item but isnt' the lowest
 
-            if (optA.topBound) {
-              possOpponents = rankedSortedItemsExcludeOptA.filter(
-                (i) =>
-                  optA.topBound! > i.potentialRank! &&
-                  i.potentialRank! > botBound!
-              );
-              console.log(
-                "possOpponents - inside optA.topBound: ",
-                JSON.parse(JSON.stringify(possOpponents))
-              );
-            }
             if (possOpponents.length === 0) {
               state.items[allItemsOptAIndex]!.status = "";
+              console.log("End of Ranking " + optA.title);
               //! dispatch rank based on optA.potentialRank
             } else if (possOpponents.length > 0) {
               state.items[allItemsOptAIndex]!.botBound = botBound;
@@ -246,33 +233,20 @@ export const itemSlice = createSlice({
             }
           }
           if (optionSelected === 1) {
-            console.log(
-              "rankedSortedItems: ",
-              JSON.parse(JSON.stringify(rankedSortedItems))
-            );
-
+            const topBound: number = optB.potentialRank;
             let possOpponents;
-            possOpponents = rankedSortedItems.filter(
-              (i) => i.potentialRank! > optA.potentialRank
+            possOpponents = rankedSortedItemsExcludeOptA.filter(
+              (i) =>
+                topBound > i.potentialRank! && i.potentialRank! > optA.botBound
             );
             console.log(
-              "possOpponents: ",
+              "possOpponents - coming off a loss - rvr - B selected: ",
               JSON.parse(JSON.stringify(possOpponents))
             );
 
-            if (optA.topBound) {
-              possOpponents = rankedSortedItems.filter(
-                (i) => optA.topBound > i.potentialRank! > optA.potentialRank
-              );
-              console.log("optA has a topBound");
-              console.log(
-                "possOpponents - inside optA.TOPDBDFD: ",
-                JSON.parse(JSON.stringify(possOpponents))
-              );
-            }
-            //check if only 1 item left means its perfectly ranked where its potentiall rank currently is
+            //check if nly 1 item left means its perfectly ranked where its potentiall rank currently is
             if (possOpponents.length === 1) {
-              console.log("End");
+              console.log("End of ranking: " + optA.title);
               state.items[allItemsOptAIndex]!.status = "";
 
               //! send update to database of rank for optA based on potentialRank
@@ -302,14 +276,41 @@ export const itemSlice = createSlice({
               state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
               //! send update to database of rank for optA based on potentialRank
             } else if (rankedItemsOptBIndex !== 0) {
-              const newPotentialRank =
-                (rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! +
-                  rankedSortedItems[rankedItemsOptBIndex - 1]?.potentialRank!) /
-                2;
+              let possOpponents;
 
-              state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
-              state.items[allItemsOptAIndex]!.botBound =
-                rankedSortedItems[rankedItemsOptBIndex]?.potentialRank!;
+              //assign new botBound based on optB.rank to optA
+              const botBound: number = optB.potentialRank;
+
+              //find new opponents
+              possOpponents = rankedSortedItemsExcludeOptA.filter(
+                (i) =>
+                  optA.topBound > i.potentialRank! &&
+                  i.potentialRank! > botBound
+              );
+              console.log(
+                "possOpponents - coming off a Win - rvr - A selected: ",
+                JSON.parse(JSON.stringify(possOpponents))
+              );
+
+              console.log("possOpp length: ", possOpponents.length);
+
+              if (possOpponents.length === 0) {
+                console.log("End of ranking: " + optA.title);
+                state.items[allItemsOptAIndex]!.status = "";
+
+                //! send update to database of rank for optA based on potentialRank
+              } else if (possOpponents.length > 0) {
+                const newPotentialRank =
+                  (rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! +
+                    rankedSortedItems[rankedItemsOptBIndex - 1]
+                      ?.potentialRank!) /
+                  2;
+
+                state.items[allItemsOptAIndex]!.potentialRank =
+                  newPotentialRank;
+                state.items[allItemsOptAIndex]!.botBound =
+                  rankedSortedItems[rankedItemsOptBIndex]?.potentialRank!;
+              }
             } else {
               console.log("ERROR ERROR ERROR");
             }
@@ -318,48 +319,28 @@ export const itemSlice = createSlice({
             //   "rankedSortedItems: ",
             //   JSON.parse(JSON.stringify(rankedSortedItems))
             // );
+            const topBound: number = optB.potentialRank;
             let possOpponents;
-            possOpponents = rankedSortedItems.filter(
-              (i) => i.potentialRank! > optA.potentialRank
+            possOpponents = rankedSortedItemsExcludeOptA.filter(
+              (i) =>
+                topBound > i.potentialRank! && i.potentialRank! > optA.botBound
             );
-            if (optA.topBound) {
-              possOpponents = rankedSortedItems.filter(
-                (i) => optA.topBound > i.potentialRank! > optA.potentialRank
-              );
-              console.log("optA has a topBound");
-            }
 
             console.log(
-              "possOpponents: ",
+              "possOpponents - coming off a win - rvr - B selected: ",
               JSON.parse(JSON.stringify(possOpponents))
             );
 
             //check if only 1 item left means its perfectly ranked where its potentiall rank currently is
-            if (possOpponents.length === 1) {
-              console.log("only 1 possible opponent");
+            if (possOpponents.length === 0) {
+              console.log("end of ranking: ", optA.title);
               state.items[allItemsOptAIndex]!.status = "";
 
               //! send update to database of rank for optA based on potentialRank
             }
-            if (possOpponents.length > 1) {
-              //check if \possOpponents includes any with a potentialRank < optB.potentialRank
-              //since item just lost to optB that optB.potentialRank === optA.topBound
-
-              const newPossOpponents = possOpponents.filter(
-                (i) => i.potentialRank! < optB.potentialRank
-              );
-              console.log("newPossOpponents: ", newPossOpponents);
-              if (newPossOpponents.length === 0) {
-                //no new opponents to face
-                console.log("no new opponenets left");
-                state.items[allItemsOptAIndex]!.status = "";
-                //! send update to database of rank for optA based on potentialRank
-              }
-              if (newPossOpponents.length > 0) {
-                //no new opponents to face
-                console.log("more opponents");
-                state.items[allItemsOptAIndex]!.status = "lost";
-              }
+            if (possOpponents.length > 0) {
+              console.log("more opponents");
+              state.items[allItemsOptAIndex]!.status = "lost";
             }
             //more possible items to face keep ranking
           }

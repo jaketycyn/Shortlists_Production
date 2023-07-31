@@ -211,13 +211,15 @@ const ranking = () => {
     contentText = "ranked v ranked";
 
     optA = activeItem[0];
+    const sortedRankedItemsExcludeOptA = sortedRankedItems.filter(
+      (i) => i.id !== optA.id
+    );
     //console.log("optA - ", optA);
 
     if (optA.status === "won") {
-      const filtRankedItems = sortedRankedItems.filter(
+      const filtRankedItems = sortedRankedItemsExcludeOptA.filter(
         (i) =>
-          i.potentialRank! > optA.potentialRank &&
-          i.potentialRank! > optA.botBound
+          i.potentialRank! < optA.topBound && i.potentialRank! > optA.botBound
       );
 
       console.log("filtRankedItems, ", filtRankedItems);
@@ -232,14 +234,14 @@ const ranking = () => {
     }
 
     if (optA.status === "lost") {
-      const filtRankedItems = sortedRankedItems.filter(
-        (i) => i.potentialRank! < optA.potentialRank
+      const filtRankedItems = sortedRankedItemsExcludeOptA.filter(
+        (i) =>
+          i.potentialRank! < optA.topBound && i.potentialRank! > optA.botBound
       );
-
       // console.log("filtRankedItems, ", filtRankedItems);
       // console.log("filtRankedItemslength, ", filtRankedItems.length);
 
-      if (filtRankedItems.length === 1) {
+      if (sortedRankedItemsExcludeOptA.length === 1) {
         optB = filtRankedItems[0];
       } else {
         const optIndex = Math.floor(filtRankedItems.length / 2);
