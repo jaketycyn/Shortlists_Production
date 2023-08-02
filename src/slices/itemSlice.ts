@@ -333,8 +333,16 @@ export const itemSlice = createSlice({
 
             //check if only 1 item left means its perfectly ranked where its potentiall rank currently is
             if (possOpponents.length === 0) {
+              const newPotentialRank =
+                (rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! +
+                  rankedSortedItems[rankedItemsOptBIndex + 1]?.potentialRank!) /
+                2;
               console.log("end of ranking: ", optA.title);
               state.items[allItemsOptAIndex]!.status = "";
+
+              state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
+              state.items[allItemsOptAIndex]!.botBound =
+                rankedSortedItems[rankedItemsOptBIndex]?.potentialRank!;
 
               //! send update to database of rank for optA based on potentialRank
             }
