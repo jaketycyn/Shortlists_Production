@@ -223,6 +223,12 @@ export const itemSlice = createSlice({
             if (possOpponents.length === 0) {
               state.items[allItemsOptAIndex]!.status = "";
               console.log("End of Ranking " + optA.title);
+              //correctly assign newPotentialRank =
+              const newPotentialRank =
+                (rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! +
+                  rankedSortedItems[rankedItemsOptBIndex - 1]?.potentialRank!) /
+                2;
+              state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
               //! dispatch rank based on optA.potentialRank
             } else if (possOpponents.length > 0) {
               state.items[allItemsOptAIndex]!.botBound = botBound;
@@ -246,8 +252,9 @@ export const itemSlice = createSlice({
 
             //check if nly 1 item left means its perfectly ranked where its potentiall rank currently is
             if (possOpponents.length === 1) {
-              console.log("End of ranking: " + optA.title);
-              state.items[allItemsOptAIndex]!.status = "";
+              //continue to face more opponents
+              console.log("2 loses in a row but 1 final matchup");
+              state.items[allItemsOptAIndex]!.topBound = optB.potentialRank;
 
               //! send update to database of rank for optA based on potentialRank
             }
@@ -341,14 +348,18 @@ export const itemSlice = createSlice({
               state.items[allItemsOptAIndex]!.status = "";
 
               state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
-              state.items[allItemsOptAIndex]!.botBound =
+              state.items[allItemsOptAIndex]!.topBound =
                 rankedSortedItems[rankedItemsOptBIndex]?.potentialRank!;
 
               //! send update to database of rank for optA based on potentialRank
             }
             if (possOpponents.length > 0) {
               console.log("more opponents");
+              //assign new status
               state.items[allItemsOptAIndex]!.status = "lost";
+              //assign new topBound
+              state.items[allItemsOptAIndex]!.topBound =
+                rankedSortedItems[rankedItemsOptBIndex]?.potentialRank!;
             }
             //more possible items to face keep ranking
           }

@@ -31,8 +31,19 @@ export const updateItemSchema = z.object({
   title: z.string(),
 });
 
+export const updateItemRankSchema = z.object({
+  itemId: z.string(),
+  listId: z.string(),
+  userId: z.string(),
+  potentialRank: z.number(),
+});
+
+export const updateItemsRankSchema = z.array(updateItemRankSchema);
+
 export type AddItemSchema = z.TypeOf<typeof addItemSchema>;
 export type ArchiveItemSchema = z.TypeOf<typeof archiveItemSchema>;
 export type ArchiveItemsSchema = z.TypeOf<typeof archiveItemsSchema>;
 export type DeleteItemSchema = z.TypeOf<typeof deleteItemSchema>;
 export type UpdateItemSchema = z.TypeOf<typeof updateItemSchema>;
+export type UpdateItemRankSchema = z.TypeOf<typeof updateItemRankSchema>;
+export type UpdateItemsRankSchema = z.TypeOf<typeof updateItemsRankSchema>;

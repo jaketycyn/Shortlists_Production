@@ -10,10 +10,7 @@ import { HiPlus, HiX, HiDotsVertical } from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
 
 import { trpc } from "../../utils/trpc";
-import {
-  type ArchiveItemSchema,
-  type AddItemSchema,
-} from "../../server/schema/itemSchema";
+import { type UpdateItemsRankSchema } from "../../server/schema/itemSchema";
 import { type ShareListSchema } from "../../server/schema/listSchema";
 import {
   type Item,
@@ -24,9 +21,6 @@ import {
 import ListFooterNav from "../../components/navigation/ListFooterNav";
 
 import { Dialog, Menu, Transition } from "@headlessui/react";
-import { current } from "@reduxjs/toolkit";
-import { AnyAaaaRecord } from "dns";
-import { match } from "assert";
 
 const ranking = () => {
   //imports - remove unnecsarry later
@@ -54,7 +48,25 @@ const ranking = () => {
 
   let contentText;
 
-  //console.log("lists inside [id]: ", lists);
+  const { mutateAsync } = trpc.userItem.updateManyItemsRank.useMutation();
+  const simplifyItems = items.map(({ id, listId, userId, potentialRank }) => ({
+    itemId: id,
+    listId,
+    userId,
+    potentialRank,
+  }));
+  console.log("simplifyItems: ", simplifyItems);
+
+  const updateItemsRank = async (simplifyItems: UpdateItemsRankSchema) => {
+    try {
+      console.log("items: ", items);
+      //simplify items test
+      console.log("simplifyItems: ", simplifyItems);
+      const result = await mutateAsync(simplifyItems);
+    } catch (error) {
+      console.log("error: ", error);
+    }
+  };
 
   const Listindex = lists?.findIndex((item) => item.id === listId);
   //console.log("ListIndex is: ", Listindex);
@@ -105,14 +117,6 @@ const ranking = () => {
     (i) => i.status === "won" || i.status === "lost"
   );
 
-  //!
-  //Going to keep logic outside the slice as much as possible and only pass to the slice information that is needed
-  // that info will be
-  //* Params needed for ranking:
-  // 1. itemId
-  // 2. itemWinStatus
-  // 3. ItemsHistory of opponents (separate table/column)
-  // 4. potential Opponents (separate table/column)
   const changeRankUnrankedItems = (optionSelected: any, combatants: any) => {
     console.log("unrankedMatchup", unrankedMatchup);
     console.log("optionSelected: ", optionSelected);
@@ -158,7 +162,7 @@ const ranking = () => {
         <div>
           {sortedRankedItems.map((i, index) => {
             return (
-              <div className="inline-block flex">
+              <div className="flex" key={index}>
                 <div className="mx-2">{index + 1}.</div>
                 <div>{i.title}</div>
               </div>
@@ -279,9 +283,18 @@ const ranking = () => {
     );
   } else if (unRankedItems?.length === 0 && rankedItems?.length >= 2) {
     contentText = "No items left to rank";
+
+    //!Fire updateDBRank function
+
     return (
       <div className="flex h-full flex-col items-center space-y-4">
         <p>{contentText}</p>
+        <button
+          className="h-20 w-20 bg-slate-500"
+          onClick={() => updateItemsRank(simplifyItems)}
+        >
+          Update Ranks
+        </button>
         <RankedItemDisplay />
       </div>
     );

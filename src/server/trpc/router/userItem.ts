@@ -5,6 +5,8 @@ import {
   archiveItemsSchema,
   deleteItemSchema,
   updateItemSchema,
+  updateItemRankSchema,
+  updateItemsRankSchema,
 } from "../../schema/itemSchema";
 import { z } from "zod";
 
@@ -70,6 +72,42 @@ export const userItemRouter = router({
         status: 204,
         message: "Archived user items successfully",
       };
+    }),
+  updateManyItemsRank: protectedProcedure
+    .input(updateItemsRankSchema)
+    .mutation(async ({ ctx, input }) => {
+      const updates = input.map(({ itemId, listId, userId, potentialRank }) =>
+        ctx.prisma.userItem.updateMany({
+          where: { id: itemId, listId: listId, userId: userId },
+          data: {
+            currentRank: potentialRank,
+          },
+        })
+      );
+
+      // await all promises to complete
+      await Promise.all(updates);
+      return {
+        status: 204,
+        message: "Updated useritem - currentRank successfully",
+      };
+      // const { itemId, listId, userId, potentialRank } = input;
+
+      // await ctx.prisma.userItem.updateMany({
+      //   where: { id: itemId, listId: listId, userId: userId },
+      //   data: {
+      //     currentRank: potentialRank,
+      //   },
+      // });
+      // console.log("inside trpc procedure");
+
+      // return {
+      //   //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200
+      //   // "The successful result of a PUT or a DELETE is often not a 200 OK but a 204 No Content (or a 201 Created when the resource is uploaded for the first time)."
+      //   //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
+      //   status: 204,
+      //   message: "Updated useritem - currentRank successfully",
+      // };
     }),
   getItems: protectedProcedure
     .input(z.object({ listId: z.string() }))
