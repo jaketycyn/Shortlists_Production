@@ -92,7 +92,7 @@ const ranking = () => {
   );
   // console.log("unRankedItems:", JSON.stringify(unRankedItems, 0, 2));
 
-  const sortAlgo = (field: any, reverse: any, primer: any) => {
+  const sortAlgo = (field: number, reverse: number, primer: any) => {
     const key = primer
       ? function (x: any) {
           return primer(x[field]);
@@ -102,7 +102,7 @@ const ranking = () => {
         };
     reverse = !reverse ? 1 : -1;
 
-    return function (a: any, b: any) {
+    return function (a: number, b: number) {
       return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
     };
   };
