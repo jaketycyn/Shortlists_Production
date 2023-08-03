@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useCallback } from "react";
 import { signIn } from "next-auth/react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginSchema } from "../server/schema/userSchema";
 import { motion } from "framer-motion";

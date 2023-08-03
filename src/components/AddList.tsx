@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from "react";
+import React from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { useForm, Resolver, SubmitHandler } from "react-hook-form";
+import { useForm, Resolver } from "react-hook-form";
 
 import { trpc } from "../utils/trpc";
 import { type AddListSchema } from "../server/schema/listSchema";

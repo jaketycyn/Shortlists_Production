@@ -1,41 +1,17 @@
-import React, { useEffect, useState } from "react";
-
-import { useSession } from "next-auth/react";
-
-import Link from "next/link";
+import React from "react";
 import { useRouter } from "next/router";
-import { useForm, type Resolver, SubmitHandler } from "react-hook-form";
-
-import { HiPlus, HiX, HiDotsVertical } from "react-icons/hi";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
-
 import { trpc } from "../../utils/trpc";
 import { type UpdateItemsRankSchema } from "../../server/schema/itemSchema";
-import { type ShareListSchema } from "../../server/schema/listSchema";
 import {
-  type Item,
-  setItems,
   setItemPotentialRank,
   setInitialItemsPotentialRank,
 } from "../../slices/itemSlice";
-import ListFooterNav from "../../components/navigation/ListFooterNav";
-
-import { Dialog, Menu, Transition } from "@headlessui/react";
 
 const ranking = () => {
   //imports - remove unnecsarry later
-  const { data: session, status } = useSession();
   const router = useRouter();
   const dispatch = useAppDispatch();
-
-  const [showTextInput, setShowTextInput] = useState(false);
-  const [showItemOptions, setShowItemOptions] = useState(false);
-  const [activeItemIndex, setActiveItemIndex] = useState<any>();
-  const [hasFocus, setFocus] = useState(false);
-  //const [listItems, setListItems] = useState([]);
-  const [showToast, setShowToast] = React.useState<boolean>(false);
-  const [showAdd, setShowAdd] = React.useState<boolean>(false);
-  const [open, setOpen] = useState(false);
   const listId = router.query.id as string;
 
   // Retrieve state variables from Redux
@@ -59,10 +35,11 @@ const ranking = () => {
 
   const updateItemsRank = async (simplifyItems: UpdateItemsRankSchema) => {
     try {
-      console.log("items: ", items);
+      //console.log("items: ", items);
       //simplify items test
-      console.log("simplifyItems: ", simplifyItems);
+      //console.log("simplifyItems: ", simplifyItems);
       const result = await mutateAsync(simplifyItems);
+      //console.log("result: ", result);
     } catch (error) {
       console.log("error: ", error);
     }
@@ -92,26 +69,10 @@ const ranking = () => {
   );
   // console.log("unRankedItems:", JSON.stringify(unRankedItems, 0, 2));
 
-  const sortAlgo = (field: number, reverse: number, primer: any) => {
-    const key = primer
-      ? function (x: any) {
-          return primer(x[field]);
-        }
-      : function (x: any) {
-          return x[field];
-        };
-    reverse = !reverse ? 1 : -1;
-
-    return function (a: number, b: number) {
-      return (a = key(a)), (b = key(b)), reverse * ((a > b) - (b > a));
-    };
-  };
-
-  const sortedRankedItems = rankedItems
-    .slice()
-    // false = reversed order ; lowest # is highest rank
-    .sort(sortAlgo("potentialRank", true, parseInt));
-  // console.log("sortedRankedItems - ranking.tsx: ", sortedRankedItems);
+  const sortedRankedItems = rankedItems.sort(
+    (a, b) => b.potentialRank! - a.potentialRank!
+  );
+  console.log("sortedRankedItems: ", sortedRankedItems);
 
   const activeItem = items?.filter(
     (i) => i.status === "won" || i.status === "lost"
@@ -120,15 +81,13 @@ const ranking = () => {
   const changeRankUnrankedItems = (optionSelected: any, combatants: any) => {
     console.log("unrankedMatchup", unrankedMatchup);
     console.log("optionSelected: ", optionSelected);
+    console.log("combatants: ", combatants);
     //know both items are unranked can hardcore using bounds
     if (unrankedMatchup.length >= 2) {
       //find Index of Losing Option
       const losingIndex = unrankedMatchup.findIndex(
         (i: any) => i.id !== optionSelected.id
       );
-      //assign Losing Option Variable
-      const losingOption = unrankedMatchup[losingIndex];
-      //console.log("losingOption: ", losingOption);
 
       dispatch(
         setInitialItemsPotentialRank({

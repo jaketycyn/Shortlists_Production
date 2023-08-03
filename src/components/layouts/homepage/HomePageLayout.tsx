@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
-import { useSession } from "next-auth/react";
+
 import Link from "next/link";
 
 import {
@@ -8,29 +8,21 @@ import {
   useAppSelector,
 } from "../../../hooks/useTypedSelector";
 
-import {
-  // HiOutlineDotsVertical,
-  // HiPlus,
-  HiOutlineChevronRight,
-} from "react-icons/hi";
+import { HiOutlineChevronRight } from "react-icons/hi";
 import { motion } from "framer-motion";
 
 import { trpc } from "../../../utils/trpc";
 
-import {
-  type ArchiveListSchema,
-  //type DeleteListSchema,
-} from "../../../server/schema/listSchema";
+import { type ArchiveListSchema } from "../../../server/schema/listSchema";
 import { setActiveList, setLists, type List } from "../../../slices/listSlice";
 
 import FooterNav from "../../navigation/FooterNav";
 
 const HomePageLayout: NextPage = () => {
   const dispatch = useAppDispatch();
-  const { lists, error, loading } = useAppSelector((state) => state.list);
+  const { lists } = useAppSelector((state) => state.list);
   const [openTab, setOpenTab] = React.useState(1);
-  const [userListsOpen, setUserListsOpen] = useState(true);
-  // const [showShareForm, setShowShareForm] = useState(true);
+  const [userListsOpen] = useState(true);
 
   const {
     data: results,
