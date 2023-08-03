@@ -8,19 +8,15 @@ import {
   setInitialItemsPotentialRank,
 } from "../../slices/itemSlice";
 
-const ranking = () => {
+const Ranking = () => {
   //imports - remove unnecsarry later
   const router = useRouter();
   const dispatch = useAppDispatch();
   const listId = router.query.id as string;
 
-  // Retrieve state variables from Redux
-  const { users } = useAppSelector((state) => state.user);
   // items are already items only from the active list
   const { items } = useAppSelector((state) => state.item);
-  const { activeList, lists, error, loading } = useAppSelector(
-    (state) => state.list
-  );
+  const { activeList, lists } = useAppSelector((state) => state.list);
 
   let contentText;
 
@@ -45,11 +41,6 @@ const ranking = () => {
     }
   };
 
-  const Listindex = lists?.findIndex((item) => item.id === listId);
-  //console.log("ListIndex is: ", Listindex);
-
-  //?both methods work for finding title of active list
-  //const activeListTitle = lists?.[Listindex!]?.title;
   const activeListTitle = activeList?.title;
 
   //!New Ranking System area
@@ -295,4 +286,4 @@ const ranking = () => {
   }
 };
 
-export default ranking;
+export default Ranking;
