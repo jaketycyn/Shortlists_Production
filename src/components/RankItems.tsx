@@ -1,9 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
-type Props = {};
-
-export const RankItems = (props: Props) => {
+export const RankItems = () => {
   //hardcoded list id
   const id = "clkcahtw50001w3443i6p25ko";
 
