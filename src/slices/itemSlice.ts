@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -69,7 +70,10 @@ export const itemSlice = createSlice({
     //change current item Rank
     setItemPotentialRank: (state, action: PayloadAction<T>) => {
       //console.log("action.payload - setItemPotentialRank: ", action.payload);
-      const sortedRankedItems = state.items.filter((i) => i.potentialRank! > 0);
+
+      const sortedRankedItems = state.items.filter(
+        (i) => i.potentialRank !== null && i.potentialRank > 0
+      );
 
       const rankedSortedItems = sortedRankedItems.sort(
         (a, b) => b.potentialRank! - a.potentialRank!
@@ -81,7 +85,7 @@ export const itemSlice = createSlice({
       const optB = action.payload.combatants[1];
       const optionSelected = action.payload.optionSelected;
       const allItemsOptAIndex = state.items.findIndex((i) => i.id === optA.id);
-      const allItemsOptBIndex = state.items.findIndex((i) => i.id === optB.id);
+
       const rankedItemsOptBIndex = rankedSortedItems.findIndex(
         (i) => i.id === optB.id
       );
@@ -165,13 +169,11 @@ export const itemSlice = createSlice({
           if (optionSelected === 0) {
             //OPT A is selected
             console.log("rankedItemsOptBIndex", rankedItemsOptBIndex);
-            let possOpponents;
-
             //assign new botBound based on optB.rank to optA
             const botBound: number = optB.potentialRank;
 
             //find new opponents
-            possOpponents = rankedSortedItemsExcludeOptA.filter(
+            const possOpponents = rankedSortedItemsExcludeOptA.filter(
               (i) =>
                 optA.topBound > i.potentialRank! && i.potentialRank! > botBound
             );
@@ -202,8 +204,7 @@ export const itemSlice = createSlice({
           }
           if (optionSelected === 1) {
             const topBound: number = optB.potentialRank;
-            let possOpponents;
-            possOpponents = rankedSortedItemsExcludeOptA.filter(
+            const possOpponents = rankedSortedItemsExcludeOptA.filter(
               (i) =>
                 topBound > i.potentialRank! && i.potentialRank! > optA.botBound
             );
@@ -253,13 +254,11 @@ export const itemSlice = createSlice({
 
               //! send update to database of rank for optA based on potentialRank
             } else if (rankedItemsOptBIndex !== 0) {
-              let possOpponents;
-
               //assign new botBound based on optB.rank to optA
               const botBound: number = optB.potentialRank;
 
               //find new opponents
-              possOpponents = rankedSortedItemsExcludeOptA.filter(
+              const possOpponents = rankedSortedItemsExcludeOptA.filter(
                 (i) =>
                   optA.topBound > i.potentialRank! &&
                   i.potentialRank! > botBound
