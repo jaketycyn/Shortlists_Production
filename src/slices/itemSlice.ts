@@ -4,7 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 // individual item
 export interface Item {
-  listId: string | undefined;
+  listId: string;
   id: string;
   userId: string;
   title: string;
@@ -13,12 +13,12 @@ export interface Item {
   createdAt: Date;
   //could add createdAt: string | Date
   // for now swapping it fully over to string since it gets converted to string on import
-  potentialRank: null | number;
-  currentRank: null | number;
+  potentialRank: number;
+  currentRank: number;
   //adding status value to rank items
   status: string;
-  botBound: number | string;
-  topBound: number | string;
+  botBound: number;
+  topBound: number;
 }
 
 export interface UnrankedObject {
@@ -41,7 +41,7 @@ export interface T {
 
 //initializing state preloading of any data
 const initialState: ItemState = {
-  items: null,
+  items: [],
   loading: false,
   error: null,
   round: 0,
