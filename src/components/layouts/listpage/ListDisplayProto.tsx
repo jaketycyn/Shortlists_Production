@@ -1,0 +1,262 @@
+import { useEffect, useState } from "react";
+import { useAppSelector } from "../../../hooks/useTypedSelector";
+
+function classNames(...classes: (string | undefined)[]): string {
+  return classes.filter(Boolean).join(" ");
+}
+
+export default function ListDisplayProto() {
+  const { items } = useAppSelector((state) => state.item);
+  //console.log("Items - ListDisplayProto: ", items);
+
+  const rankedItems = items.filter((i) => i.currentRank > 0);
+  //console.log("RankedItems - ListDisplayProto: ", rankedItems);
+  const sortedRankedItems = rankedItems.sort(
+    (a, b) => (b.currentRank || 0) - (a.currentRank || 0)
+  );
+  const unRankedItems = items.filter((i) => i.currentRank === 0);
+  //console.log("unRankedItems - ListDisplayProto: ", unRankedItems);
+
+  const [tabs, setTabs] = useState<
+    { name: string; count: number; current: boolean }[]
+  >([]);
+
+  useEffect(() => {
+    const rankedItems = items.filter((i) => i.currentRank > 0);
+
+    const unRankedItems = items.filter((i) => i.currentRank === 0);
+
+    if (rankedItems.length === 0) {
+      setTabs([
+        { name: "Ranked", count: rankedItems.length, current: false },
+        { name: "Unranked", count: unRankedItems.length, current: true },
+      ]);
+    } else {
+      setTabs([
+        { name: "Ranked", count: rankedItems.length, current: true },
+        { name: "Unranked", count: unRankedItems.length, current: false },
+      ]);
+    }
+  }, [items]);
+
+  const handleClick = (tabName: string) => {
+    setTabs(
+      tabs.map((tab) => ({
+        ...tab,
+        current: tab.name === tabName,
+      }))
+    );
+  };
+
+  //* Item Options //
+  const [showItemOptions, setShowItemOptions] = useState(false);
+  const [activeItemIndex, setActiveItemIndex] = useState<any>();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [iconOptions, setIconOptions] = useState(false);
+
+  const displayItemOptions = (index: number, id: string) => {
+    setSelectedId(id);
+
+    if (selectedId === id && showItemOptions) {
+      setShowItemOptions(false);
+      setActiveItemIndex(null);
+      setIconOptions(false); 
+    } else {
+      setShowItemOptions(true);
+      setActiveItemIndex(index);
+      setIconOptions(false); 
+    }
+  }
+
+  //* Archive/Delete Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  return (
+    <div className="flex items-center justify-center w-full ">
+      <div className="grid grid-cols-1 gap-4 border-b border-gray-200">
+        <div className="flex items-center justify-center">
+          <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+            {tabs.map((tab) => (
+              <a
+                key={tab.name}
+                href="#"
+                onClick={() => handleClick(tab.name)}
+                className={classNames(
+                  tab.current
+                    ? "border-indigo-500 text-indigo-600"
+                    : "border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700",
+                  "flex whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium"
+                )}
+                aria-current={tab.current ? "page" : undefined}
+              >
+                {tab.name}
+                {tab.count ? (
+                  <span
+                    className={classNames(
+                      tab.current
+                        ? "bg-indigo-100 text-indigo-600"
+                        : "bg-gray-100 text-gray-900",
+                      "ml-3 hidden rounded-full py-0.5 px-2.5 text-xs font-medium md:inline-block"
+                    )}
+                  >
+                    {tab.count}
+                  </span>
+                ) : null}
+              </a>
+            ))}
+          </nav>
+        </div>
+        <div>
+          {/* ranked Items Display */}
+          <div className={tabs[0]?.current ? "block" : "hidden"}>
+            {rankedItems === undefined || rankedItems.length === 0 ? (
+              // no items to display
+              <div>
+                <h4>add some items to your list or rank your items</h4>
+              </div>
+            ) : (
+              //display items
+              <div className="">
+                {sortedRankedItems.map((i, index) => (
+                  <div
+                  className="grid grid-cols-6 gap-4 border-b border-gray-200 hover:bg-gray-100 cursor-pointer items-center py-2 mx-auto"
+                    key={i.id}
+                    onClick={() => displayItemOptions(index, i.id)}
+                  >
+                    <div className="col-span-1 justify-self-start pl-4 ">
+                      {index + 1}
+                    </div>
+                    <div className="col-span-4 text-center ">{i.title}</div>
+                    <div className="col-span-1 items-center justify-end justify-self-end pr-4">
+                      <div className="h-6 w-6">
+                         {selectedId === i.id && showItemOptions && activeItemIndex === index && (
+                            iconOptions ? (
+                              <div className="row-start-1 flex flex-row-reverse ">
+                                 <svg
+                                    id="trashBtn"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="h-6 w-6 sm:h-5 md:w-5"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setIsModalOpen(true);
+                                      console.log(i.title + ' archive/delete');
+                                    }}
+                                  >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                  />
+                                </svg>
+                              
+                            </div>
+                          ) : (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="h-6 w-6"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIconOptions(true);  // setting the iconOptions to true, which will trigger trash can
+                              }}
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                              />
+                            </svg>
+                          ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* unRanked Items Display */}
+          <div className={tabs[1]?.current ? "block" : "hidden"}>
+            {unRankedItems === undefined || unRankedItems.length === 0 ? (
+              // no items to display
+              <div>
+                <h4>Add some more items to rank</h4>
+              </div>
+            ) : (
+              //display items
+              <div>
+                {unRankedItems.map((i, index) => (
+                  <div
+                    className="grid grid-cols-6 gap-4 border-b border-gray-200 hover:bg-gray-100 cursor-pointer h-10"
+                    
+                    
+                    key={i.id}
+                    onClick={() => displayItemOptions(index, i.id)}
+                  >
+                    <span className=" col-span-1 justify-self-start pl-4" />             
+                    <div className="col-span-4 text-center items-center my-auto ">{i.title}</div>
+                    <div className="col-span-1 items-center justify-end justify-self-end pr-4">
+                      <div className="h-6 w-6">
+                         {selectedId === i.id && showItemOptions && activeItemIndex === index && (
+                            iconOptions ? (
+                              <div className="row-start-1 flex flex-row-reverse ">
+                                 <svg
+                                    id="trashBtn"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="h-6 w-6 sm:h-5 md:w-5"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setIsModalOpen(true);
+                                      console.log(i.title + ' archive/delete');
+                                    }}
+                                  >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                  />
+                                </svg>
+                              
+                            </div>
+                          ) : (
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="h-6 w-6"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIconOptions(true);  // setting the iconOptions to true, which will trigger trash can
+                              }}
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
+                              />
+                            </svg>
+                          ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>        
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

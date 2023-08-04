@@ -25,6 +25,8 @@ import ListFooterNav from "../../components/navigation/ListFooterNav";
 
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { RankItems } from "../../components/RankItems";
+import ListDisplayTabs from "../../components/layouts/listpage/ListDisplayTabs";
+import ListDisplayProto from "../../components/layouts/listpage/ListDisplayProto";
 
 const resolver: Resolver<AddItemSchema> = async (values) => {
   return {
@@ -60,32 +62,9 @@ const ListPage: NextPage = () => {
   const { activeList, lists, error, loading } = useAppSelector(
     (state) => state.list
   );
-  // const listItems = [
-  //   { id: 123, title: "item1" },
-  //   { id: 456, title: "item2" },
-  // ];
-
   //! Placeholders for testing and basic setup. Later will use actual profile page info
-  const tabs = [
-    { name: "All", href: "#", current: true },
-    { name: "Online", href: "#", current: false },
-    { name: "Offline", href: "#", current: false },
-  ];
-  const team = [
-    {
-      name: "Leslie Alexander",
-      handle: "lesliealexander",
-      href: "#",
-      imageUrl:
-        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      status: "online",
-    },
-    // More people...
-  ];
 
-  function classNames(...classes: any) {
-    return classes.filter(Boolean).join(" ");
-  }
+  const testProp = "howdypartner";
 
   const clearItemInput = () => {
     setShowTextInput(!showTextInput);
@@ -141,10 +120,6 @@ const ListPage: NextPage = () => {
     }
   }, [formState, reset]);
 
-  //TODO - FUTURE: Add items through redux
-  //TODO: Retrieve items through redux
-
-  //TODO: Retrieve items
   const {
     data: retrievedItems,
     refetch,
@@ -162,7 +137,7 @@ const ListPage: NextPage = () => {
       const filteredFetchedItems = fetchedItems!.filter(
         (i) => i.archive === "undefined"
       );
-      console.log("filteredFetchedItems: ", filteredFetchedItems);
+      // console.log("filteredFetchedItems: ", filteredFetchedItems);
       dispatch(setItems(filteredFetchedItems));
     }
   }, [dispatch, fetchedItems]);
@@ -186,10 +161,6 @@ const ListPage: NextPage = () => {
       setShowItemOptions(false);
     } catch (error) {}
   };
-  //TODO - FUTURE: DELETE items through redux
-
-  //TODO: Share Items
-
   //console.log("lists inside [id]: ", lists);
 
   const Listindex = lists?.findIndex((item) => item.id === listId);
@@ -200,23 +171,21 @@ const ListPage: NextPage = () => {
   //Display Item Options Function:
   const displayItemOptions = (index: number) => {
     setShowItemOptions(!showItemOptions);
-
     setActiveItemIndex(index);
   };
 
-  const filteredArchivedItems = items?.filter(
+  const nonArchivedItems = items?.filter(
     (i) => i.archive !== "trash" && i.archive !== "archive"
   );
+
+  //console.log("nonArchivedItems - start [id]: ", nonArchivedItems);
+
   const nonArchiveLists = lists?.filter(
     (i) =>
       i.archive !== "trash" &&
       i.archive !== "archive" &&
       i.parentListUserId === "undefined"
   );
-
-  //FooterNav - moved in here cause of specific state management needed
-
-  //!Searching for Friends/users logic
 
   //search Function
   const [filteredResults, setFilteredResults] = useState<any>([]);
@@ -650,7 +619,6 @@ const ListPage: NextPage = () => {
           <div className="col-span-2 col-start-3 row-start-1 w-full items-center justify-between text-center">
             {lists ? <h1> {currentTitle}</h1> : null}
           </div>
-
           {/* Share Form Link */}
           <div className="col-start-7 row-start-1 flex flex-col items-end">
             <button
@@ -695,6 +663,9 @@ const ListPage: NextPage = () => {
           </div>
         </header>
         {/* Header Nav: End */}
+
+        <ListDisplayProto />
+
         <div className="z-0 m-2 grid h-screen grid-flow-row auto-rows-max items-center overflow-hidden p-2">
           <div className="relative grid">
             <div className="items-center py-1 text-center">
@@ -711,9 +682,9 @@ const ListPage: NextPage = () => {
               {/* react fragments solve error  */}
               {/*   Display Items Module: Start */}
               <>
-                {filteredArchivedItems! === undefined ||
-                filteredArchivedItems?.length === 0 ||
-                filteredArchivedItems! === null ? (
+                {nonArchivedItems! === undefined ||
+                nonArchivedItems?.length === 0 ||
+                nonArchivedItems! === null ? (
                   <div className="z-0 m-2 flex flex-col items-center rounded-md text-center">
                     <h1>You have no Items in this list</h1>
                     <p className="mt-8">
@@ -721,7 +692,7 @@ const ListPage: NextPage = () => {
                     </p>
                   </div>
                 ) : (
-                  filteredArchivedItems!.map((item, index) => (
+                  nonArchivedItems!.map((item, index) => (
                     <div
                       className="relative z-0 m-1 grid cursor-pointer grid-cols-7 grid-rows-1 rounded-lg border-2 border-solid border-black bg-white p-2 font-semibold text-black hover:bg-gray-200"
                       key={index}
