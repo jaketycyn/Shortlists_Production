@@ -25,7 +25,7 @@ import ListFooterNav from "../../components/navigation/ListFooterNav";
 
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { RankItems } from "../../components/RankItems";
-import ListDisplayTabs from "../../components/layouts/listpage/ListDisplayTabs";
+
 import ListDisplayProto from "../../components/layouts/listpage/ListDisplayProto";
 
 const resolver: Resolver<AddItemSchema> = async (values) => {
