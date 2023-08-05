@@ -60,53 +60,53 @@ export default function ListDisplayProto() {
     if (selectedId === id && showItemOptions) {
       setShowItemOptions(false);
       setActiveItemIndex(null);
-      setIconOptions(false); 
+      setIconOptions(false);
     } else {
       setShowItemOptions(true);
       setActiveItemIndex(index);
-      setIconOptions(false); 
+      setIconOptions(false);
     }
-  }
+  };
 
   //* Archive/Delete Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showInput, setShowInput] = useState(false);
 
   return (
-    <div className="flex items-center justify-center w-full ">
-      <div className="grid grid-cols-1 gap-4 border-b border-gray-200">
-        <div className="flex items-center justify-center">
-          <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-            {tabs.map((tab) => (
-              <a
-                key={tab.name}
-                href="#"
-                onClick={() => handleClick(tab.name)}
-                className={classNames(
-                  tab.current
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700",
-                  "flex whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium"
-                )}
-                aria-current={tab.current ? "page" : undefined}
-              >
-                {tab.name}
-                {tab.count ? (
-                  <span
-                    className={classNames(
-                      tab.current
-                        ? "bg-indigo-100 text-indigo-600"
-                        : "bg-gray-100 text-gray-900",
-                      "ml-3 hidden rounded-full py-0.5 px-2.5 text-xs font-medium md:inline-block"
-                    )}
-                  >
-                    {tab.count}
-                  </span>
-                ) : null}
-              </a>
-            ))}
-          </nav>
-        </div>
-        <div>
+    <div className="flex min-h-screen w-full flex-col items-center justify-center">
+      <div className="flex h-full w-full flex-col items-center overflow-hidden">
+        <nav className="sticky -mb-px flex space-x-8" aria-label="Tabs">
+          {tabs.map((tab) => (
+            <a
+              key={tab.name}
+              href="#"
+              onClick={() => handleClick(tab.name)}
+              className={classNames(
+                tab.current
+                  ? "border-indigo-500 text-indigo-600"
+                  : "border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700",
+                "flex whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium"
+              )}
+              aria-current={tab.current ? "page" : undefined}
+            >
+              {tab.name}
+              {tab.count ? (
+                <span
+                  className={classNames(
+                    tab.current
+                      ? "bg-indigo-100 text-indigo-600"
+                      : "bg-gray-100 text-gray-900",
+                    "ml-3 rounded-full px-2.5 py-0.5 text-xs font-medium md:inline-block"
+                  )}
+                >
+                  {tab.count}
+                </span>
+              ) : null}
+            </a>
+          ))}
+        </nav>
+
+        <div className="overflow-auto">
           {/* ranked Items Display */}
           <div className={tabs[0]?.current ? "block" : "hidden"}>
             {rankedItems === undefined || rankedItems.length === 0 ? (
@@ -119,7 +119,7 @@ export default function ListDisplayProto() {
               <div className="">
                 {sortedRankedItems.map((i, index) => (
                   <div
-                  className="grid grid-cols-6 gap-4 border-b border-gray-200 hover:bg-gray-100 cursor-pointer items-center py-2 mx-auto"
+                    className="mx-auto grid cursor-pointer grid-cols-6 items-center gap-4 border-b border-gray-200 py-2 hover:bg-gray-100"
                     key={i.id}
                     onClick={() => displayItemOptions(index, i.id)}
                   >
@@ -129,30 +129,31 @@ export default function ListDisplayProto() {
                     <div className="col-span-4 text-center ">{i.title}</div>
                     <div className="col-span-1 items-center justify-end justify-self-end pr-4">
                       <div className="h-6 w-6">
-                         {selectedId === i.id && showItemOptions && activeItemIndex === index && (
-                            iconOptions ? (
-                              <div className="row-start-1 flex flex-row-reverse ">
-                                 <svg
-                                    id="trashBtn"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="h-6 w-6 sm:h-5 md:w-5"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setIsModalOpen(true);
-                                      console.log(i.title + ' archive/delete');
-                                    }}
-                                  >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                                  />
-                                </svg>
-                              
+                        {selectedId === i.id &&
+                          showItemOptions &&
+                          activeItemIndex === index &&
+                          (iconOptions ? (
+                            <div className="row-start-1 flex flex-row-reverse ">
+                              <svg
+                                id="trashBtn"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="h-6 w-6 sm:h-5 md:w-5"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setIsModalOpen(true);
+                                  console.log(i.title + " archive/delete");
+                                }}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                />
+                              </svg>
                             </div>
                           ) : (
                             <svg
@@ -164,7 +165,7 @@ export default function ListDisplayProto() {
                               className="h-6 w-6"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setIconOptions(true);  // setting the iconOptions to true, which will trigger trash can
+                                setIconOptions(true); // setting the iconOptions to true, which will trigger trash can
                               }}
                             >
                               <path
@@ -193,40 +194,41 @@ export default function ListDisplayProto() {
               <div>
                 {unRankedItems.map((i, index) => (
                   <div
-                    className="grid grid-cols-6 gap-4 border-b border-gray-200 hover:bg-gray-100 cursor-pointer h-10"
-                    
-                    
+                    className="grid h-10 cursor-pointer grid-cols-6 gap-4 border-b border-gray-200 hover:bg-gray-100"
                     key={i.id}
                     onClick={() => displayItemOptions(index, i.id)}
                   >
-                    <span className=" col-span-1 justify-self-start pl-4" />             
-                    <div className="col-span-4 text-center items-center my-auto ">{i.title}</div>
-                    <div className="col-span-1 items-center justify-end justify-self-end pr-4">
+                    <span className=" col-span-1 justify-self-start pl-4" />
+                    <div className="col-span-4 my-auto items-center text-center ">
+                      {i.title}
+                    </div>
+                    <div className="col-span-1 my-auto items-center justify-end justify-self-end pr-4">
                       <div className="h-6 w-6">
-                         {selectedId === i.id && showItemOptions && activeItemIndex === index && (
-                            iconOptions ? (
-                              <div className="row-start-1 flex flex-row-reverse ">
-                                 <svg
-                                    id="trashBtn"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={1.5}
-                                    stroke="currentColor"
-                                    className="h-6 w-6 sm:h-5 md:w-5"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setIsModalOpen(true);
-                                      console.log(i.title + ' archive/delete');
-                                    }}
-                                  >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                                  />
-                                </svg>
-                              
+                        {selectedId === i.id &&
+                          showItemOptions &&
+                          activeItemIndex === index &&
+                          (iconOptions ? (
+                            <div className="row-start-1 flex flex-row-reverse ">
+                              <svg
+                                id="trashBtn"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="h-6 w-6 sm:h-5 md:w-5"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setIsModalOpen(true);
+                                  console.log(i.title + " archive/delete");
+                                }}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                />
+                              </svg>
                             </div>
                           ) : (
                             <svg
@@ -238,7 +240,7 @@ export default function ListDisplayProto() {
                               className="h-6 w-6"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setIconOptions(true);  // setting the iconOptions to true, which will trigger trash can
+                                setIconOptions(true); // setting the iconOptions to true, which will trigger trash can
                               }}
                             >
                               <path
@@ -252,7 +254,42 @@ export default function ListDisplayProto() {
                     </div>
                   </div>
                 ))}
-              </div>        
+              </div>
+            )}
+          </div>
+          {/* //*Add Item or Rank Section PROTO 2*/}
+
+          <div className="grid grid-cols-2">
+            <div
+              className={`col-span-${
+                showInput ? "2" : "1"
+              } flex items-center justify-center p-4`}
+            >
+              {showInput ? (
+                <input
+                  type="text"
+                  placeholder="Enter item..."
+                  className="w-full rounded-md border px-4 py-2"
+                  onBlur={() => setShowInput(false)} // You can close the input when it loses focus
+                />
+              ) : (
+                <button
+                  className="rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  onClick={() => setShowInput(true)}
+                >
+                  Add Item
+                </button>
+              )}
+            </div>
+            {!showInput && (
+              <div className="col-span-1 flex items-center justify-center p-4">
+                <button
+                  className="rounded-md border border-transparent bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                  onClick={() => console.log("add item")}
+                >
+                  Rank
+                </button>
+              </div>
             )}
           </div>
         </div>
