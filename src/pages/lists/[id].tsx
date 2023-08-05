@@ -174,19 +174,6 @@ const ListPage: NextPage = () => {
     setActiveItemIndex(index);
   };
 
-  const nonArchivedItems = items?.filter(
-    (i) => i.archive !== "trash" && i.archive !== "archive"
-  );
-
-  //console.log("nonArchivedItems - start [id]: ", nonArchivedItems);
-
-  const nonArchiveLists = lists?.filter(
-    (i) =>
-      i.archive !== "trash" &&
-      i.archive !== "archive" &&
-      i.parentListUserId === "undefined"
-  );
-
   //search Function
   const [filteredResults, setFilteredResults] = useState<any>([]);
 
@@ -473,7 +460,7 @@ const ListPage: NextPage = () => {
                               >
                                 {filteredResults.map((user: any, key: any) => (
                                   <li key={key}>
-                                    <div className="group relative flex items-center py-6 px-5">
+                                    <div className="group relative flex items-center px-5 py-6">
                                       <a className="-m-1 block flex-1 p-1">
                                         <div
                                           className="absolute "
@@ -531,7 +518,7 @@ const ListPage: NextPage = () => {
                               >
                                 {filteredFriends!.map((user: any, key: any) => (
                                   <li key={key}>
-                                    <div className="group relative flex items-center py-6 px-5">
+                                    <div className="group relative flex items-center px-5 py-6">
                                       <a className="-m-1 block flex-1 p-1">
                                         <div
                                           className="absolute "
@@ -593,25 +580,25 @@ const ListPage: NextPage = () => {
         </Dialog>
       </Transition.Root>
 
-      <div className="flex h-screen flex-col justify-between">  
+      <div className="flex h-screen flex-col justify-between">
         <ListDisplayProto />
         {/* <RankItems /> */}
-      
+
         {/* <div className="z-0 m-2 grid h-screen grid-flow-row auto-rows-max items-center overflow-hidden p-2">
           <div className="relative grid">
             <div className="items-center py-1 text-center">
               <h3 className="mb-4 text-lg font-semibold">{currentTitle}</h3> */}
-              {/* <div
+        {/* <div
                 className="bg-pink-400"
                 onClick={() => dispatch(resetItemsTest())}
               >
                 resetItemsTest
               </div> */}
 
-              {/* https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type */}
-              {/* react fragments solve error  */}
-              {/*   Display Items Module: Start */}
-              {/* <>
+        {/* https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type */}
+        {/* react fragments solve error  */}
+        {/*   Display Items Module: Start */}
+        {/* <>
                 {nonArchivedItems! === undefined ||
                 nonArchivedItems?.length === 0 ||
                 nonArchivedItems! === null ? (
@@ -631,8 +618,8 @@ const ListPage: NextPage = () => {
                       <div className="col-span-5 col-start-1 row-start-1">
                         {item.title}
                       </div> */}
-                      {/* Show ... Options: Start */}
-                      {/* <div className="col-start-6">
+        {/* Show ... Options: Start */}
+        {/* <div className="col-start-6">
                         {showItemOptions && activeItemIndex === index ? (
                           <div className=" row-start-1 flex flex-row-reverse ">
                             <button
@@ -689,15 +676,15 @@ const ListPage: NextPage = () => {
                           </div>
                         )}
                         {/* Show ... Options: End */}
-                      {/* }
+        {/* }
                       </div>
                     </div>
                   ))
                 )}
               </>   */}
-              {/*   Display Items Module: End */}
-              {/*   Add Item Module: Start */}
-              {/* <div className="text-gray-dark my-8 items-center rounded">
+        {/*   Display Items Module: End */}
+        {/*   Add Item Module: Start */}
+        {/* <div className="text-gray-dark my-8 items-center rounded">
                 <button
                   className={`cursor pointer btn-wide btn mt-8   justify-center rounded-lg border-2 border-solid border-black bg-primary p-2 hover:bg-gray-400 ${
                     showTextInput && "hidden"
@@ -715,8 +702,8 @@ const ListPage: NextPage = () => {
                     onSubmit={handleSubmit(onSubmit)}
                   >
                     {/* Error Toast/Message: Start */}
-                    {/* Toast: Start*/}
-                    {/* {showToast ? (
+        {/* Toast: Start*/}
+        {/* {showToast ? (
                       <div
                         id="toast-simple"
                         className="flex h-14 w-60 items-center space-x-4 divide-x divide-gray-200 rounded-lg bg-green-400 p-4 text-black shadow"
@@ -727,20 +714,19 @@ const ListPage: NextPage = () => {
                       </div>
                     ) : (
                       <div></div> */}
-                    {/* )}  */}
+        {/* )}  */}
 
+        {/* Toast: End */}
 
-                    {/* Toast: End */}
-                
-                    {/* <div className="mb-4">
+        {/* <div className="mb-4">
                       {errors?.itemTitle && (
                         <p className="inline  p-2 font-bold text-red-800">
                           ⚠{errors.itemTitle.message}
                         </p>
                       )}
                     </div> */}
-                    {/* Error Toast/Message: End */}
-                    {/* <input
+        {/* Error Toast/Message: End */}
+        {/* <input
                       type="text"
                       id="itemTitle"
                       className="input-bordered input  input-md block h-20 w-full max-w-xs rounded-lg border border-gray-300 bg-primary p-2.5  text-center"
@@ -772,13 +758,13 @@ const ListPage: NextPage = () => {
               //   </span>
               // </div>
               {/*   Add Item Module: End */}
-            {/* </div>
+        {/* </div>
           </div>
         </div>
         <div>
           <div className=""> */}
-            {/* AddItemOrList Component: Start*/}
-            {/* <div className="mb-20 flex flex-col items-center justify-center text-center">
+        {/* AddItemOrList Component: Start*/}
+        {/* <div className="mb-20 flex flex-col items-center justify-center text-center">
               {showAdd ? (
                 <div className="" onBlur={() => setShowAdd(false)}>
                   {nonArchiveLists!.length >= 1 ? (
@@ -796,63 +782,63 @@ const ListPage: NextPage = () => {
                 </div>
               ) : null}
             </div> */}
-            {/* AddItemOrList Component: End*/}
+        {/* AddItemOrList Component: End*/}
 
-            {/* FooterBar Component: Start*/}
-            {/* This is below the AddItem/List and has its own separate forced bottom-0 position */}
+        {/* FooterBar Component: Start*/}
+        {/* This is below the AddItem/List and has its own separate forced bottom-0 position */}
 
-            <div className="btm-nav bottom-0  grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-black/30 text-center">
-              <div className="col-start-1 row-start-1 flex flex-col items-center justify-center">
-                <Link href="/" className="absolute bottom-3 text-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="h-6 w-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
-                    />
-                  </svg>
-                </Link>
-              </div>
-              <div className="col-start-2 row-start-1 flex flex-col items-center">
-                <button
-                  onClick={() => setShowAdd(!showAdd)}
-                  className="btn-circle btn absolute bottom-8 flex h-12 w-12 bg-black/40 "
-                >
-                  <HiPlus />
-                </button>
-              </div>
-              <div className="col-start-3 row-start-1">
-                <Link
-                  href="/profile"
-                  className="z-80 absolute bottom-3 text-center"
-                >
-                  {/* profile link */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="h-6 w-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-            {/* FooterBar Component: End*/}
-          </div>           
+        <div className="btm-nav bottom-0  grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-black/30 text-center">
+          <div className="col-start-1 row-start-1 flex flex-col items-center justify-center">
+            <Link href="/" className="absolute bottom-3 text-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+                />
+              </svg>
+            </Link>
+          </div>
+          <div className="col-start-2 row-start-1 flex flex-col items-center">
+            <button
+              onClick={() => setShowAdd(!showAdd)}
+              className="btn btn-circle absolute bottom-8 flex h-12 w-12 bg-black/40 "
+            >
+              <HiPlus />
+            </button>
+          </div>
+          <div className="col-start-3 row-start-1">
+            <Link
+              href="/profile"
+              className="z-80 absolute bottom-3 text-center"
+            >
+              {/* profile link */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </Link>
+          </div>
+        </div>
+        {/* FooterBar Component: End*/}
+      </div>
     </>
   );
 };

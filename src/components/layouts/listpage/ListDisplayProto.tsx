@@ -1,5 +1,13 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { useAppSelector } from "../../../hooks/useTypedSelector";
+import { useForm, type Resolver } from "react-hook-form";
+import {
+  type ArchiveItemSchema,
+  type AddItemSchema,
+} from "../../../server/schema/itemSchema";
+import { trpc } from "../../../utils/trpc";
+import { RankItems } from "../../RankItems";
 
 function classNames(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
@@ -48,7 +56,7 @@ export default function ListDisplayProto() {
     );
   };
 
-  //* Item Options //
+  //* Item Options Variables & Functions *//
   const [showItemOptions, setShowItemOptions] = useState(false);
   const [activeItemIndex, setActiveItemIndex] = useState<any>();
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -68,9 +76,82 @@ export default function ListDisplayProto() {
     }
   };
 
-  //* Archive/Delete Modal
+  //* Archive/Delete Modal *//
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  //* Add Item Variables & Functions *//
+  const router = useRouter();
   const [showInput, setShowInput] = useState(false);
+  const [hasFocus, setFocus] = useState(false);
+  const [showToast, setShowToast] = useState<boolean>(false);
+  const listId = router.query.id as string;
+
+  const resolver: Resolver<AddItemSchema> = async (values) => {
+    return {
+      values: !values.itemTitle ? {} : values,
+      errors: !values.itemTitle
+        ? {
+            itemTitle: {
+              type: "required",
+              message: "A title is required",
+            },
+          }
+        : {},
+    };
+  };
+
+  // Add items through trpc
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState,
+    formState: { errors },
+  } = useForm<AddItemSchema>({
+    resolver,
+    defaultValues: { itemTitle: "", listId: listId },
+  });
+
+  const { mutateAsync } = trpc.userItem.addItem.useMutation();
+
+  const onSubmit = useCallback(
+    async (data: AddItemSchema) => {
+      try {
+        const result = await mutateAsync(data);
+        // const result = data;
+        console.log("data found with value: ", data);
+        if (result) {
+          //showToast Agent
+          console.log("result found with value: ", result);
+          console.log("item should be created - will redirect from here later");
+          //TODO: Clear input field after submitting
+          setShowToast(true);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    [mutateAsync]
+    //might need to add something for test firing
+  );
+
+  const {
+    data: retrievedItems,
+    refetch,
+    isLoading,
+  } = trpc.userItem.getItems.useQuery({ listId });
+
+  //reset item input form afterSubmit
+  useEffect(() => {
+    if (formState.isSubmitSuccessful) {
+      reset({
+        itemTitle: "",
+        listId: listId,
+      });
+      refetch();
+      setTimeout(() => setShowToast(false), 1000);
+    }
+  }, [formState, reset]);
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center justify-center">
@@ -169,8 +250,8 @@ export default function ListDisplayProto() {
                               }}
                             >
                               <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
                               />
                             </svg>
@@ -244,8 +325,8 @@ export default function ListDisplayProto() {
                               }}
                             >
                               <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
                               />
                             </svg>
@@ -257,8 +338,8 @@ export default function ListDisplayProto() {
               </div>
             )}
           </div>
-          {/* //*Add Item or Rank Section PROTO 2*/}
 
+          {/* //*Add Item or Rank Section */}
           <div className="grid grid-cols-2">
             <div
               className={`col-span-${
@@ -266,12 +347,32 @@ export default function ListDisplayProto() {
               } flex items-center justify-center p-4`}
             >
               {showInput ? (
-                <input
-                  type="text"
-                  placeholder="Enter item..."
-                  className="w-full rounded-md border px-4 py-2"
-                  onBlur={() => setShowInput(false)} // You can close the input when it loses focus
-                />
+                <div className="relative">
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <input
+                      type="text"
+                      id="itemTitle"
+                      className="w-full rounded-md border border-gray-200 py-2 pl-3 text-sm text-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                      placeholder="Item Name . . ."
+                      autoComplete="off"
+                      onFocus={() => setFocus(true)}
+                      onTouchCancel={() => setFocus(false)}
+                      onTouchEnd={() => setFocus(false)}
+                      {...register("itemTitle")}
+                    />
+                    <button
+                      onClick={() => {
+                        setShowInput(false);
+                      }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 transform rounded-full p-1 font-bold text-red-800"
+                      style={{ fontSize: "20px" }}
+                      type="reset"
+                    >
+                      {" "}
+                      X
+                    </button>
+                  </form>
+                </div>
               ) : (
                 <button
                   className="rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
@@ -287,7 +388,7 @@ export default function ListDisplayProto() {
                   className="rounded-md border border-transparent bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                   onClick={() => console.log("add item")}
                 >
-                  Rank
+                  <RankItems />
                 </button>
               </div>
             )}
