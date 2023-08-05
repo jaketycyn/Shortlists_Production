@@ -593,95 +593,25 @@ const ListPage: NextPage = () => {
         </Dialog>
       </Transition.Root>
 
-      <div className="flex h-screen flex-col justify-between">
-        {/* Header Nav: Start */}
-        <header className="border-grey z-80 sticky top-0 grid h-14 w-full grid-cols-8 grid-rows-1 border-b p-4 text-center">
-          {/* Back button - Home page link */}
-          <div className="col-start-1 row-start-1">
-            <Link href="/">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
-                />
-              </svg>
-            </Link>
-          </div>
-          {/* List Title */}
-          <div className="col-span-2 col-start-3 row-start-1 w-full items-center justify-between text-center">
-            {lists ? <h1> {currentTitle}</h1> : null}
-          </div>
-          {/* Share Form Link */}
-          <div className="col-start-7 row-start-1 flex flex-col items-end">
-            <button
-              //href="/share"
-              //onClick={() => dispatch(setActiveItems(*all items attached to active list))}
-
-              onClick={() => setOpen(true)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="h-6 w-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
-                />
-              </svg>
-            </button>
-          </div>
-          {/* Options */}
-          <div className="col-start-8 row-start-1 flex flex-col items-end">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="h-6 w-6"
-              onClick={() => console.log("options")}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
-              />
-            </svg>
-          </div>
-        </header>
-        {/* Header Nav: End */}
-
+      <div className="flex h-screen flex-col justify-between">  
         <ListDisplayProto />
-
-        <div className="z-0 m-2 grid h-screen grid-flow-row auto-rows-max items-center overflow-hidden p-2">
+        {/* <RankItems /> */}
+      
+        {/* <div className="z-0 m-2 grid h-screen grid-flow-row auto-rows-max items-center overflow-hidden p-2">
           <div className="relative grid">
             <div className="items-center py-1 text-center">
-              <h3 className="mb-4 text-lg font-semibold">{currentTitle}</h3>
-              <RankItems />
-              <div
+              <h3 className="mb-4 text-lg font-semibold">{currentTitle}</h3> */}
+              {/* <div
                 className="bg-pink-400"
                 onClick={() => dispatch(resetItemsTest())}
               >
                 resetItemsTest
-              </div>
+              </div> */}
 
               {/* https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type */}
               {/* react fragments solve error  */}
               {/*   Display Items Module: Start */}
-              <>
+              {/* <>
                 {nonArchivedItems! === undefined ||
                 nonArchivedItems?.length === 0 ||
                 nonArchivedItems! === null ? (
@@ -700,9 +630,9 @@ const ListPage: NextPage = () => {
                     >
                       <div className="col-span-5 col-start-1 row-start-1">
                         {item.title}
-                      </div>
+                      </div> */}
                       {/* Show ... Options: Start */}
-                      <div className="col-start-6">
+                      {/* <div className="col-start-6">
                         {showItemOptions && activeItemIndex === index ? (
                           <div className=" row-start-1 flex flex-row-reverse ">
                             <button
@@ -759,14 +689,15 @@ const ListPage: NextPage = () => {
                           </div>
                         )}
                         {/* Show ... Options: End */}
+                      {/* }
                       </div>
                     </div>
                   ))
                 )}
-              </>
+              </>   */}
               {/*   Display Items Module: End */}
               {/*   Add Item Module: Start */}
-              <div className="text-gray-dark my-8 items-center rounded">
+              {/* <div className="text-gray-dark my-8 items-center rounded">
                 <button
                   className={`cursor pointer btn-wide btn mt-8   justify-center rounded-lg border-2 border-solid border-black bg-primary p-2 hover:bg-gray-400 ${
                     showTextInput && "hidden"
@@ -785,7 +716,7 @@ const ListPage: NextPage = () => {
                   >
                     {/* Error Toast/Message: Start */}
                     {/* Toast: Start*/}
-                    {showToast ? (
+                    {/* {showToast ? (
                       <div
                         id="toast-simple"
                         className="flex h-14 w-60 items-center space-x-4 divide-x divide-gray-200 rounded-lg bg-green-400 p-4 text-black shadow"
@@ -795,20 +726,21 @@ const ListPage: NextPage = () => {
                         <div className="pl-6 font-normal">Item Created</div>
                       </div>
                     ) : (
-                      <div></div>
-                    )}
+                      <div></div> */}
+                    {/* )}  */}
+
 
                     {/* Toast: End */}
-                    {/* //TODO: Change to Toast pop up and use useState to clear it on cancel so a new submit must be fired for error toast to appear */}
-                    <div className="mb-4">
+                
+                    {/* <div className="mb-4">
                       {errors?.itemTitle && (
                         <p className="inline  p-2 font-bold text-red-800">
                           ⚠{errors.itemTitle.message}
                         </p>
                       )}
-                    </div>
+                    </div> */}
                     {/* Error Toast/Message: End */}
-                    <input
+                    {/* <input
                       type="text"
                       id="itemTitle"
                       className="input-bordered input  input-md block h-20 w-full max-w-xs rounded-lg border border-gray-300 bg-primary p-2.5  text-center"
@@ -822,31 +754,31 @@ const ListPage: NextPage = () => {
                     <span className="relative mt-2 flex items-center justify-center ">
                       <button
                         className="hover:bg-green-800focus:ring-4 btn  rounded-lg bg-green-500 text-center text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-blue-300 "
-                        type="submit"
+                        type="submit" 
                         //onClick={handleSubmit}
-                      >
-                        Add Item
-                      </button>
-                      <span className="m-6" />
-                      <button
-                        className="btn  rounded-lg bg-red-700 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300  "
-                        onClick={() => clearItemInput()}
-                        type="reset"
-                      >
-                        Cancel
-                      </button>
-                    </span>
-                  </form>
-                </span>
-              </div>
+              //         >
+              //           Add Item
+              //         </button>
+              //         <span className="m-6" />
+              //         <button
+              //           className="btn  rounded-lg bg-red-700 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300  "
+              //           onClick={() => clearItemInput()}
+              //           type="reset"
+              //         >
+              //           Cancel
+              //         </button>
+              //       </span>
+              //     </form>
+              //   </span>
+              // </div>
               {/*   Add Item Module: End */}
-            </div>
+            {/* </div>
           </div>
         </div>
         <div>
-          <div className="">
+          <div className=""> */}
             {/* AddItemOrList Component: Start*/}
-            <div className="mb-20 flex flex-col items-center justify-center text-center">
+            {/* <div className="mb-20 flex flex-col items-center justify-center text-center">
               {showAdd ? (
                 <div className="" onBlur={() => setShowAdd(false)}>
                   {nonArchiveLists!.length >= 1 ? (
@@ -863,7 +795,7 @@ const ListPage: NextPage = () => {
                   ) : null}
                 </div>
               ) : null}
-            </div>
+            </div> */}
             {/* AddItemOrList Component: End*/}
 
             {/* FooterBar Component: Start*/}
@@ -920,9 +852,7 @@ const ListPage: NextPage = () => {
               </div>
             </div>
             {/* FooterBar Component: End*/}
-          </div>
-        </div>
-      </div>
+          </div>           
     </>
   );
 };
