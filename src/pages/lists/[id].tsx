@@ -26,7 +26,7 @@ import ListFooterNav from "../../components/navigation/ListFooterNav";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import { RankItems } from "../../components/RankItems";
 
-import ListDisplayProto from "../../components/layouts/listpage/ListDisplayProto";
+import ListDisplay from "../../components/layouts/listpage/ListDisplay";
 
 const resolver: Resolver<AddItemSchema> = async (values) => {
   return {
@@ -397,31 +397,6 @@ const ListPage: NextPage = () => {
                           </div>
                         </div>
                       </div>
-                      {/* Tabs for future */}
-                      {/* <div className="border-b border-gray-200">
-                        <div className="px-6">
-                          <nav
-                            className="-mb-px flex space-x-6"
-                            x-descriptions="Tab component"
-                          >
-                            {tabs.map((tab) => (
-                              <a
-                                key={tab.name}
-                                href={tab.href}
-                                className={classNames(
-                                  tab.current
-                                    ? "border-indigo-500 text-indigo-600"
-                                    : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
-                                  "whitespace-nowrap border-b-2 px-1 pb-4 text-sm font-medium"
-                                )}
-                              >
-                                {tab.name}
-                              </a>
-                            ))}
-                          </nav>
-                        </div>
-                      </div> */}
-
                       {/* Start - Search for Friend/Person to share list with */}
                       {/* Bring from profile page component the share logic over - will need to slightly tweak parts of it to add in a favor friends aspect. Will most likely use the logic from the seperate tabs (friends/pending/sent) most notably the friends tab to prioritize those users */}
                       <form>
@@ -590,7 +565,7 @@ const ListPage: NextPage = () => {
       </Transition.Root>
 
       <div className="flex h-screen flex-col justify-between">
-        <ListDisplayProto />
+        <ListDisplay />
         {/* <RankItems /> */}
 
         {/* <div className="z-0 m-2 grid h-screen grid-flow-row auto-rows-max items-center overflow-hidden p-2">
