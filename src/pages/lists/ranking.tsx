@@ -176,8 +176,8 @@ const Ranking = () => {
           i.potentialRank! < optA.topBound && i.potentialRank! > optA.botBound
       );
 
-      console.log("filtRankedItems, ", filtRankedItems);
-      console.log("filtRankedItemslength, ", filtRankedItems.length);
+      // console.log("filtRankedOpps, ", filtRankedItems);
+      // console.log("filtRankedItemslength, ", filtRankedItems.length);
 
       if (filtRankedItems.length === 1) {
         optB = filtRankedItems[0];

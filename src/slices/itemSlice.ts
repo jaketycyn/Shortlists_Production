@@ -71,11 +71,11 @@ export const itemSlice = createSlice({
     setItemPotentialRank: (state, action: PayloadAction<T>) => {
       //console.log("action.payload - setItemPotentialRank: ", action.payload);
 
-      const sortedRankedItems = state.items.filter(
+      const rankedItems = state.items.filter(
         (i) => i.potentialRank !== null && i.potentialRank > 0
       );
 
-      const rankedSortedItems = sortedRankedItems.sort(
+      const rankedSortedItems = rankedItems.sort(
         (a, b) => b.potentialRank! - a.potentialRank!
       );
 
@@ -83,7 +83,7 @@ export const itemSlice = createSlice({
       const optA = action.payload.combatants[0];
       //console.log("optA inside Redux: ", optA);
       const optB = action.payload.combatants[1];
-      //console.log("optB inside Redux: ", optB);
+      console.log("optB inside Redux: ", optB);
       const optionSelected = action.payload.optionSelected;
       const allItemsOptAIndex = state.items.findIndex((i) => i.id === optA.id);
 
@@ -220,19 +220,41 @@ export const itemSlice = createSlice({
             //check if nly 1 item left means its perfectly ranked where its potentiall rank currently is
             if (possOpponents.length === 1) {
               //continue to face more opponents
-              console.log("2 loses in a row but 1 final matchup");
+              console.log("multiple loses in a row but 1 final matchup");
               state.items[allItemsOptAIndex]!.topBound = optB.potentialRank;
 
               //! send update to database of rank for optA based on potentialRank
             }
             if (possOpponents.length === 0) {
-              const newPotentialRank =
-                rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! / 2;
+              //check if obtB is the lowest ranked item
+              if (rankedItemsOptBIndex === rankedSortedItems.length - 1) {
+                console.log("This item is the lowest ranked item");
+                const newPotentialRank =
+                  rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! / 2;
 
-              console.log("newPotentialRank: ", newPotentialRank);
-              state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
-              state.items[allItemsOptAIndex]!.status = "";
+                console.log("newPotentialRank: ", newPotentialRank);
+                state.items[allItemsOptAIndex]!.potentialRank =
+                  newPotentialRank;
+                state.items[allItemsOptAIndex]!.status = "";
+              } else {
+                const newPotentialRank =
+                  (rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! +
+                    rankedSortedItems[rankedItemsOptBIndex + 1]
+                      ?.potentialRank!) /
+                  2;
+
+                console.log("newPotentialRank: ", newPotentialRank);
+                state.items[allItemsOptAIndex]!.potentialRank =
+                  newPotentialRank;
+                state.items[allItemsOptAIndex]!.status = "";
+              }
             }
+            if (possOpponents.length > 1) {
+              //continue to face more opponents
+              console.log("more opponents to face");
+              state.items[allItemsOptAIndex]!.topBound = optB.potentialRank;
+            }
+
             //more possible items to face keep ranking
           }
         } else if (optA.status === "won") {
