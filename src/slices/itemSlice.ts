@@ -83,6 +83,7 @@ export const itemSlice = createSlice({
       const optA = action.payload.combatants[0];
       //console.log("optA inside Redux: ", optA);
       const optB = action.payload.combatants[1];
+      //console.log("optB inside Redux: ", optB);
       const optionSelected = action.payload.optionSelected;
       const allItemsOptAIndex = state.items.findIndex((i) => i.id === optA.id);
 
@@ -98,20 +99,23 @@ export const itemSlice = createSlice({
       //*unranked vs ranked
       if (optA.potentialRank === 0 && optB.potentialRank !== 0) {
         // console.log("inside unranked vs ranked");
+
         state.round += 1;
         if (optionSelected === 0) {
           //assign new potential rank
 
           const optBPotRank =
             rankedSortedItems[rankedItemsOptBIndex]?.potentialRank;
+          console.log("optBPotRank: ", optBPotRank);
           const itemAboveOptBPotRank =
             rankedSortedItems[rankedItemsOptBIndex - 1]?.potentialRank;
-
+          console.log("itemAboveOptBPotRank: ", itemAboveOptBPotRank);
           if (
             typeof optBPotRank === "number" &&
             typeof itemAboveOptBPotRank === "number"
           ) {
             const newPotentialRank = (optBPotRank + itemAboveOptBPotRank) / 2;
+            console.log(newPotentialRank, "newPotentialRank:");
 
             state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
 
