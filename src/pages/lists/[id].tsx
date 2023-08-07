@@ -137,8 +137,17 @@ const ListPage: NextPage = () => {
       const filteredFetchedItems = fetchedItems!.filter(
         (i) => i.archive === "undefined"
       );
+      const convertCurrentRankToPotentialRank = filteredFetchedItems.map(
+        (item) => {
+          return {
+            ...item,
+            potentialRank: item.currentRank,
+          };
+        }
+      );
+
       // console.log("filteredFetchedItems: ", filteredFetchedItems);
-      dispatch(setItems(filteredFetchedItems));
+      dispatch(setItems(convertCurrentRankToPotentialRank));
     }
   }, [dispatch, fetchedItems]);
 
