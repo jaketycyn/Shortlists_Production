@@ -13,6 +13,7 @@ import { trpc } from "../../../utils/trpc";
 import { RankItems } from "../../RankItems";
 import Ranking from "../../../pages/lists/ranking";
 import { setCurrentTab } from "../../../slices/itemSlice";
+import AddItemToast from "../../toasts/AddItemToast";
 
 function classNames(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
@@ -321,6 +322,8 @@ export default function ListDisplay() {
                     onTouchEnd={() => setFocus(false)}
                     {...register("itemTitle")}
                   />
+                  <AddItemToast isVisible={showToast} message="Item Added" />
+                  {/* Add Item Toast */}
                 </form>
               </div>
             </div>
@@ -335,9 +338,8 @@ export default function ListDisplay() {
           {/* unRanked Items Display - Start*/}
 
           <div
-            className={`${
-              tabs[3]?.current ? "block" : "hidden"
-            } h-full overflow-auto`}
+            className={`${tabs[3]?.current ? "block" : "hidden"} scrollbar-hide 
+            h-[calc(100vh-64px)] w-full overflow-auto pb-24`}
           >
             {unRankedItems === undefined || unRankedItems.length === 0 ? (
               // no items to display

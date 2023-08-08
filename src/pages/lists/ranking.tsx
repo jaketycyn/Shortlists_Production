@@ -27,7 +27,7 @@ const Ranking = () => {
     userId,
     potentialRank,
   }));
-  console.log("simplifyItems: ", simplifyItems);
+  // console.log("simplifyItems: ", simplifyItems);
 
   const updateItemsRank = async (simplifyItems: UpdateItemsRankSchema) => {
     try {
@@ -63,7 +63,7 @@ const Ranking = () => {
   const sortedRankedItems = rankedItems.sort(
     (a, b) => b.potentialRank! - a.potentialRank!
   );
-  console.log("sortedRankedItems: ", sortedRankedItems);
+  // console.log("sortedRankedItems: ", sortedRankedItems);
 
   const activeItem = items?.filter(
     (i) => i.status === "won" || i.status === "lost"
