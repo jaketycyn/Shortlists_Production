@@ -203,7 +203,7 @@ export default function ListDisplay() {
                   ? "bg-blue-500 text-white hover:bg-blue-600"
                   : "",
                 //styles for all tabs
-                "flex min-w-[40px] items-center justify-center whitespace-nowrap border-b-2  py-3  text-sm font-medium"
+                "flex min-w-[50px] items-center justify-center whitespace-nowrap border-b-2  py-3  text-sm font-medium"
               )}
               aria-current={tab.current ? "page" : undefined}
             >
