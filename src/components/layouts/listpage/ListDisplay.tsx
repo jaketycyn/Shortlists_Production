@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useAppSelector } from "../../../hooks/useTypedSelector";
 import { useForm, type Resolver } from "react-hook-form";
@@ -175,6 +175,14 @@ export default function ListDisplay() {
     }
   }, [formState, reset]);
 
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (tabs[1]?.current) {
+      inputRef.current?.focus();
+    }
+  }, [tabs]);
+
   return (
     <div className=" flex min-h-screen w-full flex-col items-center justify-center">
       <div className="flex h-screen w-full flex-col items-center overflow-hidden pt-1">
@@ -301,36 +309,22 @@ export default function ListDisplay() {
           {/* ranked Items Display - End */}
           {/* //*Add Item - Start */}
           <div className={`${tabs[1]?.current ? "block" : "hidden"} `}>
-            <div className="grid grid-cols-2">
-              <div
-                className={`col-span-${
-                  showInput ? "2" : "1"
-                } flex items-center justify-center p-4`}
-              >
-                {showInput ? (
-                  <div className="relative">
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                      <input
-                        type="text"
-                        id="itemTitle"
-                        className="w-full rounded-md border border-gray-200 py-2 pl-3 text-sm text-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                        placeholder="Item Name . . ."
-                        autoComplete="off"
-                        onFocus={() => setFocus(true)}
-                        onTouchCancel={() => setFocus(false)}
-                        onTouchEnd={() => setFocus(false)}
-                        {...register("itemTitle")}
-                      />
-                    </form>
-                  </div>
-                ) : (
-                  <button
-                    className="rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    onClick={() => setShowInput(true)}
-                  >
-                    Add Item
-                  </button>
-                )}
+            <div className="flex items-center justify-center p-4">
+              <div className="relative">
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    id="itemTitle"
+                    className="w-full rounded-md border border-gray-200 py-2 pl-3 text-sm text-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    placeholder="Item Name . . ."
+                    autoComplete="off"
+                    onFocus={() => setFocus(true)}
+                    onTouchCancel={() => setFocus(false)}
+                    onTouchEnd={() => setFocus(false)}
+                    {...register("itemTitle")}
+                  />
+                </form>
               </div>
             </div>
             {/*End - Add Item or Rank Section */}
