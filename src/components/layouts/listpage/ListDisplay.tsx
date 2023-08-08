@@ -110,10 +110,11 @@ export default function ListDisplay() {
   const { mutateAsync: mutateArchiveItem } =
     trpc.userItem.archiveItem.useMutation();
 
-  const ArchiveItem = async (data: ArchiveItemSchema) => {
+  const ArchiveItem = async (data: ArchiveItemSchema, currentTab: string) => {
     try {
       const result = await mutateArchiveItem(data);
 
+      dispatch(setCurrentTab(currentTab));
       // await and fire a mutateArchiveItem.many ?? maybe
 
       console.log("result: ", result);
@@ -286,12 +287,15 @@ export default function ListDisplay() {
                                   e.stopPropagation();
                                   setIsModalOpen(true);
                                   console.log(i.title + " archive/delete");
-                                  ArchiveItem({
-                                    userId: i.userId,
-                                    itemId: i.id,
-                                    listId: i.listId,
-                                    archiveStatus: "trash",
-                                  });
+                                  ArchiveItem(
+                                    {
+                                      userId: i.userId,
+                                      itemId: i.id,
+                                      listId: i.listId,
+                                      archiveStatus: "trash",
+                                    },
+                                    "Ranked"
+                                  );
                                 }}
                               >
                                 <path
@@ -400,12 +404,15 @@ export default function ListDisplay() {
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   console.log(i.title + " archive/delete");
-                                  ArchiveItem({
-                                    userId: i.userId,
-                                    itemId: i.id,
-                                    listId: i.listId,
-                                    archiveStatus: "trash",
-                                  });
+                                  ArchiveItem(
+                                    {
+                                      userId: i.userId,
+                                      itemId: i.id,
+                                      listId: i.listId,
+                                      archiveStatus: "trash",
+                                    },
+                                    "Unranked"
+                                  );
                                 }}
                               >
                                 <path

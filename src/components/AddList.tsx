@@ -73,7 +73,7 @@ const AddList: NextPage = () => {
         <header className="border-grey sticky top-0 grid w-full grid-rows-1 border-b p-4 text-center">
           {/* This should redirect to previous page (historical page) not "/"  */}
           <Link href="/" className="row-start-1">
-            <HiX className="mt-1 ml-2 h-4 w-4" />
+            <HiX className="ml-2 mt-1 h-4 w-4" />
           </Link>
           <div className="row-start-1">Create New List</div>
           <div className="row-start-1">
@@ -83,7 +83,7 @@ const AddList: NextPage = () => {
             2. Pop Up Toast saying incomplete items if rquired fields in form not fired
             3?. Possible change link from homepage ('/') to the list itself but thats a finer tuning point
             */}
-              <HiOutlineCheck className="mt-1 mr-2 h-4 w-4" />
+              <HiOutlineCheck className="mr-2 mt-1 h-4 w-4" />
             </button>
           </div>
         </header>

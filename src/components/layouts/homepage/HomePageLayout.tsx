@@ -23,6 +23,7 @@ const HomePageLayout: NextPage = () => {
   const { lists } = useAppSelector((state) => state.list);
   const [openTab, setOpenTab] = React.useState(1);
   const [userListsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const {
     data: results,
@@ -372,9 +373,60 @@ const HomePageLayout: NextPage = () => {
             </div>
           </div>
         </div>
-        <div className="absolute bottom-0 z-40 flex w-full flex-col text-center">
-          <FooterNav />
+        {/* //* Add List - Start */}
+        <div className="relative h-screen">
+          {/* Drawer */}
+          <div
+            className={`${
+              isOpen ? "h-24" : "h-0"
+            } absolute bottom-14 left-0 w-full overflow-hidden bg-white shadow-lg transition-all`}
+          >
+            <input
+              type="text"
+              placeholder="Type here..."
+              className="h-full w-full border-t-2 border-gray-200 p-4 focus:border-indigo-500 focus:outline-none"
+            />
+          </div>
+
+          {/* Circular Button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className={` ${
+              isOpen ? "bg-red-400" : "bg-blue-700"
+            } fixed bottom-[76px] right-4 flex h-12 w-12 items-center justify-center rounded-full  text-3xl text-white shadow-lg`}
+          >
+            {isOpen ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+          </button>
         </div>
+        {/* Add List - End*/}
+
+        <FooterNav />
       </div>
     </motion.div>
   );
