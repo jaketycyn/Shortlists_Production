@@ -106,6 +106,23 @@ export default function ListDisplay() {
 
   //* Archive/Delete Modal *//
   const [isModalOpen, setIsModalOpen] = useState(false);
+  //TODO: DELETE items through trpc
+  const { mutateAsync: mutateArchiveItem } =
+    trpc.userItem.archiveItem.useMutation();
+
+  const ArchiveItem = async (data: ArchiveItemSchema) => {
+    try {
+      const result = await mutateArchiveItem(data);
+
+      // await and fire a mutateArchiveItem.many ?? maybe
+
+      console.log("result: ", result);
+
+      refetch();
+
+      setShowItemOptions(false);
+    } catch (error) {}
+  };
 
   //* Add Item Variables & Functions *//
   const router = useRouter();
@@ -269,6 +286,12 @@ export default function ListDisplay() {
                                   e.stopPropagation();
                                   setIsModalOpen(true);
                                   console.log(i.title + " archive/delete");
+                                  ArchiveItem({
+                                    userId: i.userId,
+                                    itemId: i.id,
+                                    listId: i.listId,
+                                    archiveStatus: "trash",
+                                  });
                                 }}
                               >
                                 <path
@@ -376,8 +399,13 @@ export default function ListDisplay() {
                                 className="h-6 w-6 sm:h-5 md:w-5"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setIsModalOpen(true);
                                   console.log(i.title + " archive/delete");
+                                  ArchiveItem({
+                                    userId: i.userId,
+                                    itemId: i.id,
+                                    listId: i.listId,
+                                    archiveStatus: "trash",
+                                  });
                                 }}
                               >
                                 <path
