@@ -27,6 +27,7 @@ import { Dialog, Menu, Transition } from "@headlessui/react";
 import { RankItems } from "../../components/RankItems";
 
 import ListDisplay from "../../components/layouts/listpage/ListDisplay";
+import { ListHeader } from "../../components/navigation/ListHeader";
 
 const resolver: Resolver<AddItemSchema> = async (values) => {
   return {
@@ -564,6 +565,7 @@ const ListPage: NextPage = () => {
         </Dialog>
       </Transition.Root>
 
+      <ListHeader />
       <div className="flex h-screen flex-col justify-between">
         <ListDisplay />
         {/* <RankItems /> */}

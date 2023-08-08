@@ -7,6 +7,7 @@ import {
   setItemPotentialRank,
   setInitialItemsPotentialRank,
 } from "../../slices/itemSlice";
+import { ListHeader } from "../../components/navigation/ListHeader";
 
 const Ranking = () => {
   //imports - remove unnecsarry later
@@ -105,7 +106,6 @@ const Ranking = () => {
   };
 
   const RankedItemDisplay = () => {
-    sortedRankedItems;
     return (
       <div>
         <h1>Item Rankings off Potential</h1>
@@ -144,21 +144,24 @@ const Ranking = () => {
 
     contentText = "unranked v unranked";
     return (
-      <div className="flex h-full flex-col items-center space-y-4">
-        <p>{contentText}</p>
-        <div
-          className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => changeRankUnrankedItems(optA, unrankedMatchup)}
-        >
-          {optA && <div>{optA?.title}</div>}
+      <div>
+        <ListHeader />
+        <div className="flex h-full flex-col items-center space-y-4">
+          <p>{contentText}</p>
+          <div
+            className="h-20 w-40 bg-blue-400 p-2"
+            onClick={() => changeRankUnrankedItems(optA, unrankedMatchup)}
+          >
+            {optA && <div>{optA?.title}</div>}
+          </div>
+          <div
+            className="h-20 w-40 bg-pink-400 p-2"
+            onClick={() => changeRankUnrankedItems(optB, unrankedMatchup)}
+          >
+            {optB && <div>{optB?.title}</div>}
+          </div>
+          <RankedItemDisplay />
         </div>
-        <div
-          className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => changeRankUnrankedItems(optB, unrankedMatchup)}
-        >
-          {optB && <div>{optB?.title}</div>}
-        </div>
-        <RankedItemDisplay />
       </div>
     );
   } else if (activeItem.length === 1) {
@@ -214,21 +217,25 @@ const Ranking = () => {
     // optB = rankedItems[0];
 
     return (
-      <div className="flex h-full flex-col items-center space-y-4">
-        <p>{contentText}</p>
-        <div
-          className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => changeItemRank(0, optB)}
-        >
-          {optA && <div>{optA?.title}</div>}
+      <div>
+        <ListHeader />
+
+        <div className="flex h-full flex-col items-center space-y-4">
+          <p>{contentText}</p>
+          <div
+            className="h-20 w-40 bg-blue-400 p-2"
+            onClick={() => changeItemRank(0, optB)}
+          >
+            {optA && <div>{optA?.title}</div>}
+          </div>
+          <div
+            className="h-20 w-40 bg-pink-400 p-2"
+            onClick={() => changeItemRank(1, optB)}
+          >
+            {optB && <div>{optB?.title}</div>}
+          </div>
+          <RankedItemDisplay />
         </div>
-        <div
-          className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => changeItemRank(1, optB)}
-        >
-          {optB && <div>{optB?.title}</div>}
-        </div>
-        <RankedItemDisplay />
       </div>
     );
   } else if (unRankedItems?.length === 0 && rankedItems?.length >= 2) {
@@ -237,15 +244,18 @@ const Ranking = () => {
     //!Fire updateDBRank function
 
     return (
-      <div className="flex h-full flex-col items-center space-y-4">
-        <p>{contentText}</p>
-        <button
-          className="h-20 w-20 bg-slate-500"
-          onClick={() => updateItemsRank(simplifyItems)}
-        >
-          Update Ranks
-        </button>
-        <RankedItemDisplay />
+      <div>
+        <ListHeader />
+        <div className="flex h-full flex-col items-center space-y-4">
+          <p>{contentText}</p>
+          <button
+            className="h-20 w-20 bg-slate-500"
+            onClick={() => updateItemsRank(simplifyItems)}
+          >
+            Update Ranks
+          </button>
+          <RankedItemDisplay />
+        </div>
       </div>
     );
   } else {
@@ -266,21 +276,24 @@ const Ranking = () => {
 
     contentText = "unranked v ranked";
     return (
-      <div className="flex h-full flex-col items-center space-y-4">
-        <p>{contentText}</p>
-        <div
-          className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => changeItemRank(0, optB)}
-        >
-          {optA && <div>{optA?.title}</div>}
+      <div>
+        <ListHeader />
+        <div className="flex h-full flex-col items-center space-y-4">
+          <p>{contentText}</p>
+          <div
+            className="h-20 w-40 bg-blue-400 p-2"
+            onClick={() => changeItemRank(0, optB)}
+          >
+            {optA && <div>{optA?.title}</div>}
+          </div>
+          <div
+            className="h-20 w-40 bg-pink-400 p-2"
+            onClick={() => changeItemRank(1, optB)}
+          >
+            {optB && <div>{optB?.title}</div>}
+          </div>
+          <RankedItemDisplay />
         </div>
-        <div
-          className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => changeItemRank(1, optB)}
-        >
-          {optB && <div>{optB?.title}</div>}
-        </div>
-        <RankedItemDisplay />
       </div>
     );
   }
