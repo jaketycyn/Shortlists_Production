@@ -45,7 +45,7 @@ const FooterNav: NextPage = () => {
       {/* FooterBar Component: Start*/}
       {/* This is below the AddItem/List and has its own separate forced bottom-0 position */}
 
-      <div className="btm-nav bottom-0 grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-blue-500 text-center">
+      <div className="btm-nav bottom-0 grid h-12 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-blue-500 text-center">
         <div className="col-start-1 row-start-1 flex flex-col items-center justify-center">
           <Link href="/" className="absolute bottom-3 text-center">
             <svg
