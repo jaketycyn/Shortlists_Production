@@ -22,7 +22,7 @@ const FooterNav: NextPage = () => {
   return (
     <div className="">
       {/* AddItemOrList Component: Start*/}
-      <div className="mb-20 flex flex-col items-center justify-center text-center">
+      {/* <div className="mb-20 flex flex-col items-center justify-center text-center">
         {showAdd ? (
           <div className="" onBlur={() => setShowAdd(false)}>
             <button className="btn m-2  sm:btn-sm md:btn-md lg:btn-lg">
@@ -39,22 +39,22 @@ const FooterNav: NextPage = () => {
             ) : null}
           </div>
         ) : null}
-      </div>
+      </div> */}
       {/* AddItemOrList Component: End*/}
 
       {/* FooterBar Component: Start*/}
       {/* This is below the AddItem/List and has its own separate forced bottom-0 position */}
 
-      <div className="btm-nav bottom-0 grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-white text-center">
+      <div className="btm-nav bottom-0 grid h-14 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-blue-500 text-center">
         <div className="col-start-1 row-start-1 flex flex-col items-center justify-center">
           <Link href="/" className="absolute bottom-3 text-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              strokeWidth={1.5}
+              strokeWidth={2}
               stroke="currentColor"
-              className="h-6 w-6"
+              className="h-6 w-6 text-white"
             >
               <path
                 strokeLinecap="round"
@@ -65,12 +65,12 @@ const FooterNav: NextPage = () => {
           </Link>
         </div>
         <div className="col-start-2 row-start-1 flex flex-col items-center">
-          <button
+          {/* <button
             onClick={() => setShowAdd(!showAdd)}
-            className="btn-circle btn absolute bottom-8 flex h-12 w-12 bg-black/40 "
+            className="btn btn-circle absolute bottom-8 flex h-12 w-12 bg-black/40 "
           >
             <HiPlus />
-          </button>
+          </button> */}
         </div>
         <div className="col-start-3 row-start-1">
           <Link href="/profile" className="z-80 absolute bottom-3 text-center">
@@ -79,9 +79,9 @@ const FooterNav: NextPage = () => {
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
-              strokeWidth={1.5}
+              strokeWidth={2}
               stroke="currentColor"
-              className="h-6 w-6"
+              className="h-6 w-6 text-white"
             >
               <path
                 strokeLinecap="round"
