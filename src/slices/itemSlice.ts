@@ -31,7 +31,7 @@ export interface ItemState {
   items: Item[];
   loading: boolean;
   error: any;
-  round: number;
+  currentTab: string;
 }
 
 export interface T {
@@ -44,7 +44,7 @@ const initialState: ItemState = {
   items: [],
   loading: false,
   error: null,
-  round: 0,
+  currentTab: "Ranked",
 };
 
 // ACTIONS
@@ -71,6 +71,7 @@ export const itemSlice = createSlice({
     setItemPotentialRank: (state, action: PayloadAction<T>) => {
       //console.log("action.payload - setItemPotentialRank: ", action.payload);
 
+      state.currentTab = "Rank";
       const rankedItems = state.items.filter(
         (i) => i.potentialRank !== null && i.potentialRank > 0
       );
@@ -94,13 +95,11 @@ export const itemSlice = createSlice({
       const rankedSortedItemsExcludeOptA = rankedSortedItems.filter(
         (i) => i.id !== optA.id
       );
-      state.round = 0;
 
       //*unranked vs ranked
       if (optA.potentialRank === 0 && optB.potentialRank !== 0) {
         // console.log("inside unranked vs ranked");
 
-        state.round += 1;
         if (optionSelected === 0) {
           //assign new potential rank
 
@@ -376,6 +375,7 @@ export const itemSlice = createSlice({
         "action.payload - setInitialItemsPotentialRank: ",
         action.payload
       );
+      state.currentTab = "Rank";
       const winningRank = 100000;
       const losingRank = 10000;
 
@@ -401,6 +401,10 @@ export const itemSlice = createSlice({
       state.items[winningItemIndex]!.potentialRank = winningRank;
       state.items[losingItemIndex]!.potentialRank = losingRank;
     },
+    setCurrentTab: (state, action: PayloadAction<string>) => {
+      console.log("action.payload - setCurrentTab: ", action.payload);
+      state.currentTab = action.payload;
+    },
   },
 });
 
@@ -410,4 +414,5 @@ export const {
   setItems,
   setItemPotentialRank,
   setInitialItemsPotentialRank,
+  setCurrentTab,
 } = itemSlice.actions;

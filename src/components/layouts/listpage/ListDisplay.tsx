@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { useAppSelector } from "../../../hooks/useTypedSelector";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../hooks/useTypedSelector";
 import { useForm, type Resolver } from "react-hook-form";
 import {
   type ArchiveItemSchema,
@@ -9,14 +12,16 @@ import {
 import { trpc } from "../../../utils/trpc";
 import { RankItems } from "../../RankItems";
 import Ranking from "../../../pages/lists/ranking";
+import { setCurrentTab } from "../../../slices/itemSlice";
 
 function classNames(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
 export default function ListDisplay() {
-  const { items } = useAppSelector((state) => state.item);
-  const [currentTab, setCurrentTab] = useState("Ranked");
+  const dispatch = useAppDispatch();
+  const { items, currentTab } = useAppSelector((state) => state.item);
+
   //console.log("Items - ListDisplay: ", items);
 
   const rankedItems = items.filter((i) => i.currentRank > 0);
@@ -142,6 +147,7 @@ export default function ListDisplay() {
         const result = await mutateAsync(data);
         // const result = data;
         console.log("data found with value: ", data);
+        dispatch(setCurrentTab("Add"));
         if (result) {
           //showToast Agent
           console.log("result found with value: ", result);
