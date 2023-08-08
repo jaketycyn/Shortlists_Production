@@ -361,290 +361,50 @@ const ListPage: NextPage = () => {
   //main Function
   return (
     <>
-      <Transition.Root show={open} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={setOpen}>
-          <div className="fixed inset-0 bg-gray-400 bg-opacity-50 transition-opacity" />
+      <div className="h-screen overflow-hidden">
+        <Transition.Root show={open} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={setOpen}>
+            <div className="fixed inset-0 bg-gray-400 bg-opacity-50 transition-opacity" />
 
-          <div className="fixed inset-0 overflow-hidden">
-            <div className="absolute inset-0 overflow-hidden">
-              <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pt-20 lg:pl-10 lg:pr-10">
-                <Transition.Child
-                  as={Fragment}
-                  enter="transform transition ease-in-out duration-500 sm:duration-700"
-                  enterFrom="translate-y-full"
-                  enterTo="translate-y-0 "
-                  leave="transform transition ease-in-out duration-500 sm:duration-700"
-                  leaveFrom="translate-y-0"
-                  leaveTo="translate-y-full"
-                >
-                  <Dialog.Panel className="max-w pointer-events-auto w-screen">
-                    <div className="flex h-full flex-col  bg-white shadow-xl ">
-                      <div className="p-6">
-                        <div className="flex items-start justify-between">
-                          <Dialog.Title className="text-lg font-medium text-gray-900">
-                            Share
-                          </Dialog.Title>
-                          <div className="ml-3 flex h-7 items-center">
-                            <button
-                              type="button"
-                              className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
-                              onClick={() => {
-                                setOpen(false);
-                                setSearchTerm("");
-                              }}
-                            >
-                              <span className="sr-only">Close panel</span>
-                              <HiX className="h-6 w-6" aria-hidden="true" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      {/* Start - Search for Friend/Person to share list with */}
-                      {/* Bring from profile page component the share logic over - will need to slightly tweak parts of it to add in a favor friends aspect. Will most likely use the logic from the seperate tabs (friends/pending/sent) most notably the friends tab to prioritize those users */}
-                      <form>
-                        <div className="relative flex flex-col">
-                          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="h-6 w-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                              />
-                            </svg>
-                          </div>
-                          <input
-                            type="search"
-                            id="friend-search"
-                            autoComplete="off"
-                            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 "
-                            placeholder="Search for Friends..."
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                          />
-                          {/* <button
-                    type="submit"
-                    className="absolute right-2.5 bottom-2.5 rounded-lg bg-black/80 px-4 py-2 text-sm font-medium text-white"
+            <div className="fixed inset-0 overflow-hidden">
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pt-20 lg:pl-10 lg:pr-10">
+                  <Transition.Child
+                    as={Fragment}
+                    enter="transform transition ease-in-out duration-500 sm:duration-700"
+                    enterFrom="translate-y-full"
+                    enterTo="translate-y-0 "
+                    leave="transform transition ease-in-out duration-500 sm:duration-700"
+                    leaveFrom="translate-y-0"
+                    leaveTo="translate-y-full"
                   >
-                    Search
-                  </button> */}
-                        </div>
-                        {/* Display Users from Search */}
-                        {/* test */}
-                        <div>
-                          {filteredResults.length > 0 ? (
-                            <div className="flex flex-col">
-                              <p>hi</p>
-                              <ul
-                                role="list"
-                                className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
+                    <Dialog.Panel className="max-w pointer-events-auto w-screen">
+                      <div className="flex h-full flex-col  bg-white shadow-xl ">
+                        <div className="p-6">
+                          <div className="flex items-start justify-between">
+                            <Dialog.Title className="text-lg font-medium text-gray-900">
+                              Share
+                            </Dialog.Title>
+                            <div className="ml-3 flex h-7 items-center">
+                              <button
+                                type="button"
+                                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
+                                onClick={() => {
+                                  setOpen(false);
+                                  setSearchTerm("");
+                                }}
                               >
-                                {filteredResults.map((user: any, key: any) => (
-                                  <li key={key}>
-                                    <div className="group relative flex items-center px-5 py-6">
-                                      <a className="-m-1 block flex-1 p-1">
-                                        <div
-                                          className="absolute "
-                                          aria-hidden="true"
-                                        />
-                                        <div className="relative flex min-w-0 flex-1 items-center">
-                                          <span className="relative inline-block flex-shrink-0">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              strokeWidth={1.5}
-                                              stroke="currentColor"
-                                              className="h-6 w-6"
-                                            >
-                                              <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                                              />
-                                            </svg>
-                                          </span>
-                                          <div className="ml-4 truncate">
-                                            <p className="truncate text-sm font-medium text-gray-900">
-                                              {user.username}
-                                            </p>
-                                            <p className="truncate text-sm text-gray-500">
-                                              {user.email}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </a>
-                                      <div className="ml-4 border-2">
-                                        {/* //! Actually send Data to users on button press - prevent default of reloading page on sending once */}
-                                        <button
-                                          className="hover:bg-green-200"
-                                          type="button"
-                                          onClick={() => handleSubmit(onSubmit)}
-                                        >
-                                          Send
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </li>
-                                ))}
-                              </ul>
+                                <span className="sr-only">Close panel</span>
+                                <HiX className="h-6 w-6" aria-hidden="true" />
+                              </button>
                             </div>
-                          ) : filteredFriends!.length > 0 ||
-                            filteredFriends === undefined ||
-                            null ? (
-                            <div className="flex flex-col">
-                              <ul
-                                role="list"
-                                className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
-                              >
-                                {filteredFriends!.map((user: any, key: any) => (
-                                  <li key={key}>
-                                    <div className="group relative flex items-center px-5 py-6">
-                                      <a className="-m-1 block flex-1 p-1">
-                                        <div
-                                          className="absolute "
-                                          aria-hidden="true"
-                                        />
-                                        <div className="relative flex min-w-0 flex-1 items-center">
-                                          <span className="relative inline-block flex-shrink-0">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              fill="none"
-                                              viewBox="0 0 24 24"
-                                              strokeWidth={1.5}
-                                              stroke="currentColor"
-                                              className="h-6 w-6"
-                                            >
-                                              <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                                              />
-                                            </svg>
-                                          </span>
-                                          <div className="ml-4 truncate">
-                                            <p className="truncate text-sm font-medium text-gray-900">
-                                              {user.username}
-                                            </p>
-                                            <p className="truncate text-sm text-gray-500">
-                                              {user.email}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </a>
-                                      <div className="ml-4 border-2">
-                                        <button
-                                          className="hover:bg-green-200"
-                                          type="button"
-                                          onClick={() =>
-                                            shareListOnSubmit(user)
-                                          }
-                                        >
-                                          Send
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ) : null}
-                        </div>
-                      </form>
-                      {/* End - Search for Friend/Person to share list with */}
-                    </div>
-                  </Dialog.Panel>
-                </Transition.Child>
-              </div>
-            </div>
-          </div>
-        </Dialog>
-      </Transition.Root>
-
-      <ListHeader />
-      <div className="flex h-screen flex-col justify-between">
-        <ListDisplay />
-        {/* <RankItems /> */}
-
-        {/* <div className="z-0 m-2 grid h-screen grid-flow-row auto-rows-max items-center overflow-hidden p-2">
-          <div className="relative grid">
-            <div className="items-center py-1 text-center">
-              <h3 className="mb-4 text-lg font-semibold">{currentTitle}</h3> */}
-        {/* <div
-                className="bg-pink-400"
-                onClick={() => dispatch(resetItemsTest())}
-              >
-                resetItemsTest
-              </div> */}
-
-        {/* https://stackoverflow.com/questions/62382324/react-typescript-this-jsx-tags-children-prop-expects-a-single-child-of-type */}
-        {/* react fragments solve error  */}
-        {/*   Display Items Module: Start */}
-        {/* <>
-                {nonArchivedItems! === undefined ||
-                nonArchivedItems?.length === 0 ||
-                nonArchivedItems! === null ? (
-                  <div className="z-0 m-2 flex flex-col items-center rounded-md text-center">
-                    <h1>You have no Items in this list</h1>
-                    <p className="mt-8">
-                      To create an item click the addItem button below.
-                    </p>
-                  </div>
-                ) : (
-                  nonArchivedItems!.map((item, index) => (
-                    <div
-                      className="relative z-0 m-1 grid cursor-pointer grid-cols-7 grid-rows-1 rounded-lg border-2 border-solid border-black bg-white p-2 font-semibold text-black hover:bg-gray-200"
-                      key={index}
-                      onBlur={() => setShowItemOptions(false)}
-                    >
-                      <div className="col-span-5 col-start-1 row-start-1">
-                        {item.title}
-                      </div> */}
-        {/* Show ... Options: Start */}
-        {/* <div className="col-start-6">
-                        {showItemOptions && activeItemIndex === index ? (
-                          <div className=" row-start-1 flex flex-row-reverse ">
-                            <button
-                              className="btn-sm btn md:btn-md"
-                              id="trashBtn"
-                              onClick={async () =>
-                                ArchiveItem({
-                                  userId: item.userId,
-                                  itemId: item.id,
-                                  listId,
-                                  archiveStatus: "trash",
-                                })
-                              }
-                            >
-                              <svg
-                                id="trashBtn"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="h-6 w-6 sm:h-5 md:w-5"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                                />
-                              </svg>
-                            </button>
                           </div>
-                        ) : (
-                          <div className=" justify-end ">
-                            <button
-                              className="btn-sm btn "
-                              id="...Btn"
-                              onClick={() => displayItemOptions(index)}
-                            >
+                        </div>
+                        {/* Start - Search for Friend/Person to share list with */}
+                        {/* Bring from profile page component the share logic over - will need to slightly tweak parts of it to add in a favor friends aspect. Will most likely use the logic from the seperate tabs (friends/pending/sent) most notably the friends tab to prioritize those users */}
+                        <form>
+                          <div className="relative flex flex-col">
+                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
@@ -656,125 +416,165 @@ const ListPage: NextPage = () => {
                                 <path
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
-                                  d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+                                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
                                 />
                               </svg>
-                            </button>
-                          </div>
-                        )}
-                        {/* Show ... Options: End */}
-        {/* }
-                      </div>
-                    </div>
-                  ))
-                )}
-              </>   */}
-        {/*   Display Items Module: End */}
-        {/*   Add Item Module: Start */}
-        {/* <div className="text-gray-dark my-8 items-center rounded">
-                <button
-                  className={`cursor pointer btn-wide btn mt-8   justify-center rounded-lg border-2 border-solid border-black bg-primary p-2 hover:bg-gray-400 ${
-                    showTextInput && "hidden"
-                  }`}
-                  onClick={() => {
-                    setShowTextInput(!showTextInput);
-                    setShowItemOptions(false);
-                  }}
-                >
-                  Add an item...
-                </button>
-                <span className={`${!showTextInput && "hidden"}`}>
-                  <form
-                    className="flex flex-col items-center justify-center"
-                    onSubmit={handleSubmit(onSubmit)}
+                            </div>
+                            <input
+                              type="search"
+                              id="friend-search"
+                              autoComplete="off"
+                              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 "
+                              placeholder="Search for Friends..."
+                              onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            {/* <button
+                    type="submit"
+                    className="absolute right-2.5 bottom-2.5 rounded-lg bg-black/80 px-4 py-2 text-sm font-medium text-white"
                   >
-                    {/* Error Toast/Message: Start */}
-        {/* Toast: Start*/}
-        {/* {showToast ? (
-                      <div
-                        id="toast-simple"
-                        className="flex h-14 w-60 items-center space-x-4 divide-x divide-gray-200 rounded-lg bg-green-400 p-4 text-black shadow"
-                        role="alert"
-                      >
-                        <HiPlus />
-                        <div className="pl-6 font-normal">Item Created</div>
+                    Search
+                  </button> */}
+                          </div>
+                          {/* Display Users from Search */}
+                          {/* test */}
+                          <div>
+                            {filteredResults.length > 0 ? (
+                              <div className="flex flex-col">
+                                <p>hi</p>
+                                <ul
+                                  role="list"
+                                  className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
+                                >
+                                  {filteredResults.map(
+                                    (user: any, key: any) => (
+                                      <li key={key}>
+                                        <div className="group relative flex items-center px-5 py-6">
+                                          <a className="-m-1 block flex-1 p-1">
+                                            <div
+                                              className="absolute "
+                                              aria-hidden="true"
+                                            />
+                                            <div className="relative flex min-w-0 flex-1 items-center">
+                                              <span className="relative inline-block flex-shrink-0">
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  fill="none"
+                                                  viewBox="0 0 24 24"
+                                                  strokeWidth={1.5}
+                                                  stroke="currentColor"
+                                                  className="h-6 w-6"
+                                                >
+                                                  <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                                                  />
+                                                </svg>
+                                              </span>
+                                              <div className="ml-4 truncate">
+                                                <p className="truncate text-sm font-medium text-gray-900">
+                                                  {user.username}
+                                                </p>
+                                                <p className="truncate text-sm text-gray-500">
+                                                  {user.email}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          </a>
+                                          <div className="ml-4 border-2">
+                                            {/* //! Actually send Data to users on button press - prevent default of reloading page on sending once */}
+                                            <button
+                                              className="hover:bg-green-200"
+                                              type="button"
+                                              onClick={() =>
+                                                handleSubmit(onSubmit)
+                                              }
+                                            >
+                                              Send
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              </div>
+                            ) : filteredFriends!.length > 0 ||
+                              filteredFriends === undefined ||
+                              null ? (
+                              <div className="flex flex-col">
+                                <ul
+                                  role="list"
+                                  className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
+                                >
+                                  {filteredFriends!.map(
+                                    (user: any, key: any) => (
+                                      <li key={key}>
+                                        <div className="group relative flex items-center px-5 py-6">
+                                          <a className="-m-1 block flex-1 p-1">
+                                            <div
+                                              className="absolute "
+                                              aria-hidden="true"
+                                            />
+                                            <div className="relative flex min-w-0 flex-1 items-center">
+                                              <span className="relative inline-block flex-shrink-0">
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  fill="none"
+                                                  viewBox="0 0 24 24"
+                                                  strokeWidth={1.5}
+                                                  stroke="currentColor"
+                                                  className="h-6 w-6"
+                                                >
+                                                  <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                                                  />
+                                                </svg>
+                                              </span>
+                                              <div className="ml-4 truncate">
+                                                <p className="truncate text-sm font-medium text-gray-900">
+                                                  {user.username}
+                                                </p>
+                                                <p className="truncate text-sm text-gray-500">
+                                                  {user.email}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          </a>
+                                          <div className="ml-4 border-2">
+                                            <button
+                                              className="hover:bg-green-200"
+                                              type="button"
+                                              onClick={() =>
+                                                shareListOnSubmit(user)
+                                              }
+                                            >
+                                              Send
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </li>
+                                    )
+                                  )}
+                                </ul>
+                              </div>
+                            ) : null}
+                          </div>
+                        </form>
+                        {/* End - Search for Friend/Person to share list with */}
                       </div>
-                    ) : (
-                      <div></div> */}
-        {/* )}  */}
-
-        {/* Toast: End */}
-
-        {/* <div className="mb-4">
-                      {errors?.itemTitle && (
-                        <p className="inline  p-2 font-bold text-red-800">
-                          ⚠{errors.itemTitle.message}
-                        </p>
-                      )}
-                    </div> */}
-        {/* Error Toast/Message: End */}
-        {/* <input
-                      type="text"
-                      id="itemTitle"
-                      className="input-bordered input  input-md block h-20 w-full max-w-xs rounded-lg border border-gray-300 bg-primary p-2.5  text-center"
-                      placeholder="Enter your item name here..."
-                      autoComplete="off"
-                      onFocus={() => setFocus(true)}
-                      onTouchCancel={() => setFocus(false)}
-                      onTouchEnd={() => setFocus(false)}
-                      {...register("itemTitle")}
-                    />
-                    <span className="relative mt-2 flex items-center justify-center ">
-                      <button
-                        className="hover:bg-green-800focus:ring-4 btn  rounded-lg bg-green-500 text-center text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-blue-300 "
-                        type="submit" 
-                        //onClick={handleSubmit}
-              //         >
-              //           Add Item
-              //         </button>
-              //         <span className="m-6" />
-              //         <button
-              //           className="btn  rounded-lg bg-red-700 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300  "
-              //           onClick={() => clearItemInput()}
-              //           type="reset"
-              //         >
-              //           Cancel
-              //         </button>
-              //       </span>
-              //     </form>
-              //   </span>
-              // </div>
-              {/*   Add Item Module: End */}
-        {/* </div>
-          </div>
-        </div>
-        <div>
-          <div className=""> */}
-        {/* AddItemOrList Component: Start*/}
-        {/* <div className="mb-20 flex flex-col items-center justify-center text-center">
-              {showAdd ? (
-                <div className="" onBlur={() => setShowAdd(false)}>
-                  {nonArchiveLists!.length >= 1 ? (
-                    <button
-                      className=" btn m-2 sm:btn-sm md:btn-md lg:btn-lg "
-                      onClick={() => {
-                        setShowTextInput(!showTextInput);
-                        setShowItemOptions(false);
-                        setShowAdd(false);
-                      }}
-                    >
-                      Add Item
-                    </button>
-                  ) : null}
+                    </Dialog.Panel>
+                  </Transition.Child>
                 </div>
-              ) : null}
-            </div> */}
-        {/* AddItemOrList Component: End*/}
-
-        {/* FooterBar Component: Start*/}
-        {/* This is below the AddItem/List and has its own separate forced bottom-0 position */}
+              </div>
+            </div>
+          </Dialog>
+        </Transition.Root>
+        <ListHeader />
+        <ListDisplay />
         <FooterNav />
-        {/* FooterBar Component: End*/}
       </div>
     </>
   );

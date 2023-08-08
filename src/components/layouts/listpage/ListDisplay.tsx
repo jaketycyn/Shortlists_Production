@@ -8,6 +8,7 @@ import {
 } from "../../../server/schema/itemSchema";
 import { trpc } from "../../../utils/trpc";
 import { RankItems } from "../../RankItems";
+import Ranking from "../../../pages/lists/ranking";
 
 function classNames(...classes: (string | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
@@ -15,6 +16,7 @@ function classNames(...classes: (string | undefined)[]): string {
 
 export default function ListDisplay() {
   const { items } = useAppSelector((state) => state.item);
+  const [currentTab, setCurrentTab] = useState("Ranked");
   //console.log("Items - ListDisplay: ", items);
 
   const rankedItems = items.filter((i) => i.currentRank > 0);
@@ -36,13 +38,33 @@ export default function ListDisplay() {
 
     if (rankedItems.length === 0) {
       setTabs([
-        { name: "Ranked", count: rankedItems.length, current: false },
-        { name: "Unranked", count: unRankedItems.length, current: true },
+        {
+          name: "Ranked",
+          count: rankedItems.length,
+          current: currentTab === "Ranked",
+        },
+        { name: "+", count: 0, current: currentTab === "Add" },
+        { name: "Rank", count: 0, current: currentTab === "Rank" },
+        {
+          name: "Unranked",
+          count: unRankedItems.length,
+          current: currentTab === "Unranked",
+        },
       ]);
     } else {
       setTabs([
-        { name: "Ranked", count: rankedItems.length, current: true },
-        { name: "Unranked", count: unRankedItems.length, current: false },
+        {
+          name: "Ranked",
+          count: rankedItems.length,
+          current: currentTab === "Ranked",
+        },
+        { name: "+", count: 0, current: currentTab === "Add" },
+        { name: "Rank", count: 0, current: currentTab === "Rank" },
+        {
+          name: "Unranked",
+          count: unRankedItems.length,
+          current: currentTab === "Unranked",
+        },
       ]);
     }
   }, [items]);
@@ -154,19 +176,27 @@ export default function ListDisplay() {
   }, [formState, reset]);
 
   return (
-    <div className="flex min-h-screen w-full flex-col items-center justify-center">
-      <div className="flex h-full w-full flex-col items-center overflow-hidden">
-        <nav className="sticky -mb-px flex space-x-8" aria-label="Tabs">
+    <div className=" flex min-h-screen w-full flex-col items-center justify-center">
+      <div className="flex h-screen w-full flex-col items-center overflow-hidden pt-1">
+        <nav
+          className="mb-4 flex w-screen items-center justify-center space-x-4"
+          aria-label="Tabs"
+        >
           {tabs.map((tab) => (
             <a
               key={tab.name}
               href="#"
               onClick={() => handleClick(tab.name)}
               className={classNames(
-                tab.current
-                  ? "border-indigo-500 text-indigo-600"
-                  : "border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700",
-                "flex whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium"
+                tab.name === "Ranked" || tab.name === "Unranked"
+                  ? tab.current
+                    ? "border-indigo-500 text-indigo-600"
+                    : "border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700"
+                  : tab.name === "+" || tab.name === "Rank"
+                  ? "bg-blue-500 text-white hover:bg-blue-600"
+                  : "",
+                //styles for all tabs
+                "flex min-w-[40px] items-center justify-center whitespace-nowrap border-b-2  py-3  text-sm font-medium"
               )}
               aria-current={tab.current ? "page" : undefined}
             >
@@ -177,7 +207,7 @@ export default function ListDisplay() {
                     tab.current
                       ? "bg-indigo-100 text-indigo-600"
                       : "bg-gray-100 text-gray-900",
-                    "ml-3 rounded-full px-2.5 py-0.5 text-xs font-medium md:inline-block"
+                    "ml-3 rounded-full px-2.5 py-0.5 text-xs font-medium md:inline-block "
                   )}
                 >
                   {tab.count}
@@ -187,9 +217,14 @@ export default function ListDisplay() {
           ))}
         </nav>
 
-        <div className="overflow-auto">
-          {/* ranked Items Display */}
-          <div className={tabs[0]?.current ? "block" : "hidden"}>
+        <div className="w-screen ">
+          {/* //* ranked Items Display - Start */}
+
+          <div
+            className={`${tabs[0]?.current ? "block" : "hidden"} scrollbar-hide 
+            h-[calc(100vh-64px)] w-full overflow-auto pb-24
+            `}
+          >
             {rankedItems === undefined || rankedItems.length === 0 ? (
               // no items to display
               <div>
@@ -197,7 +232,7 @@ export default function ListDisplay() {
               </div>
             ) : (
               //display items
-              <div className="">
+              <div className="text-lg">
                 {sortedRankedItems.map((i, index) => (
                   <div
                     className="mx-auto grid cursor-pointer grid-cols-6 items-center gap-4 border-b border-gray-200 py-2 hover:bg-gray-100"
@@ -263,8 +298,56 @@ export default function ListDisplay() {
               </div>
             )}
           </div>
-          {/* unRanked Items Display */}
-          <div className={tabs[1]?.current ? "block" : "hidden"}>
+          {/* ranked Items Display - End */}
+          {/* //*Add Item - Start */}
+          <div className={`${tabs[1]?.current ? "block" : "hidden"} `}>
+            <div className="grid grid-cols-2">
+              <div
+                className={`col-span-${
+                  showInput ? "2" : "1"
+                } flex items-center justify-center p-4`}
+              >
+                {showInput ? (
+                  <div className="relative">
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                      <input
+                        type="text"
+                        id="itemTitle"
+                        className="w-full rounded-md border border-gray-200 py-2 pl-3 text-sm text-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                        placeholder="Item Name . . ."
+                        autoComplete="off"
+                        onFocus={() => setFocus(true)}
+                        onTouchCancel={() => setFocus(false)}
+                        onTouchEnd={() => setFocus(false)}
+                        {...register("itemTitle")}
+                      />
+                    </form>
+                  </div>
+                ) : (
+                  <button
+                    className="rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    onClick={() => setShowInput(true)}
+                  >
+                    Add Item
+                  </button>
+                )}
+              </div>
+            </div>
+            {/*End - Add Item or Rank Section */}
+          </div>
+          {/*Add Item - End */}
+          {/* //*Rank Item - Start */}
+          <div className={`${tabs[2]?.current ? "block" : "hidden"}  w-full`}>
+            <Ranking />
+          </div>
+          {/* Rank Item - End */}
+          {/* unRanked Items Display - Start*/}
+
+          <div
+            className={`${
+              tabs[3]?.current ? "block" : "hidden"
+            } h-full overflow-auto`}
+          >
             {unRankedItems === undefined || unRankedItems.length === 0 ? (
               // no items to display
               <div>
@@ -338,61 +421,7 @@ export default function ListDisplay() {
               </div>
             )}
           </div>
-
-          {/* //*Add Item or Rank Section */}
-          <div className="grid grid-cols-2">
-            <div
-              className={`col-span-${
-                showInput ? "2" : "1"
-              } flex items-center justify-center p-4`}
-            >
-              {showInput ? (
-                <div className="relative">
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <input
-                      type="text"
-                      id="itemTitle"
-                      className="w-full rounded-md border border-gray-200 py-2 pl-3 text-sm text-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                      placeholder="Item Name . . ."
-                      autoComplete="off"
-                      onFocus={() => setFocus(true)}
-                      onTouchCancel={() => setFocus(false)}
-                      onTouchEnd={() => setFocus(false)}
-                      {...register("itemTitle")}
-                    />
-                    <button
-                      onClick={() => {
-                        setShowInput(false);
-                      }}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 transform rounded-full p-1 font-bold text-red-800"
-                      style={{ fontSize: "20px" }}
-                      type="reset"
-                    >
-                      {" "}
-                      X
-                    </button>
-                  </form>
-                </div>
-              ) : (
-                <button
-                  className="rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                  onClick={() => setShowInput(true)}
-                >
-                  Add Item
-                </button>
-              )}
-            </div>
-            {!showInput && (
-              <div className="col-span-1 flex items-center justify-center p-4">
-                <button
-                  className="rounded-md border border-transparent bg-orange-600 px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
-                  onClick={() => console.log("add item")}
-                >
-                  <RankItems />
-                </button>
-              </div>
-            )}
-          </div>
+          {/* unRanked Items Display - End*/}
         </div>
       </div>
     </div>
