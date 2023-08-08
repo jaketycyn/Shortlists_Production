@@ -175,14 +175,6 @@ export default function ListDisplay() {
     }
   }, [formState, reset]);
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (tabs[1]?.current) {
-      inputRef.current?.focus();
-    }
-  }, [tabs]);
-
   return (
     <div className=" flex min-h-screen w-full flex-col items-center justify-center">
       <div className="flex h-screen w-full flex-col items-center overflow-hidden pt-1">
@@ -313,7 +305,6 @@ export default function ListDisplay() {
               <div className="relative">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <input
-                    ref={inputRef}
                     type="text"
                     id="itemTitle"
                     className="w-full rounded-md border border-gray-200 py-2 pl-3 text-sm text-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
