@@ -175,7 +175,7 @@ export default function ListDisplay() {
     }
   }, [formState, reset]);
 
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (tabs[1]?.current) {
