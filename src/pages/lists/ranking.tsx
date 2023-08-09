@@ -122,6 +122,29 @@ const Ranking = () => {
 
   /* Phase 1: Unranked vs Unranked */
 
+  const ItemDisplayComponent = ({ titleA, titleB, onClickA, onClickB }) => {
+    return (
+      <div className="flex h-full flex-col items-center space-y-4">
+        {titleA && (
+          <div
+            className="h-1/2 w-40 bg-blue-400 p-2"
+            onClick={() => onClickA()}
+          >
+            {titleA}
+          </div>
+        )}
+        {titleB && (
+          <div
+            className="h-1/2 w-40 bg-green-400 p-2"
+            onClick={() => onClickB()}
+          >
+            {titleB}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   let optA: any;
   let optB: any;
   let unrankedMatchup: any;
@@ -149,21 +172,12 @@ const Ranking = () => {
 
     console.log("unranked v unranked");
     return (
-      <div className="flex h-full flex-col items-center space-y-4">
-        <div
-          className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => changeRankUnrankedItems(optA, unrankedMatchup)}
-        >
-          {optA && <div>{optA?.title}</div>}
-        </div>
-        <div
-          className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => changeRankUnrankedItems(optB, unrankedMatchup)}
-        >
-          {optB && <div>{optB?.title}</div>}
-        </div>
-        <RankedItemDisplay />
-      </div>
+      <ItemDisplayComponent
+        titleA={optA?.title}
+        titleB={optB?.title}
+        onClickA={() => changeRankUnrankedItems(optA, unrankedMatchup)}
+        onClickB={() => changeRankUnrankedItems(optB, unrankedMatchup)}
+      />
     );
   } else if (activeItem.length === 1) {
     console.log("ranked v ranked");
@@ -218,20 +232,12 @@ const Ranking = () => {
     // optB = rankedItems[0];
 
     return (
-      <div className="flex h-full flex-col items-center space-y-4">
-        <div
-          className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => changeItemRank(0, optB)}
-        >
-          {optA && <div>{optA?.title}</div>}
-        </div>
-        <div
-          className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => changeItemRank(1, optB)}
-        >
-          {optB && <div>{optB?.title}</div>}
-        </div>
-      </div>
+      <ItemDisplayComponent
+        titleA={optA?.title}
+        titleB={optB?.title}
+        onClickA={() => changeItemRank(0, optB)}
+        onClickB={() => changeItemRank(1, optB)}
+      />
     );
   } else if (unRankedItems?.length === 0 && rankedItems?.length >= 2) {
     console.log("No items left to rank");
@@ -266,20 +272,12 @@ const Ranking = () => {
 
     console.log("unranked v ranked");
     return (
-      <div className="flex h-full flex-col items-center space-y-4">
-        <div
-          className="h-20 w-40 bg-blue-400 p-2"
-          onClick={() => changeItemRank(0, optB)}
-        >
-          {optA && <div>{optA?.title}</div>}
-        </div>
-        <div
-          className="h-20 w-40 bg-pink-400 p-2"
-          onClick={() => changeItemRank(1, optB)}
-        >
-          {optB && <div>{optB?.title}</div>}
-        </div>
-      </div>
+      <ItemDisplayComponent
+        titleA={optA?.title}
+        titleB={optB?.title}
+        onClickA={() => changeItemRank(0, optB)}
+        onClickB={() => changeItemRank(1, optB)}
+      />
     );
   }
 };

@@ -78,7 +78,11 @@ export default function ListDisplay() {
 
   const handleClick = (tabName: string) => {
     // if unRankedItems.length < 2, then disable the Rank tab
-    if (unRankedItems.length < 2 && tabName === "Rank") {
+    if (
+      unRankedItems.length < 2 &&
+      tabName === "Rank" &&
+      rankedItems.length === 0
+    ) {
       dispatch(setCurrentTab("Add"));
     } else {
       setTabs(
@@ -255,9 +259,9 @@ export default function ListDisplay() {
                   : tab.name === "+"
                   ? "bg-blue-500 text-white hover:bg-blue-600"
                   : tab.name === "Rank"
-                  ? unRankedItems.length < 2
+                  ? unRankedItems.length < 2 && rankedItems.length === 0
                     ? " cursor-not-allowed bg-gray-500 text-white"
-                    : "bg-orange-500 text-white hover:bg-blue-600"
+                    : "bg-orange-500 text-white hover:bg-orange-600"
                   : "",
                 //styles for all tabs
                 "flex min-w-[50px] items-center justify-center whitespace-nowrap border-b-2  py-3  text-sm font-medium"
@@ -412,7 +416,7 @@ export default function ListDisplay() {
               //display items
               <div>
                 <p className="flex ">
-                  {unRankedItems.length < 2 ? (
+                  {unRankedItems.length < 2 && rankedItems.length === 0 ? (
                     <div className="mx-auto space-y-4 pb-4 text-center text-2xl">
                       <h4>You only have 1 Unranked item</h4>
                       <h4>Add another before ranking</h4>
