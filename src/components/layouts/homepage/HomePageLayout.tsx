@@ -17,6 +17,7 @@ import { type ArchiveListSchema } from "../../../server/schema/listSchema";
 import { setActiveList, setLists, type List } from "../../../slices/listSlice";
 
 import FooterNav from "../../navigation/FooterNav";
+import AddList from "../../AddList";
 
 const HomePageLayout: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -94,8 +95,8 @@ const HomePageLayout: NextPage = () => {
       transition={{ duration: 0.3 }}
       exit={{ x: -2000 }}
     >
-      <div className="flex h-screen w-full flex-col justify-between ">
-        <div>
+      <div className="flex h-screen w-full flex-col justify-between">
+        <div className="h-screen">
           {/* userLists ({getLists.status}):{" "}
         <pre>{JSON.stringify(usersLists, null, 2)}</pre> */}
           <header className="absolute top-0 z-10 mb-2 flex h-14 w-full  flex-col items-center pt-4 text-center">
@@ -104,7 +105,10 @@ const HomePageLayout: NextPage = () => {
           </header>
 
           <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
-            <ul className="mb-0 flex list-none flex-row  pb-4 " role="tablist">
+            <ul
+              className="sticky mb-0 flex list-none flex-row  pb-4 "
+              role="tablist"
+            >
               <li className="-mb-px mr-2  text-center last:mr-0">
                 <a
                   className={
@@ -374,18 +378,19 @@ const HomePageLayout: NextPage = () => {
           </div>
         </div>
         {/* //* Add List - Start */}
-        <div className="relative h-screen">
+        <div className="">
           {/* Drawer */}
           <div
             className={`${
-              isOpen ? "h-24" : "h-0"
-            } absolute bottom-14 left-0 w-full overflow-hidden bg-white shadow-lg transition-all`}
+              isOpen ? "h-40" : "h-0"
+            }   w-full overflow-hidden bg-white shadow-lg transition-all`}
           >
-            <input
+            {/* <input
               type="text"
               placeholder="Type here..."
-              className="h-full w-full border-t-2 border-gray-200 p-4 focus:border-indigo-500 focus:outline-none"
-            />
+              className="h-full w-full border-t-2 border-gray-300 p-4 focus:border-indigo-500 focus:outline-none"
+            /> */}
+            <AddList />
           </div>
 
           {/* Circular Button */}

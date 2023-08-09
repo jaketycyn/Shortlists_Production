@@ -34,7 +34,7 @@ export default function ListDisplay() {
   //console.log("unRankedItems - ListDisplay: ", unRankedItems);
 
   const [tabs, setTabs] = useState<
-    { name: string; count: number; current: boolean }[]
+    { name: string; count: number | null; current: boolean }[]
   >([]);
 
   useEffect(() => {
@@ -49,13 +49,14 @@ export default function ListDisplay() {
           count: rankedItems.length,
           current: currentTab === "Ranked",
         },
-        { name: "+", count: 0, current: currentTab === "Add" },
-        { name: "Rank", count: 0, current: currentTab === "Rank" },
+        { name: "+", count: null, current: currentTab === "Add" },
+
         {
           name: "Unranked",
           count: unRankedItems.length,
           current: currentTab === "Unranked",
         },
+        { name: "Rank", count: null, current: currentTab === "Rank" },
       ]);
     } else {
       setTabs([
@@ -64,13 +65,13 @@ export default function ListDisplay() {
           count: rankedItems.length,
           current: currentTab === "Ranked",
         },
-        { name: "+", count: 0, current: currentTab === "Add" },
-        { name: "Rank", count: 0, current: currentTab === "Rank" },
+        { name: "+", count: null, current: currentTab === "Add" },
         {
           name: "Unranked",
           count: unRankedItems.length,
           current: currentTab === "Unranked",
         },
+        { name: "Rank", count: null, current: currentTab === "Rank" },
       ]);
     }
   }, [items]);
@@ -217,8 +218,10 @@ export default function ListDisplay() {
                   ? tab.current
                     ? "border-indigo-500 text-indigo-600"
                     : "border-transparent text-gray-500 hover:border-gray-200 hover:text-gray-700"
-                  : tab.name === "+" || tab.name === "Rank"
+                  : tab.name === "+"
                   ? "bg-blue-500 text-white hover:bg-blue-600"
+                  : tab.name === "Rank"
+                  ? "bg-orange-500 text-white hover:bg-blue-600"
                   : "",
                 //styles for all tabs
                 "flex min-w-[50px] items-center justify-center whitespace-nowrap border-b-2  py-3  text-sm font-medium"
@@ -226,7 +229,7 @@ export default function ListDisplay() {
               aria-current={tab.current ? "page" : undefined}
             >
               {tab.name}
-              {tab.count ? (
+              {typeof tab.count === "number" ? (
                 <span
                   className={classNames(
                     tab.current
@@ -358,14 +361,14 @@ export default function ListDisplay() {
           </div>
           {/*Add Item - End */}
           {/* //*Rank Item - Start */}
-          <div className={`${tabs[2]?.current ? "block" : "hidden"}  w-full`}>
+          <div className={`${tabs[3]?.current ? "block" : "hidden"}  w-full`}>
             <Ranking />
           </div>
           {/* Rank Item - End */}
           {/* unRanked Items Display - Start*/}
 
           <div
-            className={`${tabs[3]?.current ? "block" : "hidden"} scrollbar-hide 
+            className={`${tabs[2]?.current ? "block" : "hidden"} scrollbar-hide 
             h-[calc(100vh-64px)] w-full overflow-auto pb-24`}
           >
             {unRankedItems === undefined || unRankedItems.length === 0 ? (
