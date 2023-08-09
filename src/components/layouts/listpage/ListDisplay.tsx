@@ -201,6 +201,35 @@ export default function ListDisplay() {
     }
   }, [formState, reset]);
 
+  const textBasedOnUnrankedItemsLength = (length: number) => {
+    if (length === 0) {
+      return (
+        <div className="space-y-8 text-center">
+          <h4>You have no ranked or unranked items</h4>
+          <h4>Click the + above to add more items</h4>
+          <h4>Click Rank to rank them</h4>
+        </div>
+      );
+    } else if (length === 1) {
+      return (
+        <div>
+          <h4>You have 1 Unranked item.</h4>
+          <h4>You need at least 1 more before you can rank</h4>
+          <h4>Click the + above to add more items</h4>
+          <h4>Then Click Rank to rank them</h4>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <h4>You have some unranked items.</h4>
+          <h4>Click Rank to rank them.</h4>
+          <h4>Or Click + and add more items.</h4>
+        </div>
+      );
+    }
+  };
+
   return (
     <div className=" flex min-h-screen w-full flex-col items-center justify-center">
       <div className="flex h-screen w-full flex-col items-center overflow-hidden pt-1">
@@ -255,8 +284,15 @@ export default function ListDisplay() {
           >
             {rankedItems === undefined || rankedItems.length === 0 ? (
               // no items to display
-              <div>
-                <h4>add some items to your list or rank your items</h4>
+              <div className="space-y-8 pt-36 text-center text-xl">
+                <h4>You have no items ranked.</h4>
+                {/* Make a basic conditional rendering based on unRankedItems.length === 0, unrankedItems.length === 1 & everything else*/}
+
+                {textBasedOnUnrankedItemsLength(unRankedItems.length)}
+
+                {/* 
+                <h4>Click the + above to add more items</h4>
+                <h4>Press Rank to then rank them</h4> */}
               </div>
             ) : (
               //display items
@@ -373,8 +409,10 @@ export default function ListDisplay() {
           >
             {unRankedItems === undefined || unRankedItems.length === 0 ? (
               // no items to display
-              <div>
-                <h4>Add some more items to rank</h4>
+              <div className="space-y-8 pt-36 text-center text-xl">
+                <h4>You have no items left to rank.</h4>
+                <h4>Click the + above to add more items</h4>
+                <h4>Press Rank to then rank them</h4>
               </div>
             ) : (
               //display items

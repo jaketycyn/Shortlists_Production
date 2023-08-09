@@ -227,7 +227,6 @@ const Ranking = () => {
         >
           {optB && <div>{optB?.title}</div>}
         </div>
-        <RankedItemDisplay />
       </div>
     );
   } else if (unRankedItems?.length === 0 && rankedItems?.length >= 2) {
@@ -244,7 +243,6 @@ const Ranking = () => {
         >
           Update Ranks
         </button>
-        <RankedItemDisplay />
       </div>
     );
   } else {
@@ -279,7 +277,6 @@ const Ranking = () => {
         >
           {optB && <div>{optB?.title}</div>}
         </div>
-        <RankedItemDisplay />
       </div>
     );
   }
