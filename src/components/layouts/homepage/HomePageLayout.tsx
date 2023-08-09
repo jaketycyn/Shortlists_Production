@@ -383,7 +383,7 @@ const HomePageLayout: NextPage = () => {
           <div
             className={`${
               isOpen ? "h-40" : "h-0"
-            }   w-full overflow-hidden bg-white shadow-lg transition-all`}
+            }   transition-height fixed bottom-0 w-full overflow-hidden bg-white shadow-lg duration-300 ease-in-out`}
           >
             {/* <input
               type="text"
