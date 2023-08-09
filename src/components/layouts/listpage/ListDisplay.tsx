@@ -77,12 +77,17 @@ export default function ListDisplay() {
   }, [items]);
 
   const handleClick = (tabName: string) => {
-    setTabs(
-      tabs.map((tab) => ({
-        ...tab,
-        current: tab.name === tabName,
-      }))
-    );
+    // if unRankedItems.length < 2, then disable the Rank tab
+    if (unRankedItems.length < 2 && tabName === "Rank") {
+      dispatch(setCurrentTab("Add"));
+    } else {
+      setTabs(
+        tabs.map((tab) => ({
+          ...tab,
+          current: tab.name === tabName,
+        }))
+      );
+    }
   };
 
   //* Item Options Variables & Functions *//
@@ -206,8 +211,8 @@ export default function ListDisplay() {
       return (
         <div className="space-y-8 text-center">
           <h4>You have no ranked or unranked items</h4>
-          <h4>Click the + above to add more items</h4>
-          <h4>Click Rank to rank them</h4>
+          <h4>Press the + above to add more items</h4>
+          <h4>Press Rank to then rank them</h4>
         </div>
       );
     } else if (length === 1) {
@@ -215,16 +220,16 @@ export default function ListDisplay() {
         <div>
           <h4>You have 1 Unranked item.</h4>
           <h4>You need at least 1 more before you can rank</h4>
-          <h4>Click the + above to add more items</h4>
-          <h4>Then Click Rank to rank them</h4>
+          <h4>Press the + above to add more items</h4>
+          <h4>Then Press Rank to rank them</h4>
         </div>
       );
     } else {
       return (
         <div>
           <h4>You have some unranked items.</h4>
-          <h4>Click Rank to rank them.</h4>
-          <h4>Or Click + and add more items.</h4>
+          <h4>Press Rank to rank them.</h4>
+          <h4>Or Press + and add more items.</h4>
         </div>
       );
     }
@@ -250,7 +255,9 @@ export default function ListDisplay() {
                   : tab.name === "+"
                   ? "bg-blue-500 text-white hover:bg-blue-600"
                   : tab.name === "Rank"
-                  ? "bg-orange-500 text-white hover:bg-blue-600"
+                  ? unRankedItems.length < 2
+                    ? " cursor-not-allowed bg-gray-500 text-white"
+                    : "bg-orange-500 text-white hover:bg-blue-600"
                   : "",
                 //styles for all tabs
                 "flex min-w-[50px] items-center justify-center whitespace-nowrap border-b-2  py-3  text-sm font-medium"
@@ -276,7 +283,6 @@ export default function ListDisplay() {
 
         <div className="w-screen ">
           {/* //* ranked Items Display - Start */}
-
           <div
             className={`${tabs[0]?.current ? "block" : "hidden"} scrollbar-hide 
             h-[calc(100vh-64px)] w-full overflow-auto pb-24
@@ -285,14 +291,7 @@ export default function ListDisplay() {
             {rankedItems === undefined || rankedItems.length === 0 ? (
               // no items to display
               <div className="space-y-8 pt-36 text-center text-xl">
-                <h4>You have no items ranked.</h4>
-                {/* Make a basic conditional rendering based on unRankedItems.length === 0, unrankedItems.length === 1 & everything else*/}
-
                 {textBasedOnUnrankedItemsLength(unRankedItems.length)}
-
-                {/* 
-                <h4>Click the + above to add more items</h4>
-                <h4>Press Rank to then rank them</h4> */}
               </div>
             ) : (
               //display items
@@ -372,7 +371,7 @@ export default function ListDisplay() {
             )}
           </div>
           {/* ranked Items Display - End */}
-          {/* //*Add Item - Start */}
+          {/* //* Add Item - Start */}
           <div className={`${tabs[1]?.current ? "block" : "hidden"} `}>
             <div className="flex items-center justify-center p-4">
               <div className="relative">
@@ -380,7 +379,7 @@ export default function ListDisplay() {
                   <input
                     type="text"
                     id="itemTitle"
-                    className="w-full rounded-md border border-gray-200 py-2 pl-3 text-sm text-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="h-20 w-80 rounded-md border border-gray-200 py-2 pl-3 text-center text-sm text-black placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                     placeholder="Item Name . . ."
                     autoComplete="off"
                     onFocus={() => setFocus(true)}
@@ -396,13 +395,8 @@ export default function ListDisplay() {
             {/*End - Add Item or Rank Section */}
           </div>
           {/*Add Item - End */}
-          {/* //*Rank Item - Start */}
-          <div className={`${tabs[3]?.current ? "block" : "hidden"}  w-full`}>
-            <Ranking />
-          </div>
-          {/* Rank Item - End */}
-          {/* unRanked Items Display - Start*/}
 
+          {/* //* unRanked Items Display - Start*/}
           <div
             className={`${tabs[2]?.current ? "block" : "hidden"} scrollbar-hide 
             h-[calc(100vh-64px)] w-full overflow-auto pb-24`}
@@ -410,13 +404,23 @@ export default function ListDisplay() {
             {unRankedItems === undefined || unRankedItems.length === 0 ? (
               // no items to display
               <div className="space-y-8 pt-36 text-center text-xl">
-                <h4>You have no items left to rank.</h4>
-                <h4>Click the + above to add more items</h4>
+                <h4>You have no items to rank.</h4>
+                <h4>Press the + above to add more items</h4>
                 <h4>Press Rank to then rank them</h4>
               </div>
             ) : (
               //display items
               <div>
+                <p className="flex ">
+                  {unRankedItems.length < 2 ? (
+                    <div className="mx-auto space-y-4 pb-4 text-center text-2xl">
+                      <h4>You only have 1 Unranked item</h4>
+                      <h4>Add another before ranking</h4>
+                    </div>
+                  ) : (
+                    ""
+                  )}{" "}
+                </p>
                 {unRankedItems.map((i, index) => (
                   <div
                     className="grid h-10 cursor-pointer grid-cols-6 gap-4 border-b border-gray-200 hover:bg-gray-100"
@@ -491,6 +495,11 @@ export default function ListDisplay() {
             )}
           </div>
           {/* unRanked Items Display - End*/}
+          {/* //*Rank Item - Start */}
+          <div className={`${tabs[3]?.current ? "block" : "hidden"}  w-full`}>
+            <Ranking />
+          </div>
+          {/* Rank Item - End */}
         </div>
       </div>
     </div>

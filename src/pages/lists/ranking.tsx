@@ -18,8 +18,6 @@ const Ranking = () => {
   const { items } = useAppSelector((state) => state.item);
   const { activeList, lists } = useAppSelector((state) => state.list);
 
-  let contentText;
-
   const { mutateAsync } = trpc.userItem.updateManyItemsRank.useMutation();
   const simplifyItems = items.map(({ id, listId, userId, potentialRank }) => ({
     itemId: id,
@@ -131,9 +129,17 @@ const Ranking = () => {
   // do we have any ranked items?
   if (rankedItems?.length <= 1) {
     if (unRankedItems?.length === 0) {
-      contentText = "List is Empty we need Items";
+      return (
+        <div className="pt-32 text-center">
+          <h4>List is Empty we need Items</h4>
+        </div>
+      );
     } else if (unRankedItems?.length === 1) {
-      contentText = "List is has only 1 item";
+      return (
+        <div>
+          <h4>List is has only 1 item</h4>
+        </div>
+      );
     } else {
       unrankedMatchup = unRankedItems?.slice(0, 2);
       //console.log("unrankedMatchup", unrankedMatchup);
@@ -141,10 +147,9 @@ const Ranking = () => {
       optB = unRankedItems?.[1];
     }
 
-    contentText = "unranked v unranked";
+    console.log("unranked v unranked");
     return (
       <div className="flex h-full flex-col items-center space-y-4">
-        <p>{contentText}</p>
         <div
           className="h-20 w-40 bg-blue-400 p-2"
           onClick={() => changeRankUnrankedItems(optA, unrankedMatchup)}
@@ -161,7 +166,7 @@ const Ranking = () => {
       </div>
     );
   } else if (activeItem.length === 1) {
-    contentText = "ranked v ranked";
+    console.log("ranked v ranked");
 
     optA = activeItem[0];
     const sortedRankedItemsExcludeOptA = sortedRankedItems.filter(
@@ -214,7 +219,6 @@ const Ranking = () => {
 
     return (
       <div className="flex h-full flex-col items-center space-y-4">
-        <p>{contentText}</p>
         <div
           className="h-20 w-40 bg-blue-400 p-2"
           onClick={() => changeItemRank(0, optB)}
@@ -230,13 +234,12 @@ const Ranking = () => {
       </div>
     );
   } else if (unRankedItems?.length === 0 && rankedItems?.length >= 2) {
-    contentText = "No items left to rank";
+    console.log("No items left to rank");
 
     //!Fire updateDBRank function
 
     return (
       <div className="flex h-full flex-col items-center space-y-4">
-        <p>{contentText}</p>
         <button
           className="h-20 w-20 bg-slate-500"
           onClick={() => updateItemsRank(simplifyItems)}
@@ -261,10 +264,9 @@ const Ranking = () => {
     const optB = sortedRankedItems[optBIndex];
     //console.log("option B: ", optB);
 
-    contentText = "unranked v ranked";
+    console.log("unranked v ranked");
     return (
       <div className="flex h-full flex-col items-center space-y-4">
-        <p>{contentText}</p>
         <div
           className="h-20 w-40 bg-blue-400 p-2"
           onClick={() => changeItemRank(0, optB)}
