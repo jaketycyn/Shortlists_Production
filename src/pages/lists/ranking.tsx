@@ -122,7 +122,19 @@ const Ranking = () => {
 
   /* Phase 1: Unranked vs Unranked */
 
-  const ItemDisplayComponent = ({ titleA, titleB, onClickA, onClickB }) => {
+  interface ItemDisplayComponentProps {
+    titleA?: string;
+    titleB?: string;
+    onClickA?: () => void;
+    onClickB?: () => void;
+  }
+
+  const ItemDisplayComponent: React.FC<ItemDisplayComponentProps> = ({
+    titleA,
+    titleB,
+    onClickA,
+    onClickB,
+  }) => {
     //scaling font size based on title length - if needed
     function getFontSize(title: string) {
       if (title.length < 15) return "text-4xl";
@@ -133,15 +145,23 @@ const Ranking = () => {
       if (title.length < 200) return "text-lg";
     }
 
-    const fontSizeA = getFontSize(titleA);
-    const fontSizeB = getFontSize(titleB);
+    let fontSizeA = getFontSize(titleA || "");
+    let fontSizeB = getFontSize(titleB || "");
+
+    if (titleA) {
+      fontSizeA = getFontSize(titleA);
+    }
+
+    if (titleB) {
+      fontSizeB = getFontSize(titleB);
+    }
 
     return (
       <div className="flex flex-grow flex-col items-center text-center">
         {titleA && (
           <div
             className={`mb-2 box-border flex h-1/2 w-full items-center justify-center bg-blue-300 ${fontSizeA}`}
-            onClick={() => onClickA()}
+            onClick={onClickA ? () => onClickA() : undefined}
           >
             {titleA}
           </div>
@@ -149,7 +169,7 @@ const Ranking = () => {
         {titleB && (
           <div
             className={`box-border flex h-1/2 w-full items-center justify-center bg-orange-200 ${fontSizeB}`}
-            onClick={() => onClickB()}
+            onClick={onClickB ? () => onClickB() : undefined}
           >
             {titleB}
           </div>
