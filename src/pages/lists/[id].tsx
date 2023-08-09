@@ -361,220 +361,224 @@ const ListPage: NextPage = () => {
   //main Function
   return (
     <>
-      <div className="h-screen overflow-hidden">
-        <Transition.Root show={open} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={setOpen}>
-            <div className="fixed inset-0 bg-gray-400 bg-opacity-50 transition-opacity" />
+      <div className="flex overflow-hidden">
+        <div className="flex ">
+          <Transition.Root show={open} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={setOpen}>
+              <div className="fixed inset-0 bg-gray-400 bg-opacity-50 transition-opacity" />
 
-            <div className="fixed inset-0 overflow-hidden">
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pt-20 lg:pl-10 lg:pr-10">
-                  <Transition.Child
-                    as={Fragment}
-                    enter="transform transition ease-in-out duration-500 sm:duration-700"
-                    enterFrom="translate-y-full"
-                    enterTo="translate-y-0 "
-                    leave="transform transition ease-in-out duration-500 sm:duration-700"
-                    leaveFrom="translate-y-0"
-                    leaveTo="translate-y-full"
-                  >
-                    <Dialog.Panel className="max-w pointer-events-auto w-screen">
-                      <div className="flex h-full flex-col  bg-white shadow-xl ">
-                        <div className="p-6">
-                          <div className="flex items-start justify-between">
-                            <Dialog.Title className="text-lg font-medium text-gray-900">
-                              Share
-                            </Dialog.Title>
-                            <div className="ml-3 flex h-7 items-center">
-                              <button
-                                type="button"
-                                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
-                                onClick={() => {
-                                  setOpen(false);
-                                  setSearchTerm("");
-                                }}
-                              >
-                                <span className="sr-only">Close panel</span>
-                                <HiX className="h-6 w-6" aria-hidden="true" />
-                              </button>
+              <div className="fixed inset-0 overflow-hidden">
+                <div className="absolute inset-0 overflow-hidden">
+                  <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pt-20 lg:pl-10 lg:pr-10">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="transform transition ease-in-out duration-500 sm:duration-700"
+                      enterFrom="translate-y-full"
+                      enterTo="translate-y-0 "
+                      leave="transform transition ease-in-out duration-500 sm:duration-700"
+                      leaveFrom="translate-y-0"
+                      leaveTo="translate-y-full"
+                    >
+                      <Dialog.Panel className="max-w pointer-events-auto w-screen">
+                        <div className="flex h-full flex-col  bg-white shadow-xl ">
+                          <div className="p-6">
+                            <div className="flex items-start justify-between">
+                              <Dialog.Title className="text-lg font-medium text-gray-900">
+                                Share
+                              </Dialog.Title>
+                              <div className="ml-3 flex h-7 items-center">
+                                <button
+                                  type="button"
+                                  className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500"
+                                  onClick={() => {
+                                    setOpen(false);
+                                    setSearchTerm("");
+                                  }}
+                                >
+                                  <span className="sr-only">Close panel</span>
+                                  <HiX className="h-6 w-6" aria-hidden="true" />
+                                </button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        {/* Start - Search for Friend/Person to share list with */}
-                        {/* Bring from profile page component the share logic over - will need to slightly tweak parts of it to add in a favor friends aspect. Will most likely use the logic from the seperate tabs (friends/pending/sent) most notably the friends tab to prioritize those users */}
-                        <form>
-                          <div className="relative flex flex-col">
-                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="h-6 w-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                                />
-                              </svg>
-                            </div>
-                            <input
-                              type="search"
-                              id="friend-search"
-                              autoComplete="off"
-                              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 "
-                              placeholder="Search for Friends..."
-                              onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                            {/* <button
+                          {/* Start - Search for Friend/Person to share list with */}
+                          {/* Bring from profile page component the share logic over - will need to slightly tweak parts of it to add in a favor friends aspect. Will most likely use the logic from the seperate tabs (friends/pending/sent) most notably the friends tab to prioritize those users */}
+                          <form>
+                            <div className="relative flex flex-col">
+                              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className="h-6 w-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                                  />
+                                </svg>
+                              </div>
+                              <input
+                                type="search"
+                                id="friend-search"
+                                autoComplete="off"
+                                className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 "
+                                placeholder="Search for Friends..."
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                              />
+                              {/* <button
                     type="submit"
                     className="absolute right-2.5 bottom-2.5 rounded-lg bg-black/80 px-4 py-2 text-sm font-medium text-white"
                   >
                     Search
                   </button> */}
-                          </div>
-                          {/* Display Users from Search */}
-                          {/* test */}
-                          <div>
-                            {filteredResults.length > 0 ? (
-                              <div className="flex flex-col">
-                                <p>hi</p>
-                                <ul
-                                  role="list"
-                                  className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
-                                >
-                                  {filteredResults.map(
-                                    (user: any, key: any) => (
-                                      <li key={key}>
-                                        <div className="group relative flex items-center px-5 py-6">
-                                          <a className="-m-1 block flex-1 p-1">
-                                            <div
-                                              className="absolute "
-                                              aria-hidden="true"
-                                            />
-                                            <div className="relative flex min-w-0 flex-1 items-center">
-                                              <span className="relative inline-block flex-shrink-0">
-                                                <svg
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                  fill="none"
-                                                  viewBox="0 0 24 24"
-                                                  strokeWidth={1.5}
-                                                  stroke="currentColor"
-                                                  className="h-6 w-6"
-                                                >
-                                                  <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                                                  />
-                                                </svg>
-                                              </span>
-                                              <div className="ml-4 truncate">
-                                                <p className="truncate text-sm font-medium text-gray-900">
-                                                  {user.username}
-                                                </p>
-                                                <p className="truncate text-sm text-gray-500">
-                                                  {user.email}
-                                                </p>
+                            </div>
+                            {/* Display Users from Search */}
+                            {/* test */}
+                            <div>
+                              {filteredResults.length > 0 ? (
+                                <div className="flex flex-col">
+                                  <p>hi</p>
+                                  <ul
+                                    role="list"
+                                    className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
+                                  >
+                                    {filteredResults.map(
+                                      (user: any, key: any) => (
+                                        <li key={key}>
+                                          <div className="group relative flex items-center px-5 py-6">
+                                            <a className="-m-1 block flex-1 p-1">
+                                              <div
+                                                className="absolute "
+                                                aria-hidden="true"
+                                              />
+                                              <div className="relative flex min-w-0 flex-1 items-center">
+                                                <span className="relative inline-block flex-shrink-0">
+                                                  <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    strokeWidth={1.5}
+                                                    stroke="currentColor"
+                                                    className="h-6 w-6"
+                                                  >
+                                                    <path
+                                                      strokeLinecap="round"
+                                                      strokeLinejoin="round"
+                                                      d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                                <div className="ml-4 truncate">
+                                                  <p className="truncate text-sm font-medium text-gray-900">
+                                                    {user.username}
+                                                  </p>
+                                                  <p className="truncate text-sm text-gray-500">
+                                                    {user.email}
+                                                  </p>
+                                                </div>
                                               </div>
+                                            </a>
+                                            <div className="ml-4 border-2">
+                                              {/* //! Actually send Data to users on button press - prevent default of reloading page on sending once */}
+                                              <button
+                                                className="hover:bg-green-200"
+                                                type="button"
+                                                onClick={() =>
+                                                  handleSubmit(onSubmit)
+                                                }
+                                              >
+                                                Send
+                                              </button>
                                             </div>
-                                          </a>
-                                          <div className="ml-4 border-2">
-                                            {/* //! Actually send Data to users on button press - prevent default of reloading page on sending once */}
-                                            <button
-                                              className="hover:bg-green-200"
-                                              type="button"
-                                              onClick={() =>
-                                                handleSubmit(onSubmit)
-                                              }
-                                            >
-                                              Send
-                                            </button>
                                           </div>
-                                        </div>
-                                      </li>
-                                    )
-                                  )}
-                                </ul>
-                              </div>
-                            ) : filteredFriends!.length > 0 ||
-                              filteredFriends === undefined ||
-                              null ? (
-                              <div className="flex flex-col">
-                                <ul
-                                  role="list"
-                                  className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
-                                >
-                                  {filteredFriends!.map(
-                                    (user: any, key: any) => (
-                                      <li key={key}>
-                                        <div className="group relative flex items-center px-5 py-6">
-                                          <a className="-m-1 block flex-1 p-1">
-                                            <div
-                                              className="absolute "
-                                              aria-hidden="true"
-                                            />
-                                            <div className="relative flex min-w-0 flex-1 items-center">
-                                              <span className="relative inline-block flex-shrink-0">
-                                                <svg
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                  fill="none"
-                                                  viewBox="0 0 24 24"
-                                                  strokeWidth={1.5}
-                                                  stroke="currentColor"
-                                                  className="h-6 w-6"
-                                                >
-                                                  <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                                                  />
-                                                </svg>
-                                              </span>
-                                              <div className="ml-4 truncate">
-                                                <p className="truncate text-sm font-medium text-gray-900">
-                                                  {user.username}
-                                                </p>
-                                                <p className="truncate text-sm text-gray-500">
-                                                  {user.email}
-                                                </p>
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                </div>
+                              ) : filteredFriends!.length > 0 ||
+                                filteredFriends === undefined ||
+                                null ? (
+                                <div className="flex flex-col">
+                                  <ul
+                                    role="list"
+                                    className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
+                                  >
+                                    {filteredFriends!.map(
+                                      (user: any, key: any) => (
+                                        <li key={key}>
+                                          <div className="group relative flex items-center px-5 py-6">
+                                            <a className="-m-1 block flex-1 p-1">
+                                              <div
+                                                className="absolute "
+                                                aria-hidden="true"
+                                              />
+                                              <div className="relative flex min-w-0 flex-1 items-center">
+                                                <span className="relative inline-block flex-shrink-0">
+                                                  <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    strokeWidth={1.5}
+                                                    stroke="currentColor"
+                                                    className="h-6 w-6"
+                                                  >
+                                                    <path
+                                                      strokeLinecap="round"
+                                                      strokeLinejoin="round"
+                                                      d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+                                                    />
+                                                  </svg>
+                                                </span>
+                                                <div className="ml-4 truncate">
+                                                  <p className="truncate text-sm font-medium text-gray-900">
+                                                    {user.username}
+                                                  </p>
+                                                  <p className="truncate text-sm text-gray-500">
+                                                    {user.email}
+                                                  </p>
+                                                </div>
                                               </div>
+                                            </a>
+                                            <div className="ml-4 border-2">
+                                              <button
+                                                className="hover:bg-green-200"
+                                                type="button"
+                                                onClick={() =>
+                                                  shareListOnSubmit(user)
+                                                }
+                                              >
+                                                Send
+                                              </button>
                                             </div>
-                                          </a>
-                                          <div className="ml-4 border-2">
-                                            <button
-                                              className="hover:bg-green-200"
-                                              type="button"
-                                              onClick={() =>
-                                                shareListOnSubmit(user)
-                                              }
-                                            >
-                                              Send
-                                            </button>
                                           </div>
-                                        </div>
-                                      </li>
-                                    )
-                                  )}
-                                </ul>
-                              </div>
-                            ) : null}
-                          </div>
-                        </form>
-                        {/* End - Search for Friend/Person to share list with */}
-                      </div>
-                    </Dialog.Panel>
-                  </Transition.Child>
+                                        </li>
+                                      )
+                                    )}
+                                  </ul>
+                                </div>
+                              ) : null}
+                            </div>
+                          </form>
+                          {/* End - Search for Friend/Person to share list with */}
+                        </div>
+                      </Dialog.Panel>
+                    </Transition.Child>
+                  </div>
                 </div>
               </div>
-            </div>
-          </Dialog>
-        </Transition.Root>
-        <ListHeader />
-        <ListDisplay />
-        <FooterNav />
+            </Dialog>
+          </Transition.Root>
+          <div className="flex h-screen flex-col">
+            <ListHeader />
+            <ListDisplay />
+            <FooterNav />
+          </div>
+        </div>
       </div>
     </>
   );

@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
-import { AnimatePresence } from "framer-motion";
+// import { AnimatePresence } from "framer-motion";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,

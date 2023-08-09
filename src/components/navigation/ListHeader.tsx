@@ -7,7 +7,7 @@ export const ListHeader = () => {
     router.back();
   };
   return (
-    <div className="grid h-10 w-full grid-cols-6 flex-row  bg-blue-500">
+    <div className="grid h-20 w-full grid-cols-6 flex-row bg-blue-500  p-2">
       <button className="col-span-1 flex items-center pl-3" onClick={goBack}>
         <svg
           xmlns="http://www.w3.org/2000/svg"

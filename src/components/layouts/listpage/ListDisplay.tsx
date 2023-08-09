@@ -240,7 +240,7 @@ export default function ListDisplay() {
   };
 
   return (
-    <div className=" flex min-h-screen w-full flex-col items-center justify-center">
+    <div className=" flex min-h-screen w-full flex-col items-center justify-center ">
       <div className="flex h-screen w-full flex-col items-center overflow-hidden pt-1">
         <nav
           className="mb-4 flex w-screen items-center justify-center space-x-4"
@@ -500,7 +500,12 @@ export default function ListDisplay() {
           </div>
           {/* unRanked Items Display - End*/}
           {/* //*Rank Item - Start */}
-          <div className={`${tabs[3]?.current ? "block" : "hidden"}  w-full`}>
+          <div
+            className={`${
+              tabs[3]?.current ? "block" : "hidden"
+            } scrollbar-hide flex h-[calc(100vh-64px)] w-full
+            flex-col overflow-hidden pb-20 `}
+          >
             <Ranking />
           </div>
           {/* Rank Item - End */}
