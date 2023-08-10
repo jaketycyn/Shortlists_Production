@@ -76,7 +76,7 @@ export default function ListDisplay() {
         { name: "Rank", count: null, current: currentTab === "Rank" },
       ]);
     }
-  }, [items]);
+  }, [items, currentTab]);
 
   const handleClick = (tabName: string) => {
     // if unRankedItems.length < 2, then disable the Rank tab
@@ -87,12 +87,12 @@ export default function ListDisplay() {
     ) {
       dispatch(setCurrentTab("+"));
     } else {
-      setTabs(
-        tabs.map((tab) => ({
-          ...tab,
-          current: tab.name === tabName,
-        }))
-      );
+      // setTabs(
+      //   tabs.map((tab) => ({
+      //     ...tab,
+      //     current: tab.name === tabName,
+      //   }))
+      // );
       dispatch(setCurrentTab(tabName));
     }
   };
@@ -296,7 +296,9 @@ export default function ListDisplay() {
         <div className="w-screen ">
           {/* //* ranked Items Display - Start */}
           <div
-            className={`${tabs[0]?.current ? "block" : "hidden"} scrollbar-hide 
+            className={`${
+              currentTab === "Ranked" ? "block" : "hidden"
+            } scrollbar-hide 
             h-[calc(100vh-64px)] w-full overflow-auto pb-24
             `}
           >
@@ -384,7 +386,7 @@ export default function ListDisplay() {
           </div>
           {/* ranked Items Display - End */}
           {/* //* Add Item - Start */}
-          <div className={`${tabs[1]?.current ? "block" : "hidden"} `}>
+          <div className={`${currentTab === "+" ? "block" : "hidden"} `}>
             <div className="flex items-center justify-center p-4">
               <div className="relative">
                 <form onSubmit={handleSubmit(onSubmit)}>
@@ -410,7 +412,9 @@ export default function ListDisplay() {
 
           {/* //* unRanked Items Display - Start*/}
           <div
-            className={`${tabs[2]?.current ? "block" : "hidden"} scrollbar-hide 
+            className={`${
+              currentTab === "Unranked" ? "block" : "hidden"
+            } scrollbar-hide 
             h-[calc(100vh-64px)] w-full overflow-auto pb-24`}
           >
             {currentTab === "Unranked" &&
@@ -511,7 +515,7 @@ export default function ListDisplay() {
           {/* //*Rank Item - Start */}
           <div
             className={`${
-              tabs[3]?.current ? "block" : "hidden"
+              currentTab === "Rank" ? "block" : "hidden"
             } scrollbar-hide flex h-[calc(100vh-64px)] w-full
             flex-col overflow-hidden pb-20 `}
           >

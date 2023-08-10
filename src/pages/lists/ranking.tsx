@@ -29,10 +29,13 @@ const Ranking = () => {
   }));
   // console.log("simplifyItems: ", simplifyItems);
 
+  const { refetch } = trpc.userItem.getItems.useQuery({ listId });
+
   const updateItemsRank = async (simplifyItems: UpdateItemsRankSchema) => {
     try {
       const result = await mutateAsync(simplifyItems);
       //console.log("result: ", result);
+      refetch();
     } catch (error) {
       console.log("error: ", error);
     }
@@ -47,7 +50,9 @@ const Ranking = () => {
         console.log("Timer fired");
         // ... rest of your code
         updateItemsRank(simplifyItems);
+
         dispatch(setIsSubmitting(false));
+        dispatch(setCurrentTab("Ranked"));
       }, 1000);
       return () => {
         console.log("useEffect cleanup");
