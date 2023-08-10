@@ -32,6 +32,7 @@ export interface ItemState {
   loading: boolean;
   error: any;
   currentTab: string;
+  isSubmitting: boolean;
 }
 
 export interface T {
@@ -45,6 +46,7 @@ const initialState: ItemState = {
   loading: false,
   error: null,
   currentTab: "Ranked",
+  isSubmitting: false,
 };
 
 // ACTIONS
@@ -84,7 +86,7 @@ export const itemSlice = createSlice({
       const optA = action.payload.combatants[0];
       //console.log("optA inside Redux: ", optA);
       const optB = action.payload.combatants[1];
-      console.log("optB inside Redux: ", optB);
+      // console.log("optB inside Redux: ", optB);
       const optionSelected = action.payload.optionSelected;
       const allItemsOptAIndex = state.items.findIndex((i) => i.id === optA.id);
 
@@ -105,16 +107,16 @@ export const itemSlice = createSlice({
 
           const optBPotRank =
             rankedSortedItems[rankedItemsOptBIndex]?.potentialRank;
-          console.log("optBPotRank: ", optBPotRank);
+          //console.log("optBPotRank: ", optBPotRank);
           const itemAboveOptBPotRank =
             rankedSortedItems[rankedItemsOptBIndex - 1]?.potentialRank;
-          console.log("itemAboveOptBPotRank: ", itemAboveOptBPotRank);
+          //console.log("itemAboveOptBPotRank: ", itemAboveOptBPotRank);
           if (
             typeof optBPotRank === "number" &&
             typeof itemAboveOptBPotRank === "number"
           ) {
             const newPotentialRank = (optBPotRank + itemAboveOptBPotRank) / 2;
-            console.log(newPotentialRank, "newPotentialRank:");
+            //console.log(newPotentialRank, "newPotentialRank:");
 
             state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
 
@@ -129,16 +131,16 @@ export const itemSlice = createSlice({
         if (optionSelected === 1) {
           //? more ranked items exist so it keeps getting ranked
           if (rankedSortedItems[rankedItemsOptBIndex + 1] !== undefined) {
-            console.log(
-              "more items to compared - keep ranking - SHOULDNT SEE THIS MESSAGE YET"
-            );
+            // console.log(
+            //   "more items to compared - keep ranking - SHOULDNT SEE THIS MESSAGE YET"
+            // );
 
             const newPotentialRank =
               (rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! +
                 rankedSortedItems[rankedItemsOptBIndex + 1]?.potentialRank!) /
               2;
 
-            console.log("newPotentialRank", newPotentialRank);
+            //console.log("newPotentialRank", newPotentialRank);
 
             state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
 
@@ -150,12 +152,12 @@ export const itemSlice = createSlice({
               1;
           } else {
             //? optA is now lowest ranked item - done ranking
-            console.log("done ranking");
+            // console.log("done ranking");
 
             const newPotentialRank =
               rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! / 2;
 
-            console.log("newPotentialRank: ", newPotentialRank);
+            // console.log("newPotentialRank: ", newPotentialRank);
             state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
           }
 
@@ -171,7 +173,7 @@ export const itemSlice = createSlice({
         if (optA.status === "lost") {
           if (optionSelected === 0) {
             //OPT A is selected
-            console.log("rankedItemsOptBIndex", rankedItemsOptBIndex);
+            //console.log("rankedItemsOptBIndex", rankedItemsOptBIndex);
             //assign new botBound based on optB.rank to optA
             const botBound: number = optB.potentialRank;
 
@@ -180,16 +182,16 @@ export const itemSlice = createSlice({
               (i) =>
                 optA.topBound > i.potentialRank! && i.potentialRank! > botBound
             );
-            console.log(
-              "possOpponents - coming off a loss - rvr - A selected: ",
-              JSON.parse(JSON.stringify(possOpponents))
-            );
+            // console.log(
+            //   "possOpponents - coming off a loss - rvr - A selected: ",
+            //   JSON.parse(JSON.stringify(possOpponents))
+            // );
 
             //scenario 1: no botBound on optA && no possOpps => this item faced the very bottom item but isnt' the lowest
 
             if (possOpponents.length === 0) {
               state.items[allItemsOptAIndex]!.status = "";
-              console.log("End of Ranking " + optA.title);
+              //console.log("End of Ranking " + optA.title);
               //correctly assign newPotentialRank =
               const newPotentialRank =
                 (rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! +
@@ -200,7 +202,7 @@ export const itemSlice = createSlice({
             } else if (possOpponents.length > 0) {
               state.items[allItemsOptAIndex]!.botBound = botBound;
               state.items[allItemsOptAIndex]!.status = "won";
-              console.log("more opponents to face");
+              //console.log("more opponents to face");
             } else {
               console.log("ERROR ERROR ERROR");
             }
@@ -211,15 +213,15 @@ export const itemSlice = createSlice({
               (i) =>
                 topBound > i.potentialRank! && i.potentialRank! > optA.botBound
             );
-            console.log(
-              "possOpponents - coming off a loss - rvr - B selected: ",
-              JSON.parse(JSON.stringify(possOpponents))
-            );
+            // console.log(
+            //   "possOpponents - coming off a loss - rvr - B selected: ",
+            //   JSON.parse(JSON.stringify(possOpponents))
+            // );
 
             //check if nly 1 item left means its perfectly ranked where its potentiall rank currently is
             if (possOpponents.length === 1) {
               //continue to face more opponents
-              console.log("multiple loses in a row but 1 final matchup");
+              // console.log("multiple loses in a row but 1 final matchup");
               state.items[allItemsOptAIndex]!.topBound = optB.potentialRank;
 
               //! send update to database of rank for optA based on potentialRank
@@ -227,11 +229,11 @@ export const itemSlice = createSlice({
             if (possOpponents.length === 0) {
               //check if obtB is the lowest ranked item
               if (rankedItemsOptBIndex === rankedSortedItems.length - 1) {
-                console.log("This item is the lowest ranked item");
+                // console.log("This item is the lowest ranked item");
                 const newPotentialRank =
                   rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! / 2;
 
-                console.log("newPotentialRank: ", newPotentialRank);
+                // console.log("newPotentialRank: ", newPotentialRank);
                 state.items[allItemsOptAIndex]!.potentialRank =
                   newPotentialRank;
                 state.items[allItemsOptAIndex]!.status = "";
@@ -242,7 +244,7 @@ export const itemSlice = createSlice({
                       ?.potentialRank!) /
                   2;
 
-                console.log("newPotentialRank: ", newPotentialRank);
+                //console.log("newPotentialRank: ", newPotentialRank);
                 state.items[allItemsOptAIndex]!.potentialRank =
                   newPotentialRank;
                 state.items[allItemsOptAIndex]!.status = "";
@@ -250,7 +252,7 @@ export const itemSlice = createSlice({
             }
             if (possOpponents.length > 1) {
               //continue to face more opponents
-              console.log("more opponents to face");
+              //console.log("more opponents to face");
               state.items[allItemsOptAIndex]!.topBound = optB.potentialRank;
             }
 
@@ -260,7 +262,7 @@ export const itemSlice = createSlice({
           if (optionSelected === 0) {
             //console.log("rankedItemsOptBIndex", rankedItemsOptBIndex);
             if (rankedItemsOptBIndex === 0) {
-              console.log("This item is new top ranked item");
+              //console.log("This item is new top ranked item");
 
               const optionBPotRank =
                 rankedSortedItems[rankedItemsOptBIndex]?.potentialRank;
@@ -288,15 +290,15 @@ export const itemSlice = createSlice({
                   optA.topBound > i.potentialRank! &&
                   i.potentialRank! > botBound
               );
-              console.log(
-                "possOpponents - coming off a Win - rvr - A selected: ",
-                JSON.parse(JSON.stringify(possOpponents))
-              );
+              // console.log(
+              //   "possOpponents - coming off a Win - rvr - A selected: ",
+              //   JSON.parse(JSON.stringify(possOpponents))
+              // );
 
-              console.log("possOpp length: ", possOpponents.length);
+              // console.log("possOpp length: ", possOpponents.length);
 
               if (possOpponents.length === 0) {
-                console.log("End of ranking: " + optA.title);
+                // console.log("End of ranking: " + optA.title);
                 state.items[allItemsOptAIndex]!.status = "";
 
                 //! send update to database of rank for optA based on potentialRank
@@ -320,7 +322,7 @@ export const itemSlice = createSlice({
                 }
               }
             } else {
-              console.log("ERROR ERROR ERROR");
+              //console.log("ERROR ERROR ERROR");
             }
           } else if (optionSelected === 1) {
             // console.log(
@@ -334,10 +336,10 @@ export const itemSlice = createSlice({
                 topBound > i.potentialRank! && i.potentialRank! > optA.botBound
             );
 
-            console.log(
-              "possOpponents - coming off a win - rvr - B selected: ",
-              JSON.parse(JSON.stringify(possOpponents))
-            );
+            // console.log(
+            //   "possOpponents - coming off a win - rvr - B selected: ",
+            //   JSON.parse(JSON.stringify(possOpponents))
+            // );
 
             //check if only 1 item left means its perfectly ranked where its potentiall rank currently is
             if (possOpponents.length === 0) {
@@ -345,7 +347,7 @@ export const itemSlice = createSlice({
                 (rankedSortedItems[rankedItemsOptBIndex]?.potentialRank! +
                   rankedSortedItems[rankedItemsOptBIndex + 1]?.potentialRank!) /
                 2;
-              console.log("end of ranking: ", optA.title);
+              //console.log("end of ranking: ", optA.title);
               state.items[allItemsOptAIndex]!.status = "";
 
               state.items[allItemsOptAIndex]!.potentialRank = newPotentialRank;
@@ -355,7 +357,7 @@ export const itemSlice = createSlice({
               //! send update to database of rank for optA based on potentialRank
             }
             if (possOpponents.length > 0) {
-              console.log("more opponents");
+              // console.log("more opponents");
               //assign new status
               state.items[allItemsOptAIndex]!.status = "lost";
               //assign new topBound
@@ -371,10 +373,10 @@ export const itemSlice = createSlice({
       state,
       action: PayloadAction<UnrankedObject>
     ) => {
-      console.log(
-        "action.payload - setInitialItemsPotentialRank: ",
-        action.payload
-      );
+      // console.log(
+      //   "action.payload - setInitialItemsPotentialRank: ",
+      //   action.payload
+      // );
       state.currentTab = "Rank";
       const winningRank = 100000;
       const losingRank = 10000;
@@ -405,6 +407,10 @@ export const itemSlice = createSlice({
       console.log("action.payload - setCurrentTab: ", action.payload);
       state.currentTab = action.payload;
     },
+    setIsSubmitting: (state, action: PayloadAction<boolean>) => {
+      console.log("action.payload - setIsSubmitting: ", action.payload);
+      state.isSubmitting = action.payload;
+    },
   },
 });
 
@@ -415,4 +421,5 @@ export const {
   setItemPotentialRank,
   setInitialItemsPotentialRank,
   setCurrentTab,
+  setIsSubmitting,
 } = itemSlice.actions;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
 import { trpc } from "../../utils/trpc";
@@ -6,6 +6,8 @@ import { type UpdateItemsRankSchema } from "../../server/schema/itemSchema";
 import {
   setItemPotentialRank,
   setInitialItemsPotentialRank,
+  setCurrentTab,
+  setIsSubmitting,
 } from "../../slices/itemSlice";
 
 const Ranking = () => {
@@ -15,7 +17,7 @@ const Ranking = () => {
   const listId = router.query.id as string;
 
   // items are already items only from the active list
-  const { items } = useAppSelector((state) => state.item);
+  const { items, isSubmitting } = useAppSelector((state) => state.item);
   const { activeList, lists } = useAppSelector((state) => state.list);
 
   const { mutateAsync } = trpc.userItem.updateManyItemsRank.useMutation();
@@ -29,15 +31,30 @@ const Ranking = () => {
 
   const updateItemsRank = async (simplifyItems: UpdateItemsRankSchema) => {
     try {
-      //console.log("items: ", items);
-      //simplify items test
-      //console.log("simplifyItems: ", simplifyItems);
       const result = await mutateAsync(simplifyItems);
       //console.log("result: ", result);
     } catch (error) {
       console.log("error: ", error);
     }
   };
+
+  useEffect(() => {
+    console.log("useEffect called:", isSubmitting, unRankedItems?.length);
+    if (isSubmitting && unRankedItems?.length === 0) {
+      console.log("simplifyItems: ", simplifyItems);
+      // console.log("SHOULDUPDATE ITEMS NOWWWWWWWWWWs");
+      const timer = setTimeout(() => {
+        console.log("Timer fired");
+        // ... rest of your code
+        updateItemsRank(simplifyItems);
+        dispatch(setIsSubmitting(false));
+      }, 1000);
+      return () => {
+        console.log("useEffect cleanup");
+        clearTimeout(timer);
+      };
+    }
+  }, [isSubmitting]);
 
   const activeListTitle = activeList?.title;
 
@@ -73,11 +90,6 @@ const Ranking = () => {
     console.log("combatants: ", combatants);
     //know both items are unranked can hardcore using bounds
     if (unrankedMatchup.length >= 2) {
-      //find Index of Losing Option
-      const losingIndex = unrankedMatchup.findIndex(
-        (i: any) => i.id !== optionSelected.id
-      );
-
       dispatch(
         setInitialItemsPotentialRank({
           optionSelected,
@@ -102,23 +114,25 @@ const Ranking = () => {
     );
   };
 
-  const RankedItemDisplay = () => {
-    return (
-      <div>
-        <h1>Item Rankings off Potential</h1>
-        <div>
-          {sortedRankedItems.map((i, index) => {
-            return (
-              <div className="flex" key={index}>
-                <div className="mx-2">{index + 1}.</div>
-                <div>{i.title}</div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
+  // const RankedItemDisplay = () => {
+  //   return (
+  //     <div>
+  //       <h1>Item Rankings off Potential</h1>
+  //       <div>
+  //         {sortedRankedItems.map((i, index) => {
+  //           return (
+  //             <div className="flex" key={index}>
+  //               <div className="mx-2">{index + 1}.</div>
+  //               <div>{i.title}</div>
+  //             </div>
+  //           );
+  //         })}
+  //       </div>
+  //     </div>
+  //   );
+  // };
+
+  // Update Item Ranks Function:
 
   /* Phase 1: Unranked vs Unranked */
 
@@ -203,7 +217,7 @@ const Ranking = () => {
       optB = unRankedItems?.[1];
     }
 
-    console.log("unranked v unranked");
+    // console.log("unranked v unranked");
     return (
       <ItemDisplayComponent
         titleA={optA?.title}
@@ -213,7 +227,7 @@ const Ranking = () => {
       />
     );
   } else if (activeItem.length === 1) {
-    console.log("ranked v ranked");
+    // console.log("ranked v ranked");
 
     optA = activeItem[0];
     const sortedRankedItemsExcludeOptA = sortedRankedItems.filter(
@@ -256,14 +270,6 @@ const Ranking = () => {
         //optB =
       }
     }
-
-    // optB
-
-    //using potential rank of current item we need to deduce which direction it can go
-    //should add a bound variable, bot or top to the current won/lost item
-
-    // optB = rankedItems[0];
-
     return (
       <ItemDisplayComponent
         titleA={optA?.title}
@@ -276,6 +282,8 @@ const Ranking = () => {
     console.log("No items left to rank");
 
     //!Fire updateDBRank function
+    dispatch(setIsSubmitting(true));
+    console.log("setIsSubmitting(true) fired");
 
     return (
       <div className="flex h-full flex-col items-center space-y-4">
@@ -303,7 +311,7 @@ const Ranking = () => {
     const optB = sortedRankedItems[optBIndex];
     //console.log("option B: ", optB);
 
-    console.log("unranked v ranked");
+    // console.log("unranked v ranked");
     return (
       <ItemDisplayComponent
         titleA={optA?.title}

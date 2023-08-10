@@ -12,7 +12,7 @@ import {
 import { trpc } from "../../../utils/trpc";
 import { RankItems } from "../../RankItems";
 import Ranking from "../../../pages/lists/ranking";
-import { setCurrentTab } from "../../../slices/itemSlice";
+import { setCurrentTab, setIsSubmitting } from "../../../slices/itemSlice";
 import AddItemToast from "../../toasts/AddItemToast";
 
 function classNames(...classes: (string | undefined)[]): string {
@@ -21,7 +21,9 @@ function classNames(...classes: (string | undefined)[]): string {
 
 export default function ListDisplay() {
   const dispatch = useAppDispatch();
-  const { items, currentTab } = useAppSelector((state) => state.item);
+  const { items, currentTab, isSubmitting } = useAppSelector(
+    (state) => state.item
+  );
 
   //console.log("Items - ListDisplay: ", items);
 
@@ -49,7 +51,7 @@ export default function ListDisplay() {
           count: rankedItems.length,
           current: currentTab === "Ranked",
         },
-        { name: "+", count: null, current: currentTab === "Add" },
+        { name: "+", count: null, current: currentTab === "+" },
 
         {
           name: "Unranked",
@@ -65,7 +67,7 @@ export default function ListDisplay() {
           count: rankedItems.length,
           current: currentTab === "Ranked",
         },
-        { name: "+", count: null, current: currentTab === "Add" },
+        { name: "+", count: null, current: currentTab === "+" },
         {
           name: "Unranked",
           count: unRankedItems.length,
@@ -83,7 +85,7 @@ export default function ListDisplay() {
       tabName === "Rank" &&
       rankedItems.length === 0
     ) {
-      dispatch(setCurrentTab("Add"));
+      dispatch(setCurrentTab("+"));
     } else {
       setTabs(
         tabs.map((tab) => ({
@@ -91,6 +93,7 @@ export default function ListDisplay() {
           current: tab.name === tabName,
         }))
       );
+      dispatch(setCurrentTab(tabName));
     }
   };
 
@@ -176,7 +179,7 @@ export default function ListDisplay() {
         const result = await mutateAsync(data);
         // const result = data;
         console.log("data found with value: ", data);
-        dispatch(setCurrentTab("Add"));
+        dispatch(setCurrentTab("+"));
         if (result) {
           //showToast Agent
           console.log("result found with value: ", result);
@@ -238,6 +241,11 @@ export default function ListDisplay() {
       );
     }
   };
+
+  // Initial Page Load
+  useEffect(() => {
+    dispatch(setIsSubmitting(false));
+  }, []);
 
   return (
     <div className=" flex min-h-screen w-full flex-col items-center justify-center ">
@@ -391,8 +399,8 @@ export default function ListDisplay() {
                     onTouchEnd={() => setFocus(false)}
                     {...register("itemTitle")}
                   />
-                  <AddItemToast isVisible={showToast} message="Item Added" />
                   {/* Add Item Toast */}
+                  <AddItemToast isVisible={showToast} message="Item Added" />
                 </form>
               </div>
             </div>
@@ -405,98 +413,99 @@ export default function ListDisplay() {
             className={`${tabs[2]?.current ? "block" : "hidden"} scrollbar-hide 
             h-[calc(100vh-64px)] w-full overflow-auto pb-24`}
           >
-            {unRankedItems === undefined || unRankedItems.length === 0 ? (
-              // no items to display
-              <div className="space-y-8 pt-36 text-center text-xl">
-                <h4>You have no items to rank.</h4>
-                <h4>Press the + above to add more items</h4>
-                <h4>Press Rank to then rank them</h4>
-              </div>
-            ) : (
-              //display items
-              <div>
-                <p className="flex ">
-                  {unRankedItems.length < 2 && rankedItems.length === 0 ? (
-                    <div className="mx-auto space-y-4 pb-4 text-center text-2xl">
-                      <h4>You only have 1 Unranked item</h4>
-                      <h4>Add another before ranking</h4>
-                    </div>
-                  ) : (
-                    ""
-                  )}{" "}
-                </p>
-                {unRankedItems.map((i, index) => (
-                  <div
-                    className="grid h-10 cursor-pointer grid-cols-6 gap-4 border-b border-gray-200 hover:bg-gray-100"
-                    key={i.id}
-                    onClick={() => displayItemOptions(index, i.id)}
-                  >
-                    <span className=" col-span-1 justify-self-start pl-4" />
-                    <div className="col-span-4 my-auto items-center text-center ">
-                      {i.title}
-                    </div>
-                    <div className="col-span-1 my-auto items-center justify-end justify-self-end pr-4">
-                      <div className="h-6 w-6">
-                        {selectedId === i.id &&
-                          showItemOptions &&
-                          activeItemIndex === index &&
-                          (iconOptions ? (
-                            <div className="row-start-1 flex flex-row-reverse ">
+            {currentTab === "Unranked" &&
+              (unRankedItems === undefined || unRankedItems.length === 0 ? (
+                // no items to display
+                <div className="space-y-8 pt-36 text-center text-xl">
+                  <h4>You have no items to rank.</h4>
+                  <h4>Press the + above to add more items</h4>
+                  <h4>Press Rank to then rank them</h4>
+                </div>
+              ) : (
+                //display items
+                <div>
+                  <div className="flex ">
+                    {unRankedItems.length < 2 && rankedItems.length === 0 ? (
+                      <div className="mx-auto space-y-4 pb-4 text-center text-2xl">
+                        <h4>You only have 1 Unranked item</h4>
+                        <h4>Add another before ranking</h4>
+                      </div>
+                    ) : (
+                      ""
+                    )}{" "}
+                  </div>
+                  {unRankedItems.map((i, index) => (
+                    <div
+                      className="grid h-10 cursor-pointer grid-cols-6 gap-4 border-b border-gray-200 hover:bg-gray-100"
+                      key={i.id}
+                      onClick={() => displayItemOptions(index, i.id)}
+                    >
+                      <span className=" col-span-1 justify-self-start pl-4" />
+                      <div className="col-span-4 my-auto items-center text-center ">
+                        {i.title}
+                      </div>
+                      <div className="col-span-1 my-auto items-center justify-end justify-self-end pr-4">
+                        <div className="h-6 w-6">
+                          {selectedId === i.id &&
+                            showItemOptions &&
+                            activeItemIndex === index &&
+                            (iconOptions ? (
+                              <div className="row-start-1 flex flex-row-reverse ">
+                                <svg
+                                  id="trashBtn"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth={1.5}
+                                  stroke="currentColor"
+                                  className="h-6 w-6 sm:h-5 md:w-5"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    console.log(i.title + " archive/delete");
+                                    ArchiveItem(
+                                      {
+                                        userId: i.userId,
+                                        itemId: i.id,
+                                        listId: i.listId,
+                                        archiveStatus: "trash",
+                                      },
+                                      "Unranked"
+                                    );
+                                  }}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                  />
+                                </svg>
+                              </div>
+                            ) : (
                               <svg
-                                id="trashBtn"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
-                                strokeWidth={1.5}
+                                strokeWidth="1.5"
                                 stroke="currentColor"
-                                className="h-6 w-6 sm:h-5 md:w-5"
+                                className="h-6 w-6"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  console.log(i.title + " archive/delete");
-                                  ArchiveItem(
-                                    {
-                                      userId: i.userId,
-                                      itemId: i.id,
-                                      listId: i.listId,
-                                      archiveStatus: "trash",
-                                    },
-                                    "Unranked"
-                                  );
+                                  setIconOptions(true); // setting the iconOptions to true, which will trigger trash can
                                 }}
                               >
                                 <path
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
-                                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                  d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
                                 />
                               </svg>
-                            </div>
-                          ) : (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth="1.5"
-                              stroke="currentColor"
-                              className="h-6 w-6"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setIconOptions(true); // setting the iconOptions to true, which will trigger trash can
-                              }}
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
-                              />
-                            </svg>
-                          ))}
+                            ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  ))}
+                </div>
+              ))}
           </div>
           {/* unRanked Items Display - End*/}
           {/* //*Rank Item - Start */}
@@ -506,7 +515,7 @@ export default function ListDisplay() {
             } scrollbar-hide flex h-[calc(100vh-64px)] w-full
             flex-col overflow-hidden pb-20 `}
           >
-            <Ranking />
+            {currentTab === "Rank" && <Ranking />}
           </div>
           {/* Rank Item - End */}
         </div>
