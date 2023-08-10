@@ -90,10 +90,10 @@ const HomePageLayout: NextPage = () => {
   //if (isLoading) return <div>Loading ...</div>;
   return (
     <motion.div
-      initial={{ x: 2000 }}
-      animate={{ x: 0 }}
-      transition={{ duration: 0.3 }}
-      exit={{ x: -2000 }}
+    // initial={{ x: "100vw" }}
+    // animate={{ x: 0 }}
+    // transition={{ duration: 0.3 }}
+    // exit={{ x: "-100vw" }}
     >
       <div className="flex h-screen w-full flex-col justify-between">
         <div className="h-screen">
@@ -167,7 +167,11 @@ const HomePageLayout: NextPage = () => {
                 </a>
               </li>
             </ul>
-            <div className="mb-6 flex w-full min-w-0 flex-col break-words rounded bg-white text-center shadow-lg lg:w-3/5">
+            <div
+              className={`${
+                isOpen ? "w-full  opacity-50" : "opacity-100"
+              } mb-6 flex w-full min-w-0 flex-col break-words rounded bg-white text-center shadow-lg lg:w-3/5`}
+            >
               <div className=" px-4 py-5">
                 <div className="tab-content tab-space">
                   {/*Tab 1 Selected*/}
@@ -393,7 +397,7 @@ const HomePageLayout: NextPage = () => {
             <AddList />
           </div>
 
-          {/* Circular Button */}
+          {/* Circular Button - Bot Right Corner*/}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className={` ${
