@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
+import { trpc } from "../../utils/trpc";
+import { addSongItem } from "../../server/schema/itemSchema";
 
 const Excel = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -12,6 +14,16 @@ const Excel = () => {
     }
   };
 
+  const { mutateAsync } = trpc.userItem.addSongItem.useMutation();
+
+  type SongData = {
+    Song: string;
+    Album: string;
+    Year: number;
+    Artist: string;
+  };
+
+  const listIdValue = "60f6b6b0c9b0f1b4e0b3b0b8";
   const handleSubmit = async () => {
     if (!file) return;
 
@@ -24,8 +36,31 @@ const Excel = () => {
           // Parse CSV
           if (file.type === "text/csv") {
             Papa.parse(data.toString(), {
-              complete: (parsedData) => {
-                console.log("parsedData", parsedData);
+              complete: async (parsedData) => {
+                // Explicitly cast parsedData.data to a 2d string array
+                const rows = parsedData.data as string[][];
+
+                //Skip the header and map over the rest of the rows
+                const songData = rows.slice(1).map((row: any) => ({
+                  Song: row[0],
+                  Album: row[1],
+                  Year: parseInt(row[2], 10),
+                  Artist: row[3],
+                })) as SongData[];
+
+                // Transform the songData to match the addSongItemSchema
+                const transformedSongData = songData.map((song) => ({
+                  itemTitle: song.Song,
+                  artist: song.Artist,
+                  year: song.Year,
+                  album: song.Album,
+                  listId: listIdValue,
+                })) as addSongItem[];
+
+                console.log("transformedSongData", transformedSongData);
+                // await mutateAsync(songData);
+
+                alert("Songs Added!");
               },
             });
           }
