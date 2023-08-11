@@ -344,7 +344,7 @@ export default function ListDisplay() {
                                       userId: i.userId,
                                       itemId: i.id,
                                       listId: i.listId,
-                                      archiveStatus: "trash",
+                                      archive: "trash",
                                     },
                                     "Ranked"
                                   );
@@ -471,7 +471,7 @@ export default function ListDisplay() {
                                         userId: i.userId,
                                         itemId: i.id,
                                         listId: i.listId,
-                                        archiveStatus: "trash",
+                                        archive: "trash",
                                       },
                                       "Unranked"
                                     );
