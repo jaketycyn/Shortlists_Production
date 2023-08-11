@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const movies = () => {
+const Movies = () => {
   const [file, setFile] = useState(null);
 
   const handleFileChange = (e: any) => {
@@ -35,4 +35,4 @@ const movies = () => {
   );
 };
 
-export default movies;
+export default Movies;
