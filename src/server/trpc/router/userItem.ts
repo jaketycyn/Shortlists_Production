@@ -7,6 +7,7 @@ import {
   updateItemSchema,
   updateItemRankSchema,
   updateItemsRankSchema,
+  addSongItemSchema,
 } from "../../schema/itemSchema";
 import { z } from "zod";
 
@@ -30,6 +31,28 @@ export const userItemRouter = router({
       };
     }),
 
+  addSongItem: protectedProcedure
+    .input(addSongItemSchema)
+    .mutation(async ({ input, ctx }) => {
+      const { itemTitle, album, year, artist, listId } = input;
+
+      const result = await ctx.prisma.userItem.createMany({
+        data: {
+          title: itemTitle,
+          album,
+          year,
+          artist,
+          listId: listId,
+          userId: ctx.session.user.id,
+        },
+      });
+
+      return {
+        status: 201,
+        message: "Items created successfully",
+        result,
+      };
+    }),
   archiveItem: protectedProcedure
     .input(archiveItemSchema)
     .mutation(async ({ ctx, input }) => {
