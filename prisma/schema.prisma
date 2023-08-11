@@ -73,6 +73,11 @@ model UserItem {
   userId        String
   listId        String
   archive       String?  @default("undefined")
+  artist        String?  
+  year          String?
+  genre         String?
+  label         String?
+  album         String?
   currentRank   Int      @default(0)
   potentialRank Int      @default(0)
   userList      UserList @relation(fields: [listId], references: [id])
