@@ -1,8 +1,7 @@
 import type { NextPage } from "next";
 import Image from "next/image";
 import React, { useRef } from "react";
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import FooterNav from "../../navigation/FooterNav";
 import { useForm, Resolver, SubmitHandler } from "react-hook-form";
@@ -13,7 +12,6 @@ import {
   useAppSelector,
 } from "../../../hooks/useTypedSelector";
 import { setUsers } from "../../../slices/usersSlice";
-import { User } from "@prisma/client";
 
 const ProfilePageLayout: NextPage = () => {
   const { data: session, status } = useSession();
@@ -28,6 +26,11 @@ const ProfilePageLayout: NextPage = () => {
 
   //query to Get All currentUsers relationships in DB - relationships stored in Redux through useEffect below
   //TODO: setting in Redux State usersRelationships for buttons/display
+
+  //Signout Function
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/" });
+  };
 
   const { handleSubmit, register, watch } = useForm<any>({
     defaultValues: {
@@ -352,10 +355,18 @@ const ProfilePageLayout: NextPage = () => {
                 </ul>
               ) : null}
             </div>
+            <div>
+              <button
+                onClick={handleSignOut}
+                className="h-10 w-20 transform rounded-xl bg-red-600 text-white shadow-md transition-transform duration-200 hover:scale-105 hover:bg-red-700 active:bg-red-800"
+              >
+                Signout
+              </button>
+            </div>
           </div>
           {/* Friendslist/Finder Section */}
           <div>
-            <ul className="mt-2 mb-2 divide-y-8 divide-gray-200">
+            <ul className="mb-2 mt-2 divide-y-8 divide-gray-200">
               {/* Display All Users - Will change to friends later */}
               <h1 className="text-xl">Friends</h1>
               <div>
@@ -402,7 +413,7 @@ const ProfilePageLayout: NextPage = () => {
               {/* Display Users with Friends Association */}
               <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
                 <ul
-                  className="mr-2 mb-0 flex list-none flex-row pb-4"
+                  className="mb-0 mr-2 flex list-none flex-row pb-4"
                   role="tablist"
                 >
                   <li className="-mb-px mr-2  text-center last:mr-0">
@@ -530,7 +541,7 @@ const ProfilePageLayout: NextPage = () => {
                                   </div>
                                   <div className="col-span-2 col-end-7 row-start-1 ml-8 w-full justify-end">
                                     <button
-                                      className="mr-1 mb-1 h-full w-full rounded bg-black px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                      className="mb-1 mr-1 h-full w-full rounded bg-black px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
                                       type="button"
                                       // onClick={() =>
                                       //   console.log(
@@ -597,7 +608,7 @@ const ProfilePageLayout: NextPage = () => {
                                   </div>
                                   <div className="col-span-2 col-end-7 row-start-1 ml-8 w-full justify-end">
                                     <button
-                                      className="mr-1 mb-1 h-full w-full rounded bg-black px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                      className="mb-1 mr-1 h-full w-full rounded bg-black px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
                                       type="button"
                                       // onClick={() =>
                                       //   console.log(
@@ -683,7 +694,7 @@ const ProfilePageLayout: NextPage = () => {
                                             const friendShipStatus = "pending";
                                             return (
                                               <button
-                                                className="mr-1 mb-1 h-full w-full rounded bg-black/30 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                                className="mb-1 mr-1 h-full w-full rounded bg-black/30 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
                                                 type="button"
                                                 disabled
                                                 onClick={() =>
@@ -700,7 +711,7 @@ const ProfilePageLayout: NextPage = () => {
                                             const friendShipStatus = "accept";
                                             return (
                                               <button
-                                                className="mr-1 mb-1 h-full w-full rounded bg-black/30 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-green-600"
+                                                className="mb-1 mr-1 h-full w-full rounded bg-black/30 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-green-600"
                                                 type="button"
                                                 onClick={() =>
                                                   console.log(
@@ -717,7 +728,7 @@ const ProfilePageLayout: NextPage = () => {
                                           const friendShipStatus = "friend";
                                           return (
                                             <button
-                                              className="mr-1 mb-1 h-full w-full rounded bg-black/70 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                              className="mb-1 mr-1 h-full w-full rounded bg-black/70 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
                                               type="button"
                                               disabled
                                               //can add redirect maybe in future for friend
@@ -735,7 +746,7 @@ const ProfilePageLayout: NextPage = () => {
                                       //const friendShipStatus = "friend";
                                       return (
                                         <button
-                                          className="mr-1 mb-1 h-full w-full rounded bg-black px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                          className="mb-1 mr-1 h-full w-full rounded bg-black px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
                                           type="button"
                                           onClick={() =>
                                             sendFriendRequestFunction(user.id)
@@ -855,7 +866,7 @@ const ProfilePageLayout: NextPage = () => {
                                                   "pending";
                                                 return (
                                                   <button
-                                                    className="mr-1 mb-1 h-full w-full rounded bg-black/30 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                                    className="mb-1 mr-1 h-full w-full rounded bg-black/30 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
                                                     type="button"
                                                     disabled
                                                     onClick={() =>
@@ -873,7 +884,7 @@ const ProfilePageLayout: NextPage = () => {
                                                   "accept";
                                                 return (
                                                   <button
-                                                    className="mr-1 mb-1 h-full w-full rounded bg-black/30 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-green-600"
+                                                    className="mb-1 mr-1 h-full w-full rounded bg-black/30 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-green-600"
                                                     type="button"
                                                     onClick={() =>
                                                       console.log(
@@ -892,7 +903,7 @@ const ProfilePageLayout: NextPage = () => {
                                               const friendShipStatus = "friend";
                                               return (
                                                 <button
-                                                  className="mr-1 mb-1 h-full w-full rounded bg-black/70 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                                  className="mb-1 mr-1 h-full w-full rounded bg-black/70 px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
                                                   type="button"
                                                   disabled
                                                   //can add redirect maybe in future for friend
@@ -910,7 +921,7 @@ const ProfilePageLayout: NextPage = () => {
                                           //const friendShipStatus = "friend";
                                           return (
                                             <button
-                                              className="mr-1 mb-1 h-full w-full rounded bg-black px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
+                                              className="mb-1 mr-1 h-full w-full rounded bg-black px-2 py-1 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-pink-600"
                                               type="button"
                                               onClick={() =>
                                                 sendFriendRequestFunction(
