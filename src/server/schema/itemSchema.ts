@@ -5,6 +5,14 @@ export const addItemSchema = z.object({
   listId: z.string(),
 });
 
+export const addSongItemSchema = z.object({
+  itemTitle: z.string(),
+  album: z.string(),
+  year: z.number(),
+  artist: z.string(),
+  listId: z.string(),
+});
+
 export const archiveItemsSchema = z.object({
   userId: z.string(),
   listId: z.string(),
@@ -41,6 +49,7 @@ export const updateItemRankSchema = z.object({
 export const updateItemsRankSchema = z.array(updateItemRankSchema);
 
 export type AddItemSchema = z.TypeOf<typeof addItemSchema>;
+export type addSongItem = z.TypeOf<typeof addSongItemSchema>;
 export type ArchiveItemSchema = z.TypeOf<typeof archiveItemSchema>;
 export type ArchiveItemsSchema = z.TypeOf<typeof archiveItemsSchema>;
 export type DeleteItemSchema = z.TypeOf<typeof deleteItemSchema>;
