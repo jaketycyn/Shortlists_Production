@@ -4,21 +4,30 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 // individual item
 export interface Item {
-  listId: string;
+  //base item props
   id: string;
-  userId: string;
   title: string;
-  archive: string;
-  //This date will force a serialization error every time Will need to be converted to a string later or omitted on storage.
   createdAt: Date;
-  //could add createdAt: string | Date
-  // for now swapping it fully over to string since it gets converted to string on import
-  potentialRank: number;
+  userId: string;
+  listId: string;
   currentRank: number;
-  //adding status value to rank items
+  potentialRank: number;
   status: string;
   botBound: number;
   topBound: number;
+  //song item optional props
+  archive?: string;
+  album?: string;
+  artist?: string;
+  genre?: string;
+  label?: string;
+  year?: number;
+  //movie item optional props
+  //book item optional props
+  //game item optional props
+  //tv item optional props
+  //podcast item optional props
+  //etc
 }
 
 export interface UnrankedObject {
