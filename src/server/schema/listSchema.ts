@@ -12,7 +12,7 @@ export const deleteListSchema = z.object({
 export const archiveListSchema = z.object({
   listId: z.string(),
   userId: z.string(),
-  archiveStatus: z.string(),
+  archive: z.string(),
 });
 export const shareListSchema = z.object({
   userId: z.string(),
