@@ -64,6 +64,8 @@ const ListPage: NextPage = () => {
   const { activeList, lists, error, loading } = useAppSelector(
     (state) => state.list
   );
+
+  console.log(activeList?.title);
   //! Placeholders for testing and basic setup. Later will use actual profile page info
 
   const testProp = "howdypartner";
@@ -574,7 +576,7 @@ const ListPage: NextPage = () => {
             </Dialog>
           </Transition.Root>
           <div className="flex h-screen flex-col">
-            <ListHeader />
+            <ListHeader title={activeList?.title} />
             <ListDisplay />
             <FooterNav />
           </div>

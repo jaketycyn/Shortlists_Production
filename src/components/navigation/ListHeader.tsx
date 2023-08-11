@@ -1,11 +1,12 @@
 import { useRouter } from "next/router";
 
-export const ListHeader = () => {
+export const ListHeader = ({ title }: { title: string | undefined }) => {
   const router = useRouter();
 
   const goBack = () => {
     router.back();
   };
+  console.log("title", title);
   return (
     <div className="grid h-20 w-full grid-cols-6 flex-row bg-blue-500  p-2">
       <button className="col-span-1 flex items-center pl-3" onClick={goBack}>
@@ -25,8 +26,9 @@ export const ListHeader = () => {
           Back
         </svg>
       </button>
-      <h1 className="col-span-4 flex items-center justify-center text-center">
+      <h1 className="col-span-4 flex items-center justify-center text-center text-lg font-semibold text-white">
         {/* Header Section for future use */}
+        {title}
       </h1>
       <button className="col-span-1 flex items-center justify-end pr-3">
         <svg
