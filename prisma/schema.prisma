@@ -80,7 +80,7 @@ model UserItem {
   artist        String?
   genre         String?
   label         String?
-  year          String?
+  year          Int?
   userList      UserList @relation(fields: [listId], references: [id])
   user          User     @relation(fields: [userId], references: [id])
 }
