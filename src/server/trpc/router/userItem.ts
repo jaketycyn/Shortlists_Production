@@ -30,8 +30,7 @@ export const userItemRouter = router({
         result,
       };
     }),
-
-  addSongItem: protectedProcedure
+  addSongItems: protectedProcedure
     .input(addSongItemSchema)
     .mutation(async ({ input, ctx }) => {
       const { itemTitle, album, year, artist, listId } = input;

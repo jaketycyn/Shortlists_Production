@@ -2,7 +2,7 @@ import { useState } from "react";
 import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { trpc } from "../../utils/trpc";
-import { addSongItem } from "../../server/schema/itemSchema";
+import { addSongItems } from "../../server/schema/itemSchema";
 
 const Excel = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -14,7 +14,7 @@ const Excel = () => {
     }
   };
 
-  const { mutateAsync } = trpc.userItem.addSongItem.useMutation();
+  const { mutateAsync } = trpc.userItem.addSongItems.useMutation();
 
   type SongData = {
     Song: string;
