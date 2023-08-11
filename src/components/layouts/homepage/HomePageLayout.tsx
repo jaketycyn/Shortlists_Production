@@ -246,7 +246,7 @@ const HomePageLayout: NextPage = () => {
                                           ArchiveList({
                                             listId: list.id,
                                             userId: list.userId,
-                                            archiveStatus: "trash",
+                                            archive: "trash",
                                           })
                                         // set reQuery to ture
                                       }
@@ -346,7 +346,7 @@ const HomePageLayout: NextPage = () => {
                                             ArchiveList({
                                               listId: list.id,
                                               userId: list.userId,
-                                              archiveStatus: "trash",
+                                              archive: "trash",
                                             })
                                           // set reQuery to ture
                                         }
