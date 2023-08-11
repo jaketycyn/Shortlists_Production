@@ -16,14 +16,14 @@ export const addSongItemSchema = z.object({
 export const archiveItemsSchema = z.object({
   userId: z.string(),
   listId: z.string(),
-  archiveStatus: z.string(),
+  archive: z.string(),
 });
 
 export const archiveItemSchema = z.object({
   userId: z.string(),
   itemId: z.string(),
   listId: z.string(),
-  archiveStatus: z.string(),
+  archive: z.string(),
 });
 
 export const deleteItemSchema = z.object({

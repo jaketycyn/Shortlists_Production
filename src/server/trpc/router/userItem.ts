@@ -56,14 +56,14 @@ export const userItemRouter = router({
   archiveItem: protectedProcedure
     .input(archiveItemSchema)
     .mutation(async ({ ctx, input }) => {
-      const { itemId, listId, userId, archiveStatus } = input;
+      const { itemId, listId, userId, archive } = input;
       // console.log("listId", listId)
       // console.log("userId", userId)
       //TODO: later change archive "trash" to a seperate deleted status + deletedDate status for proper date of deleted items - allows recycle bin to have most recently deleted items at the top via a dateFilter.
       await ctx.prisma.userItem.updateMany({
         where: { id: itemId, listId: listId, userId: userId },
         data: {
-          archive: archiveStatus,
+          archive: archive,
         },
       });
 
@@ -78,13 +78,13 @@ export const userItemRouter = router({
   archiveManyItems: protectedProcedure
     .input(archiveItemsSchema)
     .mutation(async ({ ctx, input }) => {
-      const { listId, userId, archiveStatus } = input;
+      const { listId, userId, archive } = input;
       // console.log("listId", listId)
       // console.log("userId", userId)
       await ctx.prisma.userItem.updateMany({
         where: { listId: listId, userId: userId },
         data: {
-          archive: archiveStatus,
+          archive: archive,
         },
       });
 
