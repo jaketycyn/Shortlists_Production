@@ -73,9 +73,9 @@ model UserItem {
   createdAt     DateTime @default(now())
   userId        String
   listId        String
+  archive       String?  @default("undefined")
   currentRank   Int      @default(0)
   potentialRank Int      @default(0)
-  archive       String?  @default("undefined")
   album         String?
   artist        String?
   genre         String?
