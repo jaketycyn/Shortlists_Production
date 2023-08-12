@@ -21,7 +21,6 @@ import AddList from "../../AddList";
 
 const HomePageLayout: NextPage = () => {
   const dispatch = useAppDispatch();
-  const { lists } = useAppSelector((state) => state.list);
   const [openTab, setOpenTab] = React.useState(1);
   const [userListsOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -30,8 +29,10 @@ const HomePageLayout: NextPage = () => {
     data: results,
     refetch,
     isLoading,
+    isError,
   } = trpc.userList.getLists.useQuery();
 
+  const { lists } = useAppSelector((state) => state.list);
   //console.log("results: ", results);
 
   console.log("typeofResults", typeof results);
@@ -87,7 +88,10 @@ const HomePageLayout: NextPage = () => {
     await dispatch(setActiveList(activeList));
   };
 
-  //if (isLoading) return <div>Loading ...</div>;
+  if (isLoading) return <div>Loading ...</div>;
+  if (isError)
+    return <div>Error fetching the lists. Please try again later.</div>;
+
   return (
     <motion.div
     // initial={{ x: "100vw" }}
