@@ -45,13 +45,13 @@ export const userListRouter = router({
   archiveList: protectedProcedure
     .input(archiveListSchema)
     .mutation(async ({ ctx, input }) => {
-      const { listId, userId, archiveStatus } = input;
+      const { listId, userId, archive } = input;
       // console.log("listId", listId)
       // console.log("userId", userId)
       await ctx.prisma.userList.updateMany({
         where: { id: listId, userId: userId },
         data: {
-          archive: archiveStatus,
+          archive: archive,
         },
       });
 

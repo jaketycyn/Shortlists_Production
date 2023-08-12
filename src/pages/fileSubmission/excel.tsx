@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Papa from "papaparse";
-import * as XLSX from "xlsx";
+
 import { trpc } from "../../utils/trpc";
-import { addSongItems } from "../../server/schema/itemSchema";
+import { addSongItemsSchema } from "../../server/schema/itemSchema";
 
 const Excel = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -23,7 +23,10 @@ const Excel = () => {
     Artist: string;
   };
 
-  const listIdValue = "60f6b6b0c9b0f1b4e0b3b0b8";
+  //!hardcode for now list items will be added to
+  //TODO: add listId to the form in form of input or dropdown retrieved from the database
+  const listIdValue = "cll7br2bt0001w3jgc7uujmto";
+
   const handleSubmit = async () => {
     if (!file) return;
 
@@ -52,13 +55,14 @@ const Excel = () => {
                 const transformedSongData = songData.map((song) => ({
                   itemTitle: song.Song,
                   artist: song.Artist,
-                  year: song.Year,
+                  year: Math.floor(song.Year),
                   album: song.Album,
                   listId: listIdValue,
-                })) as addSongItem[];
+                })) as addSongItemsSchema;
 
                 console.log("transformedSongData", transformedSongData);
-                // await mutateAsync(songData);
+
+                await mutateAsync(transformedSongData);
 
                 alert("Songs Added!");
               },

@@ -1,13 +1,13 @@
 import { router, protectedProcedure } from "../trpc";
 import {
   addItemSchema,
+  addSongItemsSchema,
   archiveItemSchema,
   archiveItemsSchema,
   deleteItemSchema,
   updateItemSchema,
   updateItemRankSchema,
   updateItemsRankSchema,
-  addSongItemSchema,
 } from "../../schema/itemSchema";
 import { z } from "zod";
 
@@ -31,19 +31,22 @@ export const userItemRouter = router({
       };
     }),
   addSongItems: protectedProcedure
-    .input(addSongItemSchema)
+    .input(addSongItemsSchema)
     .mutation(async ({ input, ctx }) => {
-      const { itemTitle, album, year, artist, listId } = input;
+      const userId = ctx.session.user.id;
+
+      // Create multiple items in the database
+      const createItems = input.map((song) => ({
+        title: song.itemTitle,
+        album: song.album,
+        year: song.year,
+        artist: song.artist,
+        listId: song.listId,
+        userId: userId,
+      }));
 
       const result = await ctx.prisma.userItem.createMany({
-        data: {
-          title: itemTitle,
-          album,
-          year,
-          artist,
-          listId: listId,
-          userId: ctx.session.user.id,
-        },
+        data: createItems,
       });
 
       return {

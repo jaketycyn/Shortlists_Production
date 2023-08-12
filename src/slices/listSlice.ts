@@ -45,20 +45,6 @@ export const getLists = createAsyncThunk(
     }
   }
 );
-// export const setLists = createAsyncThunk(
-//   "lists/setLists",
-//   async (usersLists: List[], thunkApi) => {
-//     console.log("usersLists: ", usersLists);
-//     try {
-//       const response = usersLists;
-//       console.log("response in Slice: ", response);
-
-//       return response;
-//     } catch (error: any) {
-//       return thunkApi.rejectWithValue(error.message);
-//     }
-//   }
-// );
 
 // SLICE
 export const listSlice = createSlice({
