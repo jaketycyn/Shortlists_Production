@@ -95,7 +95,7 @@ const SearchUserShareList = () => {
         );
         console.log("filteredItems: ", filteredItems);
 
-        let data = {
+        const data = {
           userId: userId,
           listId: activeList.id,
           listTitle: activeList.title,
@@ -111,7 +111,7 @@ const SearchUserShareList = () => {
           }, 1000);
         }
       } else {
-        let data = {
+        const data = {
           userId: userId,
           listId: activeList.id,
           listTitle: activeList.title,
