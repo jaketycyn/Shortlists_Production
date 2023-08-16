@@ -49,10 +49,18 @@ const SearchUserShareList = () => {
   useEffect(() => {
     if (debouncedSearchTerm) {
       const filteredUsers = usersNotCurrent?.filter((user) => {
-        return Object.values(user)
+        // Exclude the user with the username 'admin'
+        if (user.username === "admin") {
+          return false;
+        }
+
+        const valuesToSearch = Object.entries(user)
+          .filter(([key]) => key !== "id" && key !== "email")
+          // exclude the 'id' field
+          .map(([_, value]) => value)
           .join("")
-          .toLowerCase()
-          .includes(debouncedSearchTerm.toLowerCase());
+          .toLowerCase();
+        return valuesToSearch.includes(debouncedSearchTerm.toLowerCase());
       });
 
       setFilteredResults(filteredUsers);
@@ -92,7 +100,7 @@ const SearchUserShareList = () => {
       if (items) {
         console.log("items: ", items);
         const filteredItems = items.filter(
-          (i) => i.archive === "archive" || i.archive === "trash"
+          (i) => i.archive !== "archive" && i.archive !== "trash"
         );
         console.log("filteredItems: ", filteredItems);
 
@@ -103,14 +111,14 @@ const SearchUserShareList = () => {
           items: filteredItems,
         };
 
-        // const result = await mutateAsync(data);
-        // console.log("result in Onsubmit share form: ", result);
-        // if (result) {
-        //   setShowToast(true);
-        //   setTimeout(() => {
-        //     setShowToast(false);
-        //   }, 1000);
-        // }
+        const result = await mutateAsync(data);
+        console.log("result in Onsubmit share form: ", result);
+        if (result) {
+          setShowToast(true);
+          setTimeout(() => {
+            setShowToast(false);
+          }, 1000);
+        }
       } else {
         const data = {
           userId: userId,
@@ -119,15 +127,14 @@ const SearchUserShareList = () => {
           items: [],
         };
 
-        // const result = await mutateAsync(data);
-        // console.log("result in Onsubmit share form: ", result);
-        // if (result) {
-        //   setShowToast(true);
-        //   setTimeout(() => {
-        //     setShowToast(false);
-        //   }, 1000);
-        // }
-        // Redirection code (if needed)
+        const result = await mutateAsync(data);
+        console.log("result in Onsubmit share form: ", result);
+        if (result) {
+          setShowToast(true);
+          setTimeout(() => {
+            setShowToast(false);
+          }, 1000);
+        }
       }
     } catch (err) {
       console.error(err);
