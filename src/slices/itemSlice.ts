@@ -15,6 +15,7 @@ export interface Item {
   status: string;
   botBound: number;
   topBound: number;
+  bucket: string;
   //song item optional props
   archive?: string;
   album?: string;
