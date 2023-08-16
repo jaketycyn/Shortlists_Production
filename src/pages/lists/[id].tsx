@@ -65,7 +65,7 @@ const ListPage: NextPage = () => {
     (state) => state.list
   );
 
-  console.log(activeList?.title);
+  // console.log(activeList?.title);
   //! Placeholders for testing and basic setup. Later will use actual profile page info
 
   const testProp = "howdypartner";

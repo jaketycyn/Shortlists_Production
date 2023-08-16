@@ -1,14 +1,15 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import SearchUserShareList from "../search/searchUserShareList";
 
 export const ListHeader = ({ title }: { title: string | undefined }) => {
   const router = useRouter();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
 
   const goBack = () => {
     router.back();
   };
-  console.log("title", title);
   return (
     <div className="grid h-20 w-full grid-cols-6 flex-row bg-blue-500 p-2">
       <button className="col-span-1 flex items-center pl-3" onClick={goBack}>
@@ -33,7 +34,7 @@ export const ListHeader = ({ title }: { title: string | undefined }) => {
         {title}
       </h1>
       <div className="relative col-span-1 flex items-center justify-end pr-3">
-        <button onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+        <button onClick={() => setIsOpen(!isOpen)}>
           {/* SVG for Three Dots */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -54,10 +55,31 @@ export const ListHeader = ({ title }: { title: string | undefined }) => {
         {/* Dropdown Menu */}
 
         <div
-          className={`text-md fixed left-0 top-0 z-50 h-36 w-full transform bg-neutral-800 font-semibold text-white  transition-transform duration-300 ease-in-out ${
-            isDropdownOpen ? "translate-y-0" : "-translate-y-full"
+          className={`text-md fixed left-0 top-0 z-50 h-screen w-full transform bg-neutral-800 font-semibold text-white  transition-transform duration-300 ease-in-out ${
+            isOpen ? "-translate-y-0" : "translate-y-full"
           }`}
         >
+          <div className="grid h-10 w-full grid-cols-6 flex-row bg-blue-500 p-2">
+            <button
+              className="col-span-1 flex items-center pl-3"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
           <div className="grid grid-cols-4 items-center justify-center  p-4 text-center">
             {/* share */}
 
@@ -77,7 +99,7 @@ export const ListHeader = ({ title }: { title: string | undefined }) => {
             </svg>
             <button
               className="col-span-3 block w-full px-4 py-2 text-left"
-              onClick={() => console.log("Share")}
+              onClick={() => setIsShareOpen(!isShareOpen)}
             >
               Share
             </button>
@@ -126,17 +148,42 @@ export const ListHeader = ({ title }: { title: string | undefined }) => {
               Delete
             </button>
           </div>
-          {/* ... Add more items as required ... */}
+
+          {/* Share Menu */}
+          {isShareOpen && (
+            <div
+              className={`text-md fixed left-0 top-0 z-50 h-screen w-full transform bg-neutral-800 font-semibold text-white  transition-transform duration-300 ease-in-out${
+                isShareOpen ? "-translate-y-0" : "translate-y-full"
+              }`}
+            >
+              <div className="grid h-10 w-full grid-cols-6 flex-row bg-blue-500 p-2">
+                <button
+                  className="col-span-1 flex items-center pl-3"
+                  onClick={() => setIsShareOpen(!isOpen)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    className="h-6 w-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="p-4">
+                <SearchUserShareList />
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* When the dropdown is open, we add an overlay to close the dropdown when clicked */}
-      {isDropdownOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black bg-opacity-50"
-          onClick={() => setIsDropdownOpen(false)}
-        ></div>
-      )}
     </div>
   );
 };

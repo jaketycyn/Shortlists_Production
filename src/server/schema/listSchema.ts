@@ -18,13 +18,11 @@ export const shareListSchema = z.object({
   userId: z.string(),
   listTitle: z.string(),
   listId: z.string(),
-  targetEmail: z.string().email(),
   items: z.array(
     z.object({
       id: z.string(),
       userId: z.string(),
       title: z.string(),
-      archive: z.string(),
       createdAt: z.date(),
     })
   ),

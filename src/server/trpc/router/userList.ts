@@ -110,7 +110,7 @@ export const userListRouter = router({
     .mutation(async ({ input, ctx }) => {
       //! NEED ITEM VALUES
       //? Do I pass items with a parentItemId to attach everyitem to another item at one point?
-      const { userId, listTitle, listId, targetEmail, items } = input;
+      const { userId, listTitle, listId, items } = input;
       console.log("items: ", items);
       //!Hardcoded itemTitle
 
@@ -126,7 +126,7 @@ export const userListRouter = router({
 
       //! Will want a way to prevent password from coming back for security reasons in the future
       const FoundUser = await ctx.prisma.user.findFirst({
-        where: { email: targetEmail },
+        where: { id: userId },
       });
 
       if (FoundUser) {
