@@ -90,6 +90,7 @@ const SearchUserShareList = () => {
       }
 
       if (items) {
+        console.log("items: ", items);
         const filteredItems = items.filter(
           (i) => i.archive === "archive" || i.archive === "trash"
         );
@@ -102,14 +103,14 @@ const SearchUserShareList = () => {
           items: filteredItems,
         };
 
-        const result = await mutateAsync(data);
-        console.log("result in Onsubmit share form: ", result);
-        if (result) {
-          setShowToast(true);
-          setTimeout(() => {
-            setShowToast(false);
-          }, 1000);
-        }
+        // const result = await mutateAsync(data);
+        // console.log("result in Onsubmit share form: ", result);
+        // if (result) {
+        //   setShowToast(true);
+        //   setTimeout(() => {
+        //     setShowToast(false);
+        //   }, 1000);
+        // }
       } else {
         const data = {
           userId: userId,
@@ -118,14 +119,14 @@ const SearchUserShareList = () => {
           items: [],
         };
 
-        const result = await mutateAsync(data);
-        console.log("result in Onsubmit share form: ", result);
-        if (result) {
-          setShowToast(true);
-          setTimeout(() => {
-            setShowToast(false);
-          }, 1000);
-        }
+        // const result = await mutateAsync(data);
+        // console.log("result in Onsubmit share form: ", result);
+        // if (result) {
+        //   setShowToast(true);
+        //   setTimeout(() => {
+        //     setShowToast(false);
+        //   }, 1000);
+        // }
         // Redirection code (if needed)
       }
     } catch (err) {
@@ -158,6 +159,11 @@ const SearchUserShareList = () => {
             id="friend-search"
             className="block w-full rounded-lg border border-gray-300 bg-gray-100 p-4 pl-10 text-sm text-gray-900 "
             placeholder="Search for Friends..."
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+              }
+            }}
             onChange={(e) => {
               setSearchTerm(e.target.value);
             }}
