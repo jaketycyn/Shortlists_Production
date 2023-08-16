@@ -58,6 +58,7 @@ const Excel = () => {
                   year: Math.floor(song.Year),
                   album: song.Album,
                   listId: listIdValue,
+                  bucket: "music",
                 })) as addSongItemsSchema;
 
                 console.log("transformedSongData", transformedSongData);

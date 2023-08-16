@@ -50,9 +50,9 @@ const SearchUserShareList = () => {
     if (debouncedSearchTerm) {
       const filteredUsers = usersNotCurrent?.filter((user) => {
         // Exclude the user with the username 'admin'
-        if (user.username === "admin") {
-          return false;
-        }
+        // if (user.username == "admin") {
+        //   return false;
+        // }
 
         const valuesToSearch = Object.entries(user)
           .filter(([key]) => key !== "id" && key !== "email")

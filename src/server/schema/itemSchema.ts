@@ -11,6 +11,7 @@ export const addSongItemSchema = z.object({
   year: z.number().int(),
   artist: z.string(),
   listId: z.string(),
+  bucket: z.string(),
 });
 
 export const archiveItemsSchema = z.object({

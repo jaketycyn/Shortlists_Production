@@ -81,6 +81,7 @@ model UserItem {
   genre         String?
   label         String?
   year          Int?
+  bucket        String?  @default("undefined")
   userList      UserList @relation(fields: [listId], references: [id])
   user          User     @relation(fields: [userId], references: [id])
 }
