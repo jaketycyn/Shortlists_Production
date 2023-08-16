@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import SearchUserShareList from "../search/searchUserShareList";
+import SearchUserShareList from "../search/SearchUserShareList";
 
 export const ListHeader = ({ title }: { title: string | undefined }) => {
   const router = useRouter();

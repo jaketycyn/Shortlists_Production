@@ -11,7 +11,8 @@ import { type ShareListSchema } from "../server/schema/listSchema";
 
 import { HiX, HiOutlineCheck, HiPlus } from "react-icons/hi";
 
-const resolver: Resolver<ShareListSchema> = async (values) => {
+// need to change schema since i'm not including targetEmail now
+const resolver: Resolver<any> = async (values) => {
   return {
     values: !values.targetEmail ? {} : values,
     errors: !values.targetEmail
@@ -137,11 +138,11 @@ const Shareform: NextPage = () => {
           //onClick={() => setAddItemOrList(false)}
         >
           <div className="flex flex-col items-center">
-            {errors?.targetEmail && (
+            {/* {errors?.targetEmail && (
               <p className="inline font-bold text-red-800">
                 ⚠{errors.targetEmail.message}
               </p>
-            )}
+            )} */}
             <div // controls opacity of rest of active list when add item/list is selected
               className="container relative mx-auto flex h-full flex-col  p-6 px-4 pb-8 "
             >
@@ -171,7 +172,7 @@ const Shareform: NextPage = () => {
                 className="flex h-20 w-full border-2 border-black text-center text-black"
                 placeholder="Enter friend's email..."
                 onFocus={() => setShowToast(false)}
-                {...register("targetEmail")}
+                // {...register("targetEmail")}
               />
             </div>
           </div>
