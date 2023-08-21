@@ -35,7 +35,6 @@ const HomePageLayout: NextPage = () => {
   const { lists } = useAppSelector((state) => state.list);
   //console.log("results: ", results);
 
-  console.log("typeofResults", typeof results);
   //const { data } = useSession();
 
   //redux setting Lists
