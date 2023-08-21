@@ -361,6 +361,10 @@ const ListPage: NextPage = () => {
     [mutateShareListAsync]
   );
   //main Function
+
+  //debugging:
+  console.log("filteredResults:", filteredResults);
+  console.log("filteredFriends:", filteredFriends);
   return (
     <>
       <div className="flex overflow-hidden">
@@ -440,131 +444,6 @@ const ListPage: NextPage = () => {
                             </div>
                             {/* Display Users from Search */}
                             {/* test */}
-                            <div>
-                              {filteredResults.length > 0 ? (
-                                <div className="flex flex-col">
-                                  <p>hi</p>
-                                  <ul
-                                    role="list"
-                                    className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
-                                  >
-                                    {filteredResults.map(
-                                      (user: any, key: any) => (
-                                        <li key={key}>
-                                          <div className="group relative flex items-center px-5 py-6">
-                                            <a className="-m-1 block flex-1 p-1">
-                                              <div
-                                                className="absolute "
-                                                aria-hidden="true"
-                                              />
-                                              <div className="relative flex min-w-0 flex-1 items-center">
-                                                <span className="relative inline-block flex-shrink-0">
-                                                  <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    strokeWidth={1.5}
-                                                    stroke="currentColor"
-                                                    className="h-6 w-6"
-                                                  >
-                                                    <path
-                                                      strokeLinecap="round"
-                                                      strokeLinejoin="round"
-                                                      d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                                                    />
-                                                  </svg>
-                                                </span>
-                                                <div className="ml-4 truncate">
-                                                  <p className="truncate text-sm font-medium text-gray-900">
-                                                    {user.username}
-                                                  </p>
-                                                  <p className="truncate text-sm text-gray-500">
-                                                    {user.email}
-                                                  </p>
-                                                </div>
-                                              </div>
-                                            </a>
-                                            <div className="ml-4 border-2">
-                                              {/* //! Actually send Data to users on button press - prevent default of reloading page on sending once */}
-                                              <button
-                                                className="hover:bg-green-200"
-                                                type="button"
-                                                onClick={() =>
-                                                  handleSubmit(onSubmit)
-                                                }
-                                              >
-                                                Send
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>
-                                </div>
-                              ) : filteredFriends!.length > 0 ||
-                                filteredFriends === undefined ||
-                                null ? (
-                                <div className="flex flex-col">
-                                  <ul
-                                    role="list"
-                                    className="h-screen flex-1 divide-y divide-gray-200 overflow-y-auto"
-                                  >
-                                    {filteredFriends!.map(
-                                      (user: any, key: any) => (
-                                        <li key={key}>
-                                          <div className="group relative flex items-center px-5 py-6">
-                                            <a className="-m-1 block flex-1 p-1">
-                                              <div
-                                                className="absolute "
-                                                aria-hidden="true"
-                                              />
-                                              <div className="relative flex min-w-0 flex-1 items-center">
-                                                <span className="relative inline-block flex-shrink-0">
-                                                  <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    strokeWidth={1.5}
-                                                    stroke="currentColor"
-                                                    className="h-6 w-6"
-                                                  >
-                                                    <path
-                                                      strokeLinecap="round"
-                                                      strokeLinejoin="round"
-                                                      d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
-                                                    />
-                                                  </svg>
-                                                </span>
-                                                <div className="ml-4 truncate">
-                                                  <p className="truncate text-sm font-medium text-gray-900">
-                                                    {user.username}
-                                                  </p>
-                                                  <p className="truncate text-sm text-gray-500">
-                                                    {user.email}
-                                                  </p>
-                                                </div>
-                                              </div>
-                                            </a>
-                                            <div className="ml-4 border-2">
-                                              <button
-                                                className="hover:bg-green-200"
-                                                type="button"
-                                                onClick={() =>
-                                                  shareListOnSubmit(user)
-                                                }
-                                              >
-                                                Send
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </li>
-                                      )
-                                    )}
-                                  </ul>
-                                </div>
-                              ) : null}
-                            </div>
                           </form>
                           {/* End - Search for Friend/Person to share list with */}
                         </div>
