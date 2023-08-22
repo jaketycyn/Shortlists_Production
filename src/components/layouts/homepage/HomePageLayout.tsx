@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
 
 import Link from "next/link";
 
@@ -18,12 +19,26 @@ import { setActiveList, setLists, type List } from "../../../slices/listSlice";
 
 import FooterNav from "../../navigation/FooterNav";
 import AddList from "../../AddList";
+import { setError } from "../../../slices/errorSlice";
 
 const HomePageLayout: NextPage = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [openTab, setOpenTab] = React.useState(1);
   const [userListsOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+
+  //get error state from Redux
+  const hasGlobalError = useAppSelector((state) => state.error.hasError);
+
+  useEffect(() => {
+    if (hasGlobalError) {
+      // Navigate to the home page
+      router.push("/");
+      // Optionally, reset the global error state
+      dispatch(setError());
+    }
+  }, [hasGlobalError]);
 
   const {
     data: results,
