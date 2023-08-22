@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 
 import { trpc } from "../utils/trpc";
 import "../styles/globals.css";
+import ErrorBoundary from "../components/ErrorBoundary";
 // import { AnimatePresence } from "framer-motion";
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -19,7 +20,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <SessionProvider session={session}>
-          <Component key={router.pathname} {...pageProps} />
+          <ErrorBoundary>
+            <Component key={router.pathname} {...pageProps} />
+          </ErrorBoundary>
         </SessionProvider>
       </PersistGate>
     </Provider>
