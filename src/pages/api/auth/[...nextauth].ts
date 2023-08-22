@@ -1,7 +1,6 @@
 import NextAuth, { User, type NextAuthOptions } from "next-auth";
-
+//import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
-import DiscordProvider from "next-auth/providers/discord";
 import Credentials from "next-auth/providers/credentials";
 import { verify } from "argon2";
 // Prisma adapter for NextAuth, optional and can be removed
@@ -11,6 +10,7 @@ import { prisma } from "../../../server/db/client";
 import { loginSchema } from "../../../server/schema/userSchema";
 import { Session } from "inspector";
 import { getToken } from "next-auth/jwt";
+import { type } from "os";
 
 const secret = process.env.NEXTAUTH_SECRET;
 
@@ -43,25 +43,13 @@ export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
 
   providers: [
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID as string,
-      clientSecret: env.GOOGLE_CLIENT_SECRET as string,
-    }),
-
-    //! Add Discord Provider && find discord client id and secret
-    // DiscordProvider({
-    //   clientId: env.DISCORD_CLIENT_ID,
-    //   clientSecret: env.DISCORD_CLIENT_SECRET,
-    // }),
-
-    // ...add more providers here
     Credentials({
       name: "credentials",
       credentials: {
         email: {
           label: "Email",
           type: "email",
-          placeholder: "example@example.com",
+          placeholder: "jsmith@gmail.com",
         },
         password: { label: "Password", type: "password" },
       },
@@ -69,37 +57,37 @@ export const authOptions: NextAuthOptions = {
         try {
           // console.log("credentials: ", credentials)
 
-          if (!credentials || !credentials.email || !credentials.password)
-            return null;
-
           const { email, password } = await loginSchema.parseAsync(credentials);
-
-          const dbUser = await prisma.user.findFirst({
+          const result = await prisma.user.findFirst({
             where: { email },
           });
+          console.log("result in Authorize: ", result);
 
-          console.log("result in Authorize: ", dbUser);
+          if (!result || !result.password) {
+            return null;
+          }
 
-          if (!dbUser) return null;
-
-          const isValidPassword = await verify(dbUser.password, password);
-
-          if (!isValidPassword) return null;
-
-          // console.log("dbUser: ", dbUser);
-          // console.log("id: ", dbUser.id);
-          // console.log("email: ", dbUser.email);
-          // console.log("username: ", dbUser.username);
+          const isValidPassword = await verify(result.password, password);
           return {
-            id: dbUser.id,
-            email: dbUser.email,
-            username: dbUser.username,
+            id: result.id,
+            email: result.email,
+            username: result.username,
           };
         } catch {
           return null;
         }
       },
     }),
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+
+    // DiscordProvider({
+    //   clientId: env.DISCORD_CLIENT_ID,
+    //   clientSecret: env.DISCORD_CLIENT_SECRET,
+    // }),
+    // ...add more providers here
   ],
   session: {
     strategy: "jwt",
