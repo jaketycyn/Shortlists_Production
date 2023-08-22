@@ -227,11 +227,11 @@ const ListPage: NextPage = () => {
 
   console.log("About to filter: currentUser");
   const currentUser = users?.filter((i) => i.id === session?.user?.id);
-  console.log("currentUser: ," + JSON.stringify(currentUser, 0, 2));
+  console.log("currentUser: ," + JSON.stringify(currentUser, null, 2));
   console.log("About to filter: usersNotCurrent");
   const usersNotCurrent = users?.filter((i) => i.id !== session?.user?.id);
 
-  console.log("usersNotCurrent: ," + JSON.stringify(usersNotCurrent, 0, 2));
+  console.log("usersNotCurrent: ," + JSON.stringify(usersNotCurrent, null, 2));
 
   useEffect(() => {
     if (debouncedSearchTerm) {
