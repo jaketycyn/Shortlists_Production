@@ -32,10 +32,10 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
             <button
               className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               type="button"
-              onClick={() => {
+              onClick={async () => {
                 console.log("Clearing Error and navigating home");
-                clearError(); // Clear global error state
-                router.push("/");
+                clearError();
+                await router.push("/");
               }}
             >
               Back to Home
