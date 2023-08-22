@@ -1,6 +1,7 @@
 import NextAuth, { User, type NextAuthOptions } from "next-auth";
-//import DiscordProvider from "next-auth/providers/discord";
+
 import GoogleProvider from "next-auth/providers/google";
+import DiscordProvider from "next-auth/providers/discord";
 import Credentials from "next-auth/providers/credentials";
 import { verify } from "argon2";
 // Prisma adapter for NextAuth, optional and can be removed
@@ -42,13 +43,43 @@ export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
 
   providers: [
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID as string,
+      clientSecret: env.GOOGLE_CLIENT_SECRET as string,
+      async authorize(credentials) {
+        const user = await prisma.user.findUnique({
+          where: { googleId: credentials.id },
+        });
+
+        if (!user) {
+          const newUser = await prisma.user.create({
+            data: {
+              googleId: credentials.id,
+              email: credentials.email,
+              username: credentials.name,
+              // Any other data you want to save for Google users
+            },
+          });
+          return newUser;
+        }
+        return user;
+      },
+    }),
+
+    //! Add Discord Provider && find discord client id and secret
+    // DiscordProvider({
+    //   clientId: env.DISCORD_CLIENT_ID,
+    //   clientSecret: env.DISCORD_CLIENT_SECRET,
+    // }),
+
+    // ...add more providers here
     Credentials({
       name: "credentials",
       credentials: {
         email: {
           label: "Email",
           type: "email",
-          placeholder: "jsmith@gmail.com",
+          placeholder: "example@example.com",
         },
         password: { label: "Password", type: "password" },
       },
@@ -56,43 +87,37 @@ export const authOptions: NextAuthOptions = {
         try {
           // console.log("credentials: ", credentials)
 
+          if (!credentials || !credentials.email || !credentials.password)
+            return null;
+
           const { email, password } = await loginSchema.parseAsync(credentials);
 
-          const result = await prisma.user.findFirst({
+          const dbUser = await prisma.user.findFirst({
             where: { email },
           });
-          console.log("result in Authorize: ", result);
 
-          if (!result) return null;
+          console.log("result in Authorize: ", dbUser);
 
-          const isValidPassword = await verify(result.password, password);
+          if (!dbUser) return null;
+
+          const isValidPassword = await verify(dbUser.password, password);
 
           if (!isValidPassword) return null;
 
-          // console.log("result: ", result);
-          // console.log("id: ", result.id);
-          // console.log("email: ", result.email);
-          // console.log("username: ", result.username);
+          // console.log("dbUser: ", dbUser);
+          // console.log("id: ", dbUser.id);
+          // console.log("email: ", dbUser.email);
+          // console.log("username: ", dbUser.username);
           return {
-            id: result.id,
-            email: result.email,
-            username: result.username,
+            id: dbUser.id,
+            email: dbUser.email,
+            username: dbUser.username,
           };
         } catch {
           return null;
         }
       },
     }),
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET,
-    }),
-
-    // DiscordProvider({
-    //   clientId: env.DISCORD_CLIENT_ID,
-    //   clientSecret: env.DISCORD_CLIENT_SECRET,
-    // }),
-    // ...add more providers here
   ],
   session: {
     strategy: "jwt",
