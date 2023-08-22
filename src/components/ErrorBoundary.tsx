@@ -46,11 +46,12 @@ class ErrorBoundary extends React.Component<
               className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               type="button"
               onClick={() => {
-                this.setState({ hasError: false });
-                router.push("/"); // Navigate back to home
+                this.setState({ hasError: false }, () => {
+                  router.push("/"); // Navigate back to home
+                });
               }}
             >
-              Try again?
+              Back to Home
             </button>
           </div>
         </div>
