@@ -1,4 +1,5 @@
 import React, { ErrorInfo } from "react";
+import { useRouter } from "next/router";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -30,18 +31,27 @@ class ErrorBoundary extends React.Component<
   }
 
   render(): React.ReactNode {
+    const router = useRouter(); // Initialize useRouter
     // Check if the error is thrown
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
-        <div>
-          <h2>Oops, there is an error!</h2>
-          <button
-            type="button"
-            onClick={() => this.setState({ hasError: false })}
-          >
-            Try again?
-          </button>
+        <div className="flex min-h-screen items-center justify-center bg-blue-500">
+          <div className="rounded-lg bg-white p-4 shadow">
+            <h2 className="text-2xl font-bold text-blue-500">
+              Oops, there is an error!
+            </h2>
+            <button
+              className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+              type="button"
+              onClick={() => {
+                this.setState({ hasError: false });
+                router.push("/"); // Navigate back to home
+              }}
+            >
+              Try again?
+            </button>
+          </div>
         </div>
       );
     }
