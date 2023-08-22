@@ -1,5 +1,6 @@
 import React, { ErrorInfo } from "react";
 import { withRouter, NextRouter } from "next/router";
+import FooterNav from "./navigation/FooterNav";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -54,6 +55,7 @@ class ErrorBoundary extends React.Component<
               Back to Home
             </button>
           </div>
+          <FooterNav />
         </div>
       );
     }
