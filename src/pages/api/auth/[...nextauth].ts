@@ -46,24 +46,6 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID as string,
       clientSecret: env.GOOGLE_CLIENT_SECRET as string,
-      async authorize(credentials) {
-        const user = await prisma.user.findUnique({
-          where: { googleId: credentials.id },
-        });
-
-        if (!user) {
-          const newUser = await prisma.user.create({
-            data: {
-              googleId: credentials.id,
-              email: credentials.email,
-              username: credentials.name,
-              // Any other data you want to save for Google users
-            },
-          });
-          return newUser;
-        }
-        return user;
-      },
     }),
 
     //! Add Discord Provider && find discord client id and secret
