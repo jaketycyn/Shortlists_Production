@@ -1,12 +1,13 @@
 import React, { ErrorInfo } from "react";
-import { useRouter } from "next/router";
-const router = useRouter();
+import { withRouter, NextRouter } from "next/router";
+
 interface ErrorBoundaryState {
   hasError: boolean;
 }
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
+  router: NextRouter;
 }
 
 class ErrorBoundary extends React.Component<
@@ -31,7 +32,7 @@ class ErrorBoundary extends React.Component<
   }
 
   render(): React.ReactNode {
-    // Initialize useRouter
+    const { router } = this.props;
     // Check if the error is thrown
     if (this.state.hasError) {
       // You can render any custom fallback UI
@@ -61,4 +62,4 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-export default ErrorBoundary;
+export default withRouter(ErrorBoundary);
