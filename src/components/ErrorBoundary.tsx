@@ -34,6 +34,11 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
               type="button"
               onClick={async () => {
                 console.log("Clearing Error and navigating home");
+                // Clear focus before navigating
+                if (document.activeElement) {
+                  (document.activeElement as HTMLElement).blur();
+                }
+                // Clear global error state and navigate
                 clearError();
                 await router.push("/");
               }}
