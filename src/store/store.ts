@@ -4,16 +4,37 @@ import itemSlice from "../slices/itemSlice";
 import listSlice from "../slices/listSlice";
 import userSlice from "../slices/usersSlice";
 
-import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
 
-// Redux-Persist setup
-// https://blog.logrocket.com/persist-state-redux-persist-redux-toolkit-react/
+import createWebStorage from "redux-persist/lib/storage/createWebStorage";
+import { WebStorage } from "redux-persist/lib/types";
 
+export function createPersistStorage(): WebStorage {
+  const isServer = typeof window === "undefined";
+
+  // Returns noop (dummy) storage.
+  if (isServer) {
+    return {
+      getItem() {
+        return Promise.resolve(null);
+      },
+      setItem() {
+        return Promise.resolve();
+      },
+      removeItem() {
+        return Promise.resolve();
+      },
+    };
+  }
+
+  return createWebStorage("local");
+}
+
+// Redux-Persist setup
 const persistConfig = {
   key: "root",
-  storage,
+  storage: createPersistStorage(),
 };
 
 //place reducers here
