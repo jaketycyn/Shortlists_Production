@@ -13,7 +13,8 @@ interface ErrorBoundaryProps {
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    this.props.setError(); // Set global error state to true
+    console.log("Setting Error True");
+    this.props.setError();
     console.log({ error, errorInfo });
   }
 
@@ -32,6 +33,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
               className="mt-4 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
               type="button"
               onClick={() => {
+                console.log("Clearing Error and navigating home");
                 clearError(); // Clear global error state
                 router.push("/");
               }}

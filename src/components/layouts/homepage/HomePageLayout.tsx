@@ -31,15 +31,6 @@ const HomePageLayout: NextPage = () => {
   //get error state from Redux
   const hasGlobalError = useAppSelector((state) => state.error.hasError);
 
-  useEffect(() => {
-    if (hasGlobalError) {
-      // Navigate to the home page
-      router.push("/");
-      // Optionally, reset the global error state
-      dispatch(setError());
-    }
-  }, [hasGlobalError]);
-
   const {
     data: results,
     refetch,
@@ -58,7 +49,7 @@ const HomePageLayout: NextPage = () => {
 
   useEffect(() => {
     dispatch(setLists(fetchedLists));
-  }, [dispatch, fetchedLists]);
+  }, [dispatch, fetchedLists, hasGlobalError]);
 
   // Delete Item
   // const { mutateAsync } = trpc.userList.deleteList.useMutation();
