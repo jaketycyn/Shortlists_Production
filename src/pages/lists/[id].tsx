@@ -138,6 +138,8 @@ const ListPage: NextPage = () => {
   //console.log("fetchedItems: ", fetchedItems);
   useEffect(() => {
     if (fetchedItems) {
+      console.log("About to filter:", fetchedItems);
+
       const filteredFetchedItems = fetchedItems!.filter(
         (i) => i.archive === "undefined"
       );
@@ -223,7 +225,9 @@ const ListPage: NextPage = () => {
   const debouncedSearchTerm: string = useDebounce<string>(searchTerm, 500);
   //console.log("debouncedSearchTerm: ", debouncedSearchTerm);
 
+  console.log("About to filter:", currentUser);
   const currentUser = users?.filter((i) => i.id === session?.user?.id);
+  console.log("About to filter:", usersNotCurrent);
   const usersNotCurrent = users?.filter((i) => i.id !== session?.user?.id);
 
   //console.log("usersNotCurrent: ," + JSON.stringify(usersNotCurrent, 0, 2));
@@ -240,6 +244,7 @@ const ListPage: NextPage = () => {
       );
 
       //console.log("newFilteredUsers: ," + JSON.stringify(newFilteredUsers, 0, 2));
+      console.log("About to filter:", filteredResults);
       const filteredUsers = usersNotCurrentWOIdEmail?.filter((user) => {
         return Object.values(user)
           .join("")
@@ -251,6 +256,7 @@ const ListPage: NextPage = () => {
 
       //? https://stackoverflow.com/questions/31005396/filter-array-of-objects-with-another-array-of-objects
       //setResults from a filtering of usernames from usersNotCurrentWOIdEmail but including emails/ids
+      console.log("About to filter:", newFilteredResults);
       const newFilteredResults = usersNotCurrent?.filter((el) => {
         return filteredUsers?.some((u) => {
           return u.username === el.username;
