@@ -12,14 +12,9 @@ interface ErrorBoundaryProps {
 }
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
-  static getDerivedStateFromError(error: Error) {
-    this.props.setError(); //set global error state to true
-    return {};
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo): void {
-    // You can also log the error to an error reporting service
-    console.error(error, errorInfo);
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    this.props.setError(); // Set global error state to true
+    console.log({ error, errorInfo });
   }
 
   render() {
