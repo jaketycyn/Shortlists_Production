@@ -3,6 +3,7 @@ import counterReducer from "../slices/counterSlice";
 import itemSlice from "../slices/itemSlice";
 import listSlice from "../slices/listSlice";
 import userSlice from "../slices/usersSlice";
+import errorSlice from "../slices/errorSlice";
 
 import { persistReducer, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
@@ -43,6 +44,7 @@ const rootReducer = combineReducers({
   list: listSlice,
   user: userSlice,
   counter: counterReducer,
+  error: errorSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
