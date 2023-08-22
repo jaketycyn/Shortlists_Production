@@ -398,11 +398,6 @@ const HomePageLayout: NextPage = () => {
               isOpen ? "h-40" : "h-0"
             }   transition-height fixed bottom-0 w-full overflow-hidden bg-white shadow-lg duration-300 ease-in-out`}
           >
-            {/* <input
-              type="text"
-              placeholder="Type here..."
-              className="h-full w-full border-t-2 border-gray-300 p-4 focus:border-indigo-500 focus:outline-none"
-            /> */}
             <AddList />
           </div>
 
