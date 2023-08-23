@@ -25,6 +25,7 @@ import {
   incrementActivePage,
   setActivePage,
 } from "../../../slices/pageSlice";
+import MoviePageLayout from "../moviePage/MoviePageLayout";
 
 const HomePageLayout: NextPage = () => {
   const router = useRouter();
@@ -156,6 +157,12 @@ const HomePageLayout: NextPage = () => {
       // define threshold as per requirement
       const threshold = 30;
 
+      // limits
+      const lowerLimit = 0;
+      // upperLimit will eventually be dictated by users custom number of pages beyond our setup
+      // currentsetup is 3 pages (homePage, moviePage, tvPage)
+      const upperLimit = 2;
+
       // detecting swipe left
       if (startX - endX > threshold) {
         console.log("swiped left");
@@ -195,7 +202,11 @@ const HomePageLayout: NextPage = () => {
     >
       <div className="flex h-screen w-full flex-col justify-between">
         <div className="h-screen">
-          <header className="absolute top-0 z-10 mb-2 flex h-14 w-full  flex-col items-center pt-4 text-center">
+          <header
+            className={` page absolute top-0 z-10 mb-2 flex h-14  w-full flex-col items-center pt-4 text-center ${
+              activePage === 0 ? "active" : "hidden"
+            }`}
+          >
             <h1 className="font-semibold">Shortlists</h1>
           </header>
           {/* Current Homepage - Start */}
@@ -322,7 +333,7 @@ const HomePageLayout: NextPage = () => {
                                       <h5 className="ml-4">{list.title}</h5>
                                     </Link>
 
-                                    {/* DropDown: Begin */}
+                                    {/* DropDown: Start */}
                                     <div className="dropdown-left dropdown">
                                       <label tabIndex={0} className="btn m-1">
                                         ...
@@ -423,7 +434,7 @@ const HomePageLayout: NextPage = () => {
                                       {list.title}
                                     </Link>
 
-                                    {/* DropDown: Begin */}
+                                    {/* DropDown: Start */}
                                     <div className="dropdown-left dropdown">
                                       <label tabIndex={0} className="btn m-1">
                                         ...
@@ -484,7 +495,7 @@ const HomePageLayout: NextPage = () => {
           {/* Current Homepage - End */}
           {/* New Page 2 - Start */}
           <div className={`page ${activePage === 1 ? "active" : "hidden"}`}>
-            <h1>Page 2</h1>
+            <MoviePageLayout />
             {/* Another layout goes here */}
           </div>
           {/* New Page 2 - End */}
