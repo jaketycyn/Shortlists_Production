@@ -10,7 +10,7 @@ import {
 } from "../../../hooks/useTypedSelector";
 
 import { HiOutlineChevronRight } from "react-icons/hi";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { trpc } from "../../../utils/trpc";
 
@@ -23,7 +23,6 @@ import { setError } from "../../../slices/errorSlice";
 import {
   decrementActivePage,
   incrementActivePage,
-  setActivePage,
 } from "../../../slices/pageSlice";
 import MoviePageLayout from "../moviePage/MoviePageLayout";
 
@@ -37,7 +36,7 @@ const HomePageLayout: NextPage = () => {
   //get error state from Redux
   const hasGlobalError = useAppSelector((state) => state.error.hasError);
   const { lists } = useAppSelector((state) => state.list);
-  const { activePage } = useAppSelector((state) => state.page);
+  const { activePage, pageLimit } = useAppSelector((state) => state.page);
 
   const {
     data: results,
@@ -106,30 +105,6 @@ const HomePageLayout: NextPage = () => {
   };
 
   //carousel/swipe test
-
-  function handleSwipe(startX: any, endX: any) {
-    // Threshold (in pixels) for triggering a swipe
-    const threshold = 50;
-
-    // Calculate distance moved
-    const distanceMoved = endX - startX;
-
-    // Check if swipe/drag is beyond threshold
-    if (Math.abs(distanceMoved) > threshold) {
-      if (distanceMoved > 0) {
-        // Swipe/drag from left to right
-        if (activePage < 2) {
-          dispatch(setActivePage(activePage + 1));
-        }
-      } else {
-        // Swipe/drag from right to left
-        if (activePage > 0) {
-          dispatch(setActivePage(activePage - 1));
-        }
-      }
-    }
-  }
-
   useEffect(() => {
     // Initialize start and end positions
     let startX = 0;
@@ -152,26 +127,26 @@ const HomePageLayout: NextPage = () => {
 
       handleSwipe(startX, endX);
     }
-
-    function handleSwipe(startX: any, endX: any) {
+    function handleSwipe(startX: number, endX: number) {
       // define threshold as per requirement
+      console.log("activePage:", activePage, "pageLimit:", pageLimit);
       const threshold = 30;
 
-      // limits
-      const lowerLimit = 0;
-      // upperLimit will eventually be dictated by users custom number of pages beyond our setup
-      // currentsetup is 3 pages (homePage, moviePage, tvPage)
-      const upperLimit = 2;
-
-      // detecting swipe left
+      // detecting swipe left -> moving right
       if (startX - endX > threshold) {
-        console.log("swiped left");
-        dispatch(incrementActivePage());
+        if (activePage < pageLimit) {
+          // Check added here
+          // console.log("swiped left");
+          dispatch(incrementActivePage());
+        }
       }
-      // detecting swipe right
+      // detecting swipe right <- moving left
       if (endX - startX > threshold) {
-        console.log("swiped right");
-        dispatch(decrementActivePage());
+        if (activePage > 0) {
+          // Check added here
+          // console.log("swiped right");
+          dispatch(decrementActivePage());
+        }
       }
     }
     // For mobile touch
@@ -194,12 +169,7 @@ const HomePageLayout: NextPage = () => {
     return <div>Error fetching the lists. Please try again later.</div>;
 
   return (
-    <motion.div
-    // initial={{ x: "100vw" }}
-    // animate={{ x: 0 }}
-    // transition={{ duration: 0.3 }}
-    // exit={{ x: "-100vw" }}
-    >
+    <AnimatePresence>
       <div className="flex h-screen w-full flex-col justify-between">
         <div className="h-screen">
           <header
@@ -209,7 +179,7 @@ const HomePageLayout: NextPage = () => {
           >
             <h1 className="font-semibold">Shortlists</h1>
           </header>
-          {/* Current Homepage - Start */}
+          {/* Current Homepage - Page 1 - Start */}
           <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
             <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
               <ul
@@ -492,13 +462,17 @@ const HomePageLayout: NextPage = () => {
               </div>
             </div>
           </div>
-          {/* Current Homepage - End */}
-          {/* New Page 2 - Start */}
+          {/* Current Homepage - Page 1 - End */}
+          {/* Movie Page - Page 2 - Start */}
           <div className={`page ${activePage === 1 ? "active" : "hidden"}`}>
             <MoviePageLayout />
-            {/* Another layout goes here */}
           </div>
-          {/* New Page 2 - End */}
+          {/* Movie Page - Page 2 - End */}
+          {/* Movie Page - Page 2 - Start */}
+          <div className={`page ${activePage === 2 ? "active" : "hidden"}`}>
+            <div>Tv Show Page Placeholder</div>
+          </div>
+          {/* Movie Page - Page 2 - End */}
         </div>
         {/* //* Add List - Start */}
         <div className="">
@@ -551,7 +525,7 @@ const HomePageLayout: NextPage = () => {
 
         <FooterNav />
       </div>
-    </motion.div>
+    </AnimatePresence>
   );
 };
 

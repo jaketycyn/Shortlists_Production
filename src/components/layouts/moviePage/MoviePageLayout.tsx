@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import MovieList from "../../page/movies/Movielist";
+import { motion } from "framer-motion";
 
 const MoviePageLayout: NextPage = () => {
   // test movieDB
@@ -67,17 +68,19 @@ const MoviePageLayout: NextPage = () => {
     },
   ];
 
-  console.log("imdbTop10", imdbTop10);
+  //   console.log("imdbTop10", imdbTop10);
   return (
-    <div className="flex flex-col items-center justify-center">
-      {/* Header Section - Start */}
-      <h1>MoviePage info</h1>
-      {/* Header Section - End */}
-      {/* Featured MovieLists Section - Start */}
+    <div>
       <div className="flex flex-col items-center justify-center">
-        <h1>Top 10 Imdb Movies</h1>
-        <MovieList movies={imdbTop10} />
-        {/* Featured MovieLists Section - End */}
+        {/* Header Section - Start */}
+        <h1>MoviePage info</h1>
+        {/* Header Section - End */}
+        {/* Featured MovieLists Section - Start */}
+        <div className="flex flex-col items-center justify-center">
+          <h1>Top 10 Imdb Movies</h1>
+          <MovieList movies={imdbTop10} />
+          {/* Featured MovieLists Section - End */}
+        </div>
       </div>
     </div>
   );
