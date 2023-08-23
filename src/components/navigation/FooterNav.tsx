@@ -1,53 +1,31 @@
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-import { HiPlus } from "react-icons/hi";
 import type { NextPage } from "next";
-import { useAppSelector } from "../../hooks/useTypedSelector";
-
+import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
+import { setActivePage } from "../../slices/pageSlice";
 //import { useAppContext } from "../context/appContext";
 
 const FooterNav: NextPage = () => {
   const { lists } = useAppSelector((state) => state.list);
-  const [showAdd, setShowAdd] = React.useState<boolean>(false);
-  //console.log("showAdd", showAdd);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  const nonArchiveLists = lists?.filter(
-    (i) =>
-      i.archive !== "trash" &&
-      i.archive !== "archive" &&
-      i.parentListUserId === "undefined"
-  );
+  const handleClick = () => {
+    // set the active tab back to 0
+    dispatch(setActivePage(0));
+
+    // navigate to home page
+    router.push("/");
+  };
 
   return (
     <div className="">
-      {/* AddItemOrList Component: Start*/}
-      {/* <div className="mb-20 flex flex-col items-center justify-center text-center">
-        {showAdd ? (
-          <div className="" onBlur={() => setShowAdd(false)}>
-            <button className="btn m-2  sm:btn-sm md:btn-md lg:btn-lg">
-              <Link href="/addList" onClick={() => console.log("addList")}>
-                Add List
-              </Link>
-            </button>
-            {nonArchiveLists!.length >= 1 ? (
-              <button className=" btn m-2 sm:btn-sm md:btn-md lg:btn-lg ">
-                <Link href="/" onClick={() => console.log("addItem")}>
-                  Add Item
-                </Link>
-              </button>
-            ) : null}
-          </div>
-        ) : null}
-      </div> */}
-      {/* AddItemOrList Component: End*/}
-
-      {/* FooterBar Component: Start*/}
-      {/* This is below the AddItem/List and has its own separate forced bottom-0 position */}
-
       <div className="btm-nav bottom-0 grid h-12 w-full grid-cols-3 grid-rows-1 items-center justify-center bg-blue-500 text-center">
         <div className="col-start-1 row-start-1 flex flex-col items-center justify-center">
-          <Link href="/" className="absolute bottom-3 text-center">
+          {/* Home Button - Start */}
+          <div onClick={handleClick} className="absolute bottom-3 text-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -62,15 +40,8 @@ const FooterNav: NextPage = () => {
                 d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
               />
             </svg>
-          </Link>
-        </div>
-        <div className="col-start-2 row-start-1 flex flex-col items-center">
-          {/* <button
-            onClick={() => setShowAdd(!showAdd)}
-            className="btn btn-circle absolute bottom-8 flex h-12 w-12 bg-black/40 "
-          >
-            <HiPlus />
-          </button> */}
+          </div>
+          {/* Home Button - End */}
         </div>
         <div className="col-start-3 row-start-1">
           <Link href="/profile" className="z-80 absolute bottom-3 text-center">
