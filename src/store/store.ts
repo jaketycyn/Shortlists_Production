@@ -10,6 +10,7 @@ import thunk from "redux-thunk";
 
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
 import { WebStorage } from "redux-persist/lib/types";
+import tabSlice from "../slices/tabSlice";
 
 export function createPersistStorage(): WebStorage {
   const isServer = typeof window === "undefined";
@@ -40,11 +41,12 @@ const persistConfig = {
 
 //place reducers here
 const rootReducer = combineReducers({
-  item: itemSlice,
-  list: listSlice,
-  user: userSlice,
   counter: counterReducer,
   error: errorSlice,
+  item: itemSlice,
+  list: listSlice,
+  tab: tabSlice,
+  user: userSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
