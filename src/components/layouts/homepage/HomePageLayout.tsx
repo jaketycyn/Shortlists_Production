@@ -97,6 +97,8 @@ const HomePageLayout: NextPage = () => {
   if (isError)
     return <div>Error fetching the lists. Please try again later.</div>;
 
+  //carousel/swipe test
+
   return (
     <motion.div
     // initial={{ x: "100vw" }}
@@ -106,13 +108,9 @@ const HomePageLayout: NextPage = () => {
     >
       <div className="flex h-screen w-full flex-col justify-between">
         <div className="h-screen">
-          {/* userLists ({getLists.status}):{" "}
-        <pre>{JSON.stringify(usersLists, null, 2)}</pre> */}
           <header className="absolute top-0 z-10 mb-2 flex h-14 w-full  flex-col items-center pt-4 text-center">
             <h1 className="font-semibold">Shortlists</h1>
-            {/* Setup Grid - layout later for spacing of Back, list name, share icon & more options icon w/ redirect to options page like Notion*/}
           </header>
-
           <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
             <ul
               className="sticky mb-0 flex list-none flex-row  pb-4 "
