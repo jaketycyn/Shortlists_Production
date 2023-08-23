@@ -131,8 +131,8 @@ const HomePageLayout: NextPage = () => {
 
   useEffect(() => {
     // Initialize start and end positions
-    let startX: number = 0;
-    let endX: number = 0;
+    let startX = 0;
+    let endX = 0;
     setActiveList;
 
     function handleStart(e: any) {
