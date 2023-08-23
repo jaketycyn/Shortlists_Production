@@ -20,7 +20,11 @@ import { setActiveList, setLists, type List } from "../../../slices/listSlice";
 import FooterNav from "../../navigation/FooterNav";
 import AddList from "../../AddList";
 import { setError } from "../../../slices/errorSlice";
-import { setActiveTab } from "../../../slices/tabSlice";
+import {
+  decrementActivePage,
+  incrementActivePage,
+  setActivePage,
+} from "../../../slices/pageSlice";
 
 const HomePageLayout: NextPage = () => {
   const router = useRouter();
@@ -32,7 +36,7 @@ const HomePageLayout: NextPage = () => {
   //get error state from Redux
   const hasGlobalError = useAppSelector((state) => state.error.hasError);
   const { lists } = useAppSelector((state) => state.list);
-  const { activeTab } = useAppSelector((state) => state.tab);
+  const { activePage } = useAppSelector((state) => state.page);
 
   const {
     data: results,
@@ -113,13 +117,13 @@ const HomePageLayout: NextPage = () => {
     if (Math.abs(distanceMoved) > threshold) {
       if (distanceMoved > 0) {
         // Swipe/drag from left to right
-        if (activeTab < 2) {
-          dispatch(setActiveTab(activeTab + 1));
+        if (activePage < 2) {
+          dispatch(setActivePage(activePage + 1));
         }
       } else {
         // Swipe/drag from right to left
-        if (activeTab > 0) {
-          dispatch(setActiveTab(activeTab - 1));
+        if (activePage > 0) {
+          dispatch(setActivePage(activePage - 1));
         }
       }
     }
@@ -127,8 +131,10 @@ const HomePageLayout: NextPage = () => {
 
   useEffect(() => {
     // Initialize start and end positions
-    let startX = 0;
-    let endX = 0;
+    let startX: number = 0;
+    let endX: number = 0;
+    setActiveList;
+
     function handleStart(e: any) {
       if (e.type === "touchstart") {
         startX = e.touches[0].clientX;
@@ -142,7 +148,24 @@ const HomePageLayout: NextPage = () => {
       } else if (e.type === "mouseup") {
         endX = e.clientX;
       }
+
       handleSwipe(startX, endX);
+    }
+
+    function handleSwipe(startX: any, endX: any) {
+      // define threshold as per requirement
+      const threshold = 30;
+
+      // detecting swipe left
+      if (startX - endX > threshold) {
+        console.log("swiped left");
+        dispatch(incrementActivePage());
+      }
+      // detecting swipe right
+      if (endX - startX > threshold) {
+        console.log("swiped right");
+        dispatch(decrementActivePage());
+      }
     }
     // For mobile touch
     window.addEventListener("touchstart", handleStart);
@@ -176,7 +199,7 @@ const HomePageLayout: NextPage = () => {
             <h1 className="font-semibold">Shortlists</h1>
           </header>
           {/* Current Homepage - Start */}
-          <div className={`page ${activeTab === 0 ? "active" : "hidden"}`}>
+          <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
             <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
               <ul
                 className="sticky mb-0 flex list-none flex-row  pb-4 "
@@ -460,7 +483,7 @@ const HomePageLayout: NextPage = () => {
           </div>
           {/* Current Homepage - End */}
           {/* New Page 2 - Start */}
-          <div className={`page ${activeTab === 1 ? "active" : "hidden"}`}>
+          <div className={`page ${activePage === 1 ? "active" : "hidden"}`}>
             <h1>Page 2</h1>
             {/* Another layout goes here */}
           </div>

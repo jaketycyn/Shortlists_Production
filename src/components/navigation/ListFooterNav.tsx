@@ -63,7 +63,7 @@ const ListFooterNav: NextPage = () => {
         <div className="col-start-2 row-start-1 flex flex-col items-center">
           <button
             onClick={() => setShowAdd(!showAdd)}
-            className="btn-circle btn absolute bottom-8 flex h-12 w-12 bg-black/40 "
+            className="btn btn-circle absolute bottom-8 flex h-12 w-12 bg-black/40 "
           >
             <HiPlus />
           </button>
