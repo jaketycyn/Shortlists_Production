@@ -256,11 +256,13 @@ const MoviePageLayout: NextPage = () => {
       {/* Header Section - End */}
       {/* Featured MovieLists Section - Start */}
       <div className=" flex w-full items-center justify-center">
-        <SmallCarousel>
+        {/* SmallCarousel Test - Start */}
+        {/* <SmallCarousel>
           {lists.map((list) => (
             <MovieListCard key={list.id} title={list.title} />
           ))}
-        </SmallCarousel>
+        </SmallCarousel> */}
+        {/* SmallCarousel Test - End */}
       </div>
       {/* Featured MovieLists Section - End */}
     </div>
