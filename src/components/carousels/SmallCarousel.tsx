@@ -21,6 +21,87 @@ const SmallCarousel = ({ children }: CarouselProps) => {
     );
   };
 
+  //carousel/swipe test
+  // useEffect(() => {
+  //   // Initialize start and end positions
+  //   let startX = 0;
+  //   let endX = 0;
+
+  //   function handleStart(e: TouchEvent | MouseEvent) {
+  //     if (
+  //       e.target instanceof Element &&
+  //       e.target.closest('[data-type="carousel"]')
+  //     ) {
+  //       e.preventDefault();
+  //       return;
+  //     }
+  //     if (e instanceof TouchEvent) {
+  //       startX = e.touches[0]!.clientX;
+  //     } else if (e instanceof MouseEvent) {
+  //       startX = e.clientX;
+  //     }
+  //   }
+
+  //   function handleEnd(e: TouchEvent | MouseEvent) {
+  //     if (
+  //       e.target instanceof Element &&
+  //       e.target.closest('[data-type="carousel"]')
+  //     ) {
+  //       e.preventDefault();
+  //       return;
+  //     }
+  //     if (e instanceof TouchEvent) {
+  //       endX = e.changedTouches[0]!.clientX;
+  //     } else if (e instanceof MouseEvent) {
+  //       endX = e.clientX;
+  //     }
+
+  //     handleSwipe(startX, endX);
+  //   }
+  //   function handleSwipe(startX: number, endX: number) {
+  //     // define threshold as per requirement
+  //     const swipeThreshold = 30; // For detecting swipe direction
+  //     const tapThreshold = 5; // For distinguishing between tap and swipe
+
+  //     const distanceMoved = Math.abs(startX - endX);
+
+  //     if (distanceMoved <= tapThreshold) {
+  //       // It's a tap, not a swipe
+  //       return;
+  //     }
+  //     // detecting swipe left -> moving right
+  //     if (startX - endX > swipeThreshold) {
+  //       if (activePage < pageLimit) {
+  //         // Check added here
+  //         // console.log("swiped left");
+  //         dispatch(incrementActivePage());
+  //       }
+  //     }
+  //     // detecting swipe right <- moving left
+  //     if (endX - startX > swipeThreshold) {
+  //       if (activePage > 0) {
+  //         // Check added here
+  //         // console.log("swiped right");
+  //         dispatch(decrementActivePage());
+  //       }
+  //     }
+  //   }
+
+  //   // For mobile touch
+  //   window.addEventListener("touchstart", handleStart, { passive: false });
+  //   window.addEventListener("touchend", handleEnd, { passive: false });
+  //   // For desktop mouse drag
+  //   window.addEventListener("mousedown", handleStart);
+  //   window.addEventListener("mouseup", handleEnd);
+  //   return () => {
+  //     // Cleanup code
+  //     window.removeEventListener("touchstart", handleStart);
+  //     window.removeEventListener("touchend", handleEnd);
+  //     window.removeEventListener("mousedown", handleStart);
+  //     window.removeEventListener("mouseup", handleEnd);
+  //   };
+  // }, [dispatch]);
+
   return (
     <div className="relative flex w-full flex-row items-center justify-center overflow-hidden ">
       {/* Left Chevron - Start */}
