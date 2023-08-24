@@ -83,7 +83,7 @@ const HomePageLayout: NextPage = () => {
       ),
     [lists]
   );
-  console.log("createdFilteredArchivedLists: ", createdFilteredArchivedLists);
+  // console.log("createdFilteredArchivedLists: ", createdFilteredArchivedLists);
 
   const receivedFilteredArchivedLists = useMemo(
     () =>
@@ -96,7 +96,7 @@ const HomePageLayout: NextPage = () => {
     [lists]
   );
 
-  console.log("receivedFilteredArchivedLists: ", receivedFilteredArchivedLists);
+  // console.log("receivedFilteredArchivedLists: ", receivedFilteredArchivedLists);
 
   //set Active List in Redux
   const setActiveListFunction = async (activeList: List) => {
@@ -109,19 +109,33 @@ const HomePageLayout: NextPage = () => {
     // Initialize start and end positions
     let startX = 0;
     let endX = 0;
-    setActiveList;
 
-    function handleStart(e: any) {
-      if (e.type === "touchstart") {
-        startX = e.touches[0].clientX;
-      } else if (e.type === "mousedown") {
+    function handleStart(e: TouchEvent | MouseEvent) {
+      if (
+        e.target instanceof Element &&
+        e.target.closest('[data-type="carousel"]')
+      ) {
+        e.preventDefault();
+        return;
+      }
+      if (e instanceof TouchEvent) {
+        startX = e.touches[0]!.clientX;
+      } else if (e instanceof MouseEvent) {
         startX = e.clientX;
       }
     }
-    function handleEnd(e: any) {
-      if (e.type === "touchend") {
-        endX = e.changedTouches[0].clientX;
-      } else if (e.type === "mouseup") {
+
+    function handleEnd(e: TouchEvent | MouseEvent) {
+      if (
+        e.target instanceof Element &&
+        e.target.closest('[data-type="carousel"]')
+      ) {
+        e.preventDefault();
+        return;
+      }
+      if (e instanceof TouchEvent) {
+        endX = e.changedTouches[0]!.clientX;
+      } else if (e instanceof MouseEvent) {
         endX = e.clientX;
       }
 
@@ -129,11 +143,17 @@ const HomePageLayout: NextPage = () => {
     }
     function handleSwipe(startX: number, endX: number) {
       // define threshold as per requirement
-      console.log("activePage:", activePage, "pageLimit:", pageLimit);
-      const threshold = 30;
+      const swipeThreshold = 30; // For detecting swipe direction
+      const tapThreshold = 5; // For distinguishing between tap and swipe
 
+      const distanceMoved = Math.abs(startX - endX);
+
+      if (distanceMoved <= tapThreshold) {
+        // It's a tap, not a swipe
+        return;
+      }
       // detecting swipe left -> moving right
-      if (startX - endX > threshold) {
+      if (startX - endX > swipeThreshold) {
         if (activePage < pageLimit) {
           // Check added here
           // console.log("swiped left");
@@ -141,7 +161,7 @@ const HomePageLayout: NextPage = () => {
         }
       }
       // detecting swipe right <- moving left
-      if (endX - startX > threshold) {
+      if (endX - startX > swipeThreshold) {
         if (activePage > 0) {
           // Check added here
           // console.log("swiped right");
@@ -149,9 +169,10 @@ const HomePageLayout: NextPage = () => {
         }
       }
     }
+
     // For mobile touch
-    window.addEventListener("touchstart", handleStart);
-    window.addEventListener("touchend", handleEnd);
+    window.addEventListener("touchstart", handleStart, { passive: false });
+    window.addEventListener("touchend", handleEnd, { passive: false });
     // For desktop mouse drag
     window.addEventListener("mousedown", handleStart);
     window.addEventListener("mouseup", handleEnd);
@@ -164,6 +185,14 @@ const HomePageLayout: NextPage = () => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    console.log("activePage:", activePage, "pageLimit:", pageLimit);
+  }, [activePage, pageLimit]);
+
+  document.addEventListener("focusin", () => {
+    console.log(document.activeElement);
+  });
+
   if (isLoading) return <div>Loading ...</div>;
   if (isError)
     return <div>Error fetching the lists. Please try again later.</div>;
@@ -171,7 +200,7 @@ const HomePageLayout: NextPage = () => {
   return (
     <AnimatePresence>
       <div className="flex h-screen w-full flex-col justify-between">
-        <div className="h-screen">
+        <div className="">
           <header
             className={` page absolute top-0 z-10 mb-2 flex h-14  w-full flex-col items-center pt-4 text-center ${
               activePage === 0 ? "active" : "hidden"

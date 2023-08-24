@@ -13,7 +13,7 @@ interface MovieListProps {
 
 const MovieList: React.FC<MovieListProps> = ({ movies }) => {
   return (
-    <ul>
+    <ul className="min-w-[300px]">
       {movies.map((movie) => (
         <li key={movie.id}>
           {movie.title} ({movie.year})

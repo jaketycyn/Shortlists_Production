@@ -24,7 +24,7 @@ const Home: NextPage = () => {
   // console.log("status: ", status);
   //const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
 
-  console.log("INDEX>TSX FIRING");
+  // console.log("INDEX>TSX FIRING");
 
   // reset of ActiveList on returning to homepage/checking session. Might need to move this up one level in the future!
   const dispatch = useAppDispatch();
