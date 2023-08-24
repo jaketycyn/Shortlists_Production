@@ -23,13 +23,16 @@ import { setError } from "../../../slices/errorSlice";
 import {
   decrementActivePage,
   incrementActivePage,
+  setActivePage,
 } from "../../../slices/pageSlice";
 import MoviePageLayout from "../moviePage/MoviePageLayout";
+import FeaturedItemCard from "../../cards/FeaturedItemCard";
 
 const HomePageLayout: NextPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [openTab, setOpenTab] = React.useState(1);
+  const [openListTab, setOpenListTab] = React.useState(1);
+  const [openPageTab, setPageOpenTab] = React.useState(1);
   const [userListsOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -215,7 +218,126 @@ const HomePageLayout: NextPage = () => {
             >
               <h1 className="font-semibold">Shortlists</h1>
             </header>
-            {/* Current Homepage - Page 1 - Start */}
+
+            {/* Page Header - Start */}
+            <div className="mt-12">
+              {/* Page Tab - Start */}
+              <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
+                <ul
+                  className="sticky mb-0 flex list-none flex-row  pb-4 "
+                  role="tablist"
+                >
+                  <li className="-mb-px mr-2  text-center last:mr-0">
+                    <a
+                      className={
+                        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                        (openPageTab === 0
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-blue-600")
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPageOpenTab(0);
+                        dispatch(setActivePage(0));
+                      }}
+                      data-toggle="tab"
+                      href="#link1"
+                      role="tablist"
+                    >
+                      Home
+                    </a>
+                  </li>
+                  <li className="-mb-px mr-2  text-center last:mr-0">
+                    <a
+                      className={
+                        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                        (openPageTab === 1
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-blue-600")
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPageOpenTab(1);
+                        dispatch(setActivePage(1));
+                      }}
+                      data-toggle="tab"
+                      href="#link2"
+                      role="tablist"
+                    >
+                      Movies
+                    </a>
+                  </li>
+                  <li className="-mb-px mr-2  text-center last:mr-0">
+                    <a
+                      className={
+                        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                        (openPageTab === 2
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-blue-600")
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPageOpenTab(2);
+                        dispatch(setActivePage(2));
+                      }}
+                      data-toggle="tab"
+                      href="#link3"
+                      role="tablist"
+                    >
+                      Television
+                    </a>
+                  </li>
+                  <li className="-mb-px mr-2  text-center last:mr-0">
+                    <a
+                      className={
+                        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                        (openPageTab === 3
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-blue-600")
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPageOpenTab(3);
+                        dispatch(setActivePage(3));
+                      }}
+                      data-toggle="tab"
+                      href="#link4"
+                      role="tablist"
+                    >
+                      Music
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              {/* Page Tab - End */}
+              {/* Page Header - End */}
+              {/* Featured Lists - Start */}
+              <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
+                <div className="mx-auto  pt-4">
+                  <p className="items-center pb-4 text-center">
+                    Featured Lists
+                  </p>
+                  <ul className="grid grid-cols-2 items-center justify-center">
+                    {[
+                      "Top 10 Marvel Movies",
+                      "Best Shows like Game of Thrones",
+                      "Favorite breakup songs",
+                      "NBA best players",
+                    ].map((title, index) => (
+                      <li
+                        className="col-span-1 items-center justify-center"
+                        key={title}
+                      >
+                        <FeaturedItemCard title={title} index={index} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              {/* Featured Lists - End */}
+            </div>
+
+            {/* Current Homepage - Page 0 - Start */}
             <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
               <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
                 <ul
@@ -226,13 +348,13 @@ const HomePageLayout: NextPage = () => {
                     <a
                       className={
                         "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                        (openTab === 1
+                        (openListTab === 1
                           ? "bg-blue-600 text-white"
                           : "bg-white text-blue-600")
                       }
                       onClick={(e) => {
                         e.preventDefault();
-                        setOpenTab(1);
+                        setOpenListTab(1);
                       }}
                       data-toggle="tab"
                       href="#link1"
@@ -245,13 +367,13 @@ const HomePageLayout: NextPage = () => {
                     <a
                       className={
                         "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                        (openTab === 2
+                        (openListTab === 2
                           ? "bg-blue-600 text-white"
                           : "bg-white text-blue-600")
                       }
                       onClick={(e) => {
                         e.preventDefault();
-                        setOpenTab(2);
+                        setOpenListTab(2);
                       }}
                       data-toggle="tab"
                       href="#link2"
@@ -264,13 +386,13 @@ const HomePageLayout: NextPage = () => {
                     <a
                       className={
                         "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                        (openTab === 3
+                        (openListTab === 3
                           ? "bg-blue-600 text-white"
                           : "bg-white text-blue-600")
                       }
                       onClick={(e) => {
                         e.preventDefault();
-                        setOpenTab(3);
+                        setOpenListTab(3);
                       }}
                       data-toggle="tab"
                       href="#link3"
@@ -289,7 +411,7 @@ const HomePageLayout: NextPage = () => {
                     <div className="tab-content tab-space">
                       {/*Tab 1 Selected*/}
                       <div
-                        className={openTab === 1 ? "block" : "hidden"}
+                        className={openListTab === 1 ? "block" : "hidden"}
                         id="link1"
                       >
                         {createdFilteredArchivedLists === undefined ||
@@ -385,7 +507,7 @@ const HomePageLayout: NextPage = () => {
                       {/* Display UserClassicLists Module: Ends*/}
                       {/*Tab 2 Selected*/}
                       <div
-                        className={openTab === 2 ? "block" : "hidden"}
+                        className={openListTab === 2 ? "block" : "hidden"}
                         id="link2"
                       >
                         {receivedFilteredArchivedLists === undefined ||
@@ -487,7 +609,7 @@ const HomePageLayout: NextPage = () => {
                       </div>
                       {/*Tab 3 Selected*/}
                       <div
-                        className={openTab === 3 ? "block" : "hidden"}
+                        className={openListTab === 3 ? "block" : "hidden"}
                         id="link3"
                       >
                         <div>
@@ -501,6 +623,7 @@ const HomePageLayout: NextPage = () => {
               </div>
             </div>
             {/* Current Homepage - Page 1 - End */}
+
             {/* Movie Page - Page 2 - Start */}
             <div className={`page ${activePage === 1 ? "active" : "hidden"}`}>
               <MoviePageLayout />
