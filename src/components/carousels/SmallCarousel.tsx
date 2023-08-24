@@ -7,12 +7,15 @@ interface CarouselProps {
 
 const SmallCarousel = ({ children }: CarouselProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [motionDirection, setMotionDirection] = useState(0);
 
   const handleNext = () => {
+    setMotionDirection(1);
     setActiveIndex((prevIndex) => (prevIndex + 1) % children.length);
   };
 
   const handlePrev = () => {
+    setMotionDirection(-1);
     setActiveIndex((prevIndex) =>
       prevIndex === 0 ? children.length - 1 : prevIndex - 1
     );
@@ -42,9 +45,9 @@ const SmallCarousel = ({ children }: CarouselProps) => {
       <AnimatePresence mode="wait">
         <motion.div
           key={activeIndex}
-          initial={{ opacity: 0, x: 50 }}
+          initial={{ opacity: 0, x: motionDirection === 1 ? 100 : -100 }}
           animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -50 }}
+          exit={{ opacity: 0, x: motionDirection === 1 ? -100 : 100 }}
           transition={{ duration: 0.3 }}
         >
           {children[activeIndex]}
