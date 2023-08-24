@@ -64,34 +64,13 @@ const AddList: NextPage = () => {
   };
 
   return (
-    <div className="h-full">
+    <div className="mb-20 flex h-full flex-grow-0 items-center justify-center border-t-2 border-blue-400 bg-slate-200 shadow-xl ">
       <form
         className="items-center justify-center"
         onSubmit={handleSubmit(onSubmit)}
       >
-        {/* Setup Grid - layout later for spacing of Back, list name, share icon & more options icon w/ redirect to options page like Notion*/}
-        {/* <header className="border-grey sticky top-0 grid w-full grid-rows-1 border-b p-4 text-center"> */}
-        {/* This should redirect to previous page (historical page) not "/"  */}
-        {/* <Link href="/" className="row-start-1">
-            <HiX className="ml-2 mt-1 h-4 w-4" />
-          </Link>
-          <div className="row-start-1">Create New List</div>
-          <div className="row-start-1">
-            <button type="submit" disabled={isSubmitting}> */}
-        {/* 
-            1. Fire Submission of List
-            2. Pop Up Toast saying incomplete items if rquired fields in form not fired
-            3?. Possible change link from homepage ('/') to the list itself but thats a finer tuning point
-            */}
-        {/* <HiOutlineCheck className="mr-2 mt-1 h-4 w-4" />
-            </button>
-          </div>
-        </header> */}
         {/* Form Component: Start*/}
-        <div
-          className="relative mt-2 h-full"
-          //onClick={() => setAddItemOrList(false)}
-        >
+        <div className="relative mt-2 h-full">
           <div className="flex flex-col items-center">
             {/* Toast: Start*/}
             {showToast ? (
@@ -117,7 +96,6 @@ const AddList: NextPage = () => {
               className="container relative mx-auto flex h-full flex-row  p-6 px-4 pb-8 "
             >
               <input
-                autoFocus
                 autoComplete="off"
                 className="flex h-20 w-full border-2 border-black text-center text-black"
                 placeholder="Enter List Name"
