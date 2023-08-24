@@ -4,8 +4,18 @@ interface CarouselProps {
   children: React.ReactNode;
 }
 
-const SmallCarousel = ({ children }: CarouselProps) => {
-  return <div className="flex h-1/3 w-full overflow-x-scroll">{children}</div>;
-};
+const SmallCarousel = React.forwardRef(
+  ({ children }: CarouselProps, ref: React.Ref<HTMLDivElement>) => {
+    return (
+      <div
+        ref={ref}
+        className="scrollbar-hide flex overflow-x-auto bg-green-400"
+        data-type="carousel"
+      >
+        {children}
+      </div>
+    );
+  }
+);
 
 export default SmallCarousel;
