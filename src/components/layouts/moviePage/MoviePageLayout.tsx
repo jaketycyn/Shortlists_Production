@@ -250,19 +250,19 @@ const MoviePageLayout: NextPage = () => {
 
   //   console.log("imdbTop10", imdbTop10);
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center">
+    <div className="flex h-screen w-full flex-col bg-slate-400">
       {/* Header Section - Start */}
       <h1>MoviePage info</h1>
       {/* Header Section - End */}
       {/* Featured MovieLists Section - Start */}
-      <div className="">
+      <div className=" flex w-full items-center justify-center bg-pink-400">
         <SmallCarousel>
           {lists.map((list) => (
             <MovieListCard key={list.id} title={list.title} />
           ))}
         </SmallCarousel>
-        {/* Featured MovieLists Section - End */}
       </div>
+      {/* Featured MovieLists Section - End */}
     </div>
   );
 };
