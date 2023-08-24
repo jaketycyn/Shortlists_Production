@@ -19,10 +19,26 @@ const SmallCarousel = ({ children }: CarouselProps) => {
   };
 
   return (
-    <div className="relative flex w-full flex-row items-center justify-center overflow-hidden bg-green-400">
+    <div className="relative flex w-full flex-row items-center justify-center overflow-hidden ">
+      {/* Left Chevron - Start */}
+
       <button onClick={handlePrev} className="pr-4">
-        Prev
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          className="h-6 w-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15.75 19.5L8.25 12l7.5-7.5"
+          />
+        </svg>
       </button>
+      {/* Left Chevron - End */}
       <AnimatePresence mode="wait">
         <motion.div
           key={activeIndex}
@@ -34,9 +50,25 @@ const SmallCarousel = ({ children }: CarouselProps) => {
           {children[activeIndex]}
         </motion.div>
       </AnimatePresence>
+      {/* Right Chevron - Start */}
+
       <button onClick={handleNext} className="pl-4">
-        Next
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth="1.5"
+          stroke="currentColor"
+          className="h-6 w-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M8.25 4.5l7.5 7.5-7.5 7.5"
+          />
+        </svg>
       </button>
+      {/* Right Chevron - End */}
     </div>
   );
 };
