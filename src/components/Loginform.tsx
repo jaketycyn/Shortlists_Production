@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginSchema } from "../server/schema/userSchema";
 import { motion } from "framer-motion";
+
 const LoginForm: NextPage = () => {
   const { handleSubmit, register, reset } = useForm<LoginSchema>({
     defaultValues: {
@@ -15,6 +16,10 @@ const LoginForm: NextPage = () => {
     },
     resolver: zodResolver(loginSchema),
   });
+
+  const handleGoogleSignin = () => {
+    signIn("google"); // This should match the name of the provider as specified in [...nextauth].js
+  };
 
   const onSubmit = useCallback(
     async (data: LoginSchema) => {
@@ -34,12 +39,32 @@ const LoginForm: NextPage = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 2, ease: "easeOut" }}
     >
-      <div className="mt-20 flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8 ">
+      <div className="mt-20 flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8 ">
         <div className="w-full max-w-md space-y-8 rounded-lg border-2 bg-white">
           <div>
             <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
               Sign in to your account
             </h2>
+
+            {/* Add this section for Google Sign-In */}
+            <div className="flex flex-col py-6 text-center">
+              <button
+                className="group relative mx-auto flex w-3/5 justify-center rounded-md border-2 border-black px-4 py-2.5  text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 "
+                onClick={handleGoogleSignin}
+              >
+                Sign In with Google
+                <div className="flex px-2">
+                  <img
+                    src={"/assets/icons/google-48.png"}
+                    width="20"
+                    height={20}
+                    className=""
+                    alt="google icon"
+                  />
+                </div>
+              </button>
+            </div>
+            {/* End Google Sign-In section */}
             <p className="mt-2 text-center text-sm text-gray-600">
               Or{" "}
               <Link
@@ -113,7 +138,7 @@ const LoginForm: NextPage = () => {
               </div>
               <div>
                 <button
-                  className="group relative mt-4 flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2.5 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  className="group relative mt-4 flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   type="submit"
                 >
                   Login
