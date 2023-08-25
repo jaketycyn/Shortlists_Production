@@ -31,8 +31,8 @@ import FeaturedItemCard from "../../cards/FeaturedItemCard";
 const HomePageLayout: NextPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [openListTab, setOpenListTab] = React.useState(1);
-  const [openPageTab, setPageOpenTab] = React.useState(1);
+  const [openListTab, setOpenListTab] = React.useState(0);
+  const [openPageTab, setPageOpenTab] = React.useState(0);
   const [userListsOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -107,86 +107,106 @@ const HomePageLayout: NextPage = () => {
     await dispatch(setActiveList(activeList));
   };
 
-  //carousel/swipe test
-  // useEffect(() => {
-  //   // Initialize start and end positions
-  //   let startX = 0;
-  //   let endX = 0;
+  // Featured List Test Data
 
-  //   function handleStart(e: TouchEvent | MouseEvent) {
-  //     if (
-  //       e.target instanceof Element &&
-  //       e.target.closest('[data-type="carousel"]')
-  //     ) {
-  //       e.preventDefault();
-  //       return;
-  //     }
-  //     if (e instanceof TouchEvent) {
-  //       startX = e.touches[0]!.clientX;
-  //     } else if (e instanceof MouseEvent) {
-  //       startX = e.clientX;
-  //     }
-  //   }
+  // query for featuredLists && featuredListitems from DB:
 
-  //   function handleEnd(e: TouchEvent | MouseEvent) {
-  //     if (
-  //       e.target instanceof Element &&
-  //       e.target.closest('[data-type="carousel"]')
-  //     ) {
-  //       e.preventDefault();
-  //       return;
-  //     }
-  //     if (e instanceof TouchEvent) {
-  //       endX = e.changedTouches[0]!.clientX;
-  //     } else if (e instanceof MouseEvent) {
-  //       endX = e.clientX;
-  //     }
+  type ListType = {
+    id: string;
+    title: string;
+    category: string;
+    userId: string;
+    img: string;
+  };
 
-  //     handleSwipe(startX, endX);
-  //   }
-  //   function handleSwipe(startX: number, endX: number) {
-  //     // define threshold as per requirement
-  //     const swipeThreshold = 30; // For detecting swipe direction
-  //     const tapThreshold = 5; // For distinguishing between tap and swipe
+  type ItemType = {
+    title: string;
+    id: string;
+    userId: string;
+    listId: string;
+  };
 
-  //     const distanceMoved = Math.abs(startX - endX);
+  const featuredLists: ListType[] = [
+    {
+      id: "list1",
+      title: "Top 10 Marvel Movies",
+      category: "Movies",
+      userId: "userIdAdmin1",
+      img: "https://parade.com/.image/c_limit%2Ccs_srgb%2Cq_auto:good%2Cw_620/MTk3MzM3ODU4NTU2NTY4Nzc1/marveldisney.webp",
+    },
+    {
+      id: "list2",
+      title: "Best Shows like Game of Thrones",
+      category: "TV Shows",
+      userId: "userIdAdmin1",
+      img: "https://media.newyorker.com/photos/5cae6ad5671c64058676f05c/master/w_2560%2Cc_limit/Larson-GameofThronesPreview.jpg",
+    },
+    {
+      id: "list3",
+      title: "Favorite breakup songs",
+      category: "Music",
+      userId: "userIdAdmin1",
+      img: "https://assets.teenvogue.com/photos/637e51fbebf13d8100c6e3a0/4:3/w_2608,h_1956,c_limit/163644955",
+    },
+    {
+      id: "list4",
+      title: "NBA best players",
+      category: "Sports",
+      userId: "userIdAdmin1",
+      img: "https://img.buzzfeed.com/buzzfeed-static/complex/images/fcy36om1zuyfqaq3wbu0/best-nba-players-ever.jpg",
+    },
+  ];
 
-  //     if (distanceMoved <= tapThreshold) {
-  //       // It's a tap, not a swipe
-  //       return;
-  //     }
-  //     // detecting swipe left -> moving right
-  //     if (startX - endX > swipeThreshold) {
-  //       if (activePage < pageLimit) {
-  //         // Check added here
-  //         // console.log("swiped left");
-  //         dispatch(incrementActivePage());
-  //       }
-  //     }
-  //     // detecting swipe right <- moving left
-  //     if (endX - startX > swipeThreshold) {
-  //       if (activePage > 0) {
-  //         // Check added here
-  //         // console.log("swiped right");
-  //         dispatch(decrementActivePage());
-  //       }
-  //     }
-  //   }
-
-  //   // For mobile touch
-  //   window.addEventListener("touchstart", handleStart, { passive: false });
-  //   window.addEventListener("touchend", handleEnd, { passive: false });
-  //   // For desktop mouse drag
-  //   window.addEventListener("mousedown", handleStart);
-  //   window.addEventListener("mouseup", handleEnd);
-  //   return () => {
-  //     // Cleanup code
-  //     window.removeEventListener("touchstart", handleStart);
-  //     window.removeEventListener("touchend", handleEnd);
-  //     window.removeEventListener("mousedown", handleStart);
-  //     window.removeEventListener("mouseup", handleEnd);
-  //   };
-  // }, [dispatch]);
+  const featuredItems: ItemType[] = [
+    {
+      title: "Avengers: Endgame",
+      id: "item1",
+      userId: "userIdAdmin1",
+      listId: "list1",
+    },
+    {
+      title: "Black Panther",
+      id: "item2",
+      userId: "userIdAdmin1",
+      listId: "list1",
+    },
+    {
+      title: "Breaking Bad",
+      id: "item3",
+      userId: "userIdAdmin1",
+      listId: "list2",
+    },
+    {
+      title: "Vikings",
+      id: "item4",
+      userId: "userIdAdmin1",
+      listId: "list2",
+    },
+    {
+      title: "Someone Like You - Adele",
+      id: "item5",
+      userId: "userIdAdmin1",
+      listId: "list3",
+    },
+    {
+      title: "I Will Survive - Gloria Gaynor",
+      id: "item6",
+      userId: "userIdAdmin1",
+      listId: "list3",
+    },
+    {
+      title: "LeBron James",
+      id: "item7",
+      userId: "userIdAdmin1",
+      listId: "list4",
+    },
+    {
+      title: "Kevin Durant",
+      id: "item8",
+      userId: "userIdAdmin1",
+      listId: "list4",
+    },
+  ];
 
   useEffect(() => {
     console.log("activePage:", activePage, "pageLimit:", pageLimit);
@@ -196,33 +216,26 @@ const HomePageLayout: NextPage = () => {
   if (isError)
     return <div>Error fetching the lists. Please try again later.</div>;
 
-  // focus test
-
-  // document.addEventListener("focusin", () => {
-  //   console.log(document.activeElement);
-  // });
-
   return (
     <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={activePage}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <div className="flex h-screen w-full flex-col justify-between">
-          <div className="">
-            <header
-              className={` page absolute top-0 z-10 mb-2 flex h-14  w-full flex-col items-center pt-4 text-center ${
-                activePage === 0 ? "active" : "hidden"
-              }`}
-            >
-              <h1 className="font-semibold">Shortlists</h1>
-            </header>
+      <div className="flex h-screen w-full flex-col justify-between">
+        <div className="">
+          {/* Old Header - Start */}
 
-            {/* Page Header - Start */}
-            <div className="mt-12">
-              {/* Page Tab - Start */}
-              <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
+          {/* <header
+            className={` page absolute top-0 z-10 mb-2 flex h-14  w-full flex-col items-center pt-4 text-center ${
+              activePage === 0 ? "active" : "hidden"
+            }`}
+          >
+            <h1 className="font-semibold">Shortlists</h1>
+          </header> */}
+          {/* Old Header - End */}
+
+          {/* Page Header - Start */}
+          <div className="">
+            {/* Page Tab - Start */}
+            <div className="z-0 flex flex-col items-center justify-center rounded-md  text-black">
+              <div className="scrollable-tab-container">
                 <ul
                   className="sticky mb-0 flex list-none flex-row  pb-4 "
                   role="tablist"
@@ -231,8 +244,8 @@ const HomePageLayout: NextPage = () => {
                     <a
                       className={
                         "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                        (openPageTab === 0
-                          ? "bg-blue-600 text-white"
+                        (activePage === 0
+                          ? " text-black underline"
                           : "bg-white text-blue-600")
                       }
                       onClick={(e) => {
@@ -244,14 +257,14 @@ const HomePageLayout: NextPage = () => {
                       href="#link1"
                       role="tablist"
                     >
-                      Home
+                      ShortLists
                     </a>
                   </li>
                   <li className="-mb-px mr-2  text-center last:mr-0">
                     <a
                       className={
                         "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                        (openPageTab === 1
+                        (activePage === 1
                           ? "bg-blue-600 text-white"
                           : "bg-white text-blue-600")
                       }
@@ -271,7 +284,7 @@ const HomePageLayout: NextPage = () => {
                     <a
                       className={
                         "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                        (openPageTab === 2
+                        (activePage === 2
                           ? "bg-blue-600 text-white"
                           : "bg-white text-blue-600")
                       }
@@ -291,7 +304,7 @@ const HomePageLayout: NextPage = () => {
                     <a
                       className={
                         "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                        (openPageTab === 3
+                        (activePage === 3
                           ? "bg-blue-600 text-white"
                           : "bg-white text-blue-600")
                       }
@@ -309,383 +322,386 @@ const HomePageLayout: NextPage = () => {
                   </li>
                 </ul>
               </div>
-              {/* Page Tab - End */}
-              {/* Page Header - End */}
-              {/* Featured Lists - Start */}
-              <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
-                <div className="mx-auto  pt-4">
-                  <p className="items-center pb-4 text-center">
-                    Featured Lists
-                  </p>
-                  <ul className="grid grid-cols-2 items-center justify-center">
-                    {[
-                      "Top 10 Marvel Movies",
-                      "Best Shows like Game of Thrones",
-                      "Favorite breakup songs",
-                      "NBA best players",
-                    ].map((title, index) => (
-                      <li
-                        className="col-span-1 items-center justify-center"
-                        key={title}
-                      >
-                        <FeaturedItemCard title={title} index={index} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              {/* Featured Lists - End */}
             </div>
-
-            {/* Current Homepage - Page 0 - Start */}
+            {/* Page Tab - End */}
+            {/* Page Header - End */}
+            {/* Featured Lists - Start */}
             <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
-              <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
-                <ul
-                  className="sticky mb-0 flex list-none flex-row  pb-4 "
-                  role="tablist"
-                >
-                  <li className="-mb-px mr-2  text-center last:mr-0">
-                    <a
-                      className={
-                        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                        (openListTab === 1
-                          ? "bg-blue-600 text-white"
-                          : "bg-white text-blue-600")
-                      }
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setOpenListTab(1);
-                      }}
-                      data-toggle="tab"
-                      href="#link1"
-                      role="tablist"
+              <div className="pt-4">
+                <p className="font-semiBold items-center pb-4 text-center text-xl">
+                  Featured Lists
+                </p>
+                <ul className="grid grid-cols-2 items-center justify-center gap-0 md:grid-cols-3 lg:grid-cols-4">
+                  {featuredLists.map((list, index) => (
+                    <li
+                      className="col-span-1 items-center justify-center p-0.5"
+                      key={list.title}
                     >
-                      My Lists
-                    </a>
-                  </li>
-                  <li className="-mb-px mr-2  text-center last:mr-0">
-                    <a
-                      className={
-                        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                        (openListTab === 2
-                          ? "bg-blue-600 text-white"
-                          : "bg-white text-blue-600")
-                      }
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setOpenListTab(2);
-                      }}
-                      data-toggle="tab"
-                      href="#link2"
-                      role="tablist"
-                    >
-                      Received Lists
-                    </a>
-                  </li>
-                  <li className="-mb-px mr-2  text-center last:mr-0">
-                    <a
-                      className={
-                        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                        (openListTab === 3
-                          ? "bg-blue-600 text-white"
-                          : "bg-white text-blue-600")
-                      }
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setOpenListTab(3);
-                      }}
-                      data-toggle="tab"
-                      href="#link3"
-                      role="tablist"
-                    >
-                      Sent Lists
-                    </a>
-                  </li>
+                      <FeaturedItemCard
+                        title={list.title}
+                        index={index}
+                        featuredItems={featuredItems}
+                        featuredLists={featuredLists}
+                      />
+                    </li>
+                  ))}
                 </ul>
-                <div
-                  className={`${
-                    isOpen ? "w-full  opacity-50" : "opacity-100"
-                  } mb-6 flex w-full min-w-0 flex-col break-words rounded bg-white text-center shadow-lg lg:w-3/5`}
-                >
-                  <div className=" px-4 py-5">
-                    <div className="tab-content tab-space">
-                      {/*Tab 1 Selected*/}
-                      <div
-                        className={openListTab === 1 ? "block" : "hidden"}
-                        id="link1"
-                      >
-                        {createdFilteredArchivedLists === undefined ||
-                        createdFilteredArchivedLists?.length === 0 ? (
-                          <div className="flex h-3/5 w-full flex-col">
-                            <h1>You have no Lists created</h1>
-                            <p className="mt-8">
-                              To create your first lists and any future lists
-                              click the {"+"} in the bottom right hand corner
-                            </p>
-                            <p className="mt-8">
-                              Then select the option {"Add List"}
-                            </p>
-                          </div>
-                        ) : (
-                          <div className="container z-0 h-full items-center">
-                            {/* Display UserClassicLists Module: Starts*/}
-                            {createdFilteredArchivedLists && userListsOpen ? (
-                              <div>
-                                {createdFilteredArchivedLists.map(
-                                  (list, index) => (
-                                    <div
-                                      className="mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
-                                      key={index}
-                                    >
-                                      <Link
-                                        href={`/lists/${encodeURIComponent(
-                                          list.id
-                                        )}`}
-                                        key={index}
-                                        onClick={() =>
-                                          setActiveListFunction(
-                                            createdFilteredArchivedLists[index]!
-                                          )
-                                        }
-                                        className="flex h-full w-full flex-row items-center text-center"
-                                      >
-                                        <button className=" flex h-10 w-10 items-center  p-2">
-                                          <HiOutlineChevronRight
-                                            //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
-                                            className="h-4 w-4"
-                                            // onClick={() => {
-                                            //   toggleSubMenu(index, subMenuIndexes);
-                                            // }
-                                          />
-                                        </button>
-                                        <h5 className="ml-4">{list.title}</h5>
-                                      </Link>
+              </div>
+            </div>
+            {/* Featured Lists - End */}
+          </div>
 
-                                      {/* DropDown: Start */}
-                                      <div className="dropdown-left dropdown">
-                                        <label tabIndex={0} className="btn m-1">
-                                          ...
-                                        </label>
-                                        <ul
-                                          tabIndex={0}
-                                          className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
-                                        >
-                                          <li
-                                            className="p-1 "
-                                            onClick={() => console.log("Share")}
-                                          >
-                                            Share
-                                          </li>
-                                          <li
-                                            className="p-1"
-                                            // onClick={() => console.log("Trash: ", list.id, list.userId)}
-                                            onClick={
-                                              async () =>
-                                                ArchiveList({
-                                                  listId: list.id,
-                                                  userId: list.userId,
-                                                  archive: "trash",
-                                                })
-                                              // set reQuery to ture
-                                            }
-                                          >
-                                            Trash
-                                          </li>
-                                        </ul>
-                                      </div>
-                                      {/* DropDown: End */}
-                                    </div>
-                                  )
-                                )}
-                              </div>
-                            ) : (
-                              <div></div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      {/* Display UserClassicLists Module: Ends*/}
-                      {/*Tab 2 Selected*/}
-                      <div
-                        className={openListTab === 2 ? "block" : "hidden"}
-                        id="link2"
-                      >
-                        {receivedFilteredArchivedLists === undefined ||
-                        receivedFilteredArchivedLists?.length === 0 ? (
-                          <div className="flex h-3/5 w-full flex-col">
-                            <div className="z-0 flex flex-col items-center rounded-md text-center">
-                              <h1>You have received no lists :sad:</h1>
-                              <p className="mt-8">
-                                Make some friends and have them send you a list
-                              </p>
-                              <p className="mt-8">
-                                Or send them a list and maybe they will send you
-                                one back
-                              </p>
-                              <p className="mt-8">
-                                Use the profile section in the bottom right to
-                                find and add friends
-                              </p>
-                              <p className="mt-8">
-                                If you are looking for a friend send a list to
-                                Bob@gmail.com. He loves being sent new lists and
-                                may send you one back.
-                              </p>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="container  z-0 h-full items-center">
-                            {/* Display UserClassicLists Module: Starts*/}
-                            {receivedFilteredArchivedLists && userListsOpen ? (
-                              <div>
-                                {receivedFilteredArchivedLists.map(
-                                  (list, index) => (
-                                    <div
-                                      className=" mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
+          {/* Current Homepage - Page 0 - Start */}
+          <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
+            <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
+              <ul
+                className="sticky mb-0 flex list-none flex-row  pb-4 "
+                role="tablist"
+              >
+                <li className="-mb-px mr-2  text-center last:mr-0">
+                  <a
+                    className={
+                      "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                      (openListTab === 0
+                        ? "bg-blue-600 text-white"
+                        : "bg-white text-blue-600")
+                    }
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenListTab(0);
+                    }}
+                    data-toggle="tab"
+                    href="#link1"
+                    role="tablist"
+                  >
+                    My Lists
+                  </a>
+                </li>
+                <li className="-mb-px mr-2  text-center last:mr-0">
+                  <a
+                    className={
+                      "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                      (openListTab === 1
+                        ? "bg-blue-600 text-white"
+                        : "bg-white text-blue-600")
+                    }
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenListTab(1);
+                    }}
+                    data-toggle="tab"
+                    href="#link2"
+                    role="tablist"
+                  >
+                    Received Lists
+                  </a>
+                </li>
+                <li className="-mb-px mr-2  text-center last:mr-0">
+                  <a
+                    className={
+                      "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                      (openListTab === 2
+                        ? "bg-blue-600 text-white"
+                        : "bg-white text-blue-600")
+                    }
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setOpenListTab(2);
+                    }}
+                    data-toggle="tab"
+                    href="#link3"
+                    role="tablist"
+                  >
+                    Sent Lists
+                  </a>
+                </li>
+              </ul>
+              <div
+                className={`${
+                  isOpen ? "w-full  opacity-50" : "opacity-100"
+                } mb-6 flex w-full min-w-0 flex-col break-words rounded bg-white text-center shadow-lg lg:w-3/5`}
+              >
+                <div className=" px-4 py-5">
+                  <div className="tab-content tab-space">
+                    {/*Tab 1 Selected*/}
+                    <div
+                      className={openListTab === 0 ? "block" : "hidden"}
+                      id="link1"
+                    >
+                      {createdFilteredArchivedLists === undefined ||
+                      createdFilteredArchivedLists?.length === 0 ? (
+                        <div className="flex h-3/5 w-full flex-col">
+                          <h1>You have no Lists created</h1>
+                          <p className="mt-8">
+                            To create your first lists and any future lists
+                            click the {"+"} in the bottom right hand corner
+                          </p>
+                          <p className="mt-8">
+                            Then select the option {"Add List"}
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="container z-0 h-full items-center">
+                          {/* Display UserClassicLists Module: Starts*/}
+                          {createdFilteredArchivedLists && userListsOpen ? (
+                            <div>
+                              {createdFilteredArchivedLists.map(
+                                (list, index) => (
+                                  <div
+                                    className="mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
+                                    key={index}
+                                  >
+                                    <Link
+                                      href={`/lists/${encodeURIComponent(
+                                        list.id
+                                      )}`}
                                       key={index}
+                                      onClick={() =>
+                                        setActiveListFunction(
+                                          createdFilteredArchivedLists[index]!
+                                        )
+                                      }
+                                      className="flex h-full w-full flex-row items-center text-center"
                                     >
                                       <button className=" flex h-10 w-10 items-center  p-2">
-                                        <HiOutlineChevronRight className="h-4 w-4" />
+                                        <HiOutlineChevronRight
+                                          //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
+                                          className="h-4 w-4"
+                                          // onClick={() => {
+                                          //   toggleSubMenu(index, subMenuIndexes);
+                                          // }
+                                        />
                                       </button>
-                                      <Link
-                                        href={`/lists/${encodeURIComponent(
-                                          list.id
-                                        )}`}
-                                        key={index}
-                                        onClick={() =>
-                                          setActiveListFunction(
-                                            receivedFilteredArchivedLists[
-                                              index
-                                            ]!
-                                          )
-                                        }
-                                        className="h-full w-full "
-                                      >
-                                        {list.title}
-                                      </Link>
+                                      <h5 className="ml-4">{list.title}</h5>
+                                    </Link>
 
-                                      {/* DropDown: Start */}
-                                      <div className="dropdown-left dropdown">
-                                        <label tabIndex={0} className="btn m-1">
-                                          ...
-                                        </label>
-                                        <ul
-                                          tabIndex={0}
-                                          className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
+                                    {/* DropDown: Start */}
+                                    <div className="dropdown-left dropdown">
+                                      <label tabIndex={0} className="btn m-1">
+                                        ...
+                                      </label>
+                                      <ul
+                                        tabIndex={0}
+                                        className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
+                                      >
+                                        <li
+                                          className="p-1 "
+                                          onClick={() => console.log("Share")}
                                         >
-                                          <li
-                                            className="p-1 "
-                                            onClick={() => console.log("Share")}
-                                          >
-                                            Share
-                                          </li>
-                                          <li
-                                            className="p-1"
-                                            // onClick={() => console.log("Trash: ", list.id, list.userId)}
-                                            onClick={
-                                              async () =>
-                                                ArchiveList({
-                                                  listId: list.id,
-                                                  userId: list.userId,
-                                                  archive: "trash",
-                                                })
-                                              // set reQuery to ture
-                                            }
-                                          >
-                                            Trash
-                                          </li>
-                                        </ul>
-                                      </div>
-                                      {/* DropDown: End */}
+                                          Share
+                                        </li>
+                                        <li
+                                          className="p-1"
+                                          // onClick={() => console.log("Trash: ", list.id, list.userId)}
+                                          onClick={
+                                            async () =>
+                                              ArchiveList({
+                                                listId: list.id,
+                                                userId: list.userId,
+                                                archive: "trash",
+                                              })
+                                            // set reQuery to ture
+                                          }
+                                        >
+                                          Trash
+                                        </li>
+                                      </ul>
                                     </div>
-                                  )
-                                )}
-                              </div>
-                            ) : (
-                              <div></div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      {/*Tab 3 Selected*/}
-                      <div
-                        className={openListTab === 3 ? "block" : "hidden"}
-                        id="link3"
-                      >
-                        <div>
-                          <p>You have not sent any lists to anybody</p>
-                          <p>Send a list to a friend to see it here</p>
+                                    {/* DropDown: End */}
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
                         </div>
+                      )}
+                    </div>
+                    {/* Display UserClassicLists Module: Ends*/}
+                    {/*Tab 2 Selected*/}
+                    <div
+                      className={openListTab === 1 ? "block" : "hidden"}
+                      id="link2"
+                    >
+                      {receivedFilteredArchivedLists === undefined ||
+                      receivedFilteredArchivedLists?.length === 0 ? (
+                        <div className="flex h-3/5 w-full flex-col">
+                          <div className="z-0 flex flex-col items-center rounded-md text-center">
+                            <h1>You have received no lists :sad:</h1>
+                            <p className="mt-8">
+                              Make some friends and have them send you a list
+                            </p>
+                            <p className="mt-8">
+                              Or send them a list and maybe they will send you
+                              one back
+                            </p>
+                            <p className="mt-8">
+                              Use the profile section in the bottom right to
+                              find and add friends
+                            </p>
+                            <p className="mt-8">
+                              If you are looking for a friend send a list to
+                              Bob@gmail.com. He loves being sent new lists and
+                              may send you one back.
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="container  z-0 h-full items-center">
+                          {/* Display UserClassicLists Module: Starts*/}
+                          {receivedFilteredArchivedLists && userListsOpen ? (
+                            <div>
+                              {receivedFilteredArchivedLists.map(
+                                (list, index) => (
+                                  <div
+                                    className=" mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
+                                    key={index}
+                                  >
+                                    <button className=" flex h-10 w-10 items-center  p-2">
+                                      <HiOutlineChevronRight className="h-4 w-4" />
+                                    </button>
+                                    <Link
+                                      href={`/lists/${encodeURIComponent(
+                                        list.id
+                                      )}`}
+                                      key={index}
+                                      onClick={() =>
+                                        setActiveListFunction(
+                                          receivedFilteredArchivedLists[index]!
+                                        )
+                                      }
+                                      className="h-full w-full "
+                                    >
+                                      {list.title}
+                                    </Link>
+
+                                    {/* DropDown: Start */}
+                                    <div className="dropdown-left dropdown">
+                                      <label tabIndex={0} className="btn m-1">
+                                        ...
+                                      </label>
+                                      <ul
+                                        tabIndex={0}
+                                        className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
+                                      >
+                                        <li
+                                          className="p-1 "
+                                          onClick={() => console.log("Share")}
+                                        >
+                                          Share
+                                        </li>
+                                        <li
+                                          className="p-1"
+                                          // onClick={() => console.log("Trash: ", list.id, list.userId)}
+                                          onClick={
+                                            async () =>
+                                              ArchiveList({
+                                                listId: list.id,
+                                                userId: list.userId,
+                                                archive: "trash",
+                                              })
+                                            // set reQuery to ture
+                                          }
+                                        >
+                                          Trash
+                                        </li>
+                                      </ul>
+                                    </div>
+                                    {/* DropDown: End */}
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {/*Tab 3 Selected*/}
+                    <div
+                      className={openListTab === 2 ? "block" : "hidden"}
+                      id="link3"
+                    >
+                      <div>
+                        <p>You have not sent any lists to anybody</p>
+                        <p>Send a list to a friend to see it here</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            {/* Current Homepage - Page 1 - End */}
-
-            {/* Movie Page - Page 2 - Start */}
-            <div className={`page ${activePage === 1 ? "active" : "hidden"}`}>
-              <MoviePageLayout />
-            </div>
-            {/* Movie Page - Page 2 - End */}
-            {/* Movie Page - Page 2 - Start */}
-            <div className={`page ${activePage === 2 ? "active" : "hidden"}`}>
-              <div>Tv Show Page Placeholder</div>
-            </div>
-            {/* Movie Page - Page 2 - End */}
           </div>
-          {/* //* Add List - Start */}
-          <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
-            {/* Drawer */}
-            <div
-              className={`${
-                isOpen ? "h-40" : "h-0"
-              }   transition-height fixed bottom-0 w-full overflow-hidden bg-white pb-10 shadow-lg duration-300 ease-in-out`}
-            >
-              <AddList />
-            </div>
+          {/* Current Homepage - Page 1 - End */}
 
-            {/* Circular Button - Bot Right Corner*/}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className={` ${
-                isOpen ? "bg-red-400" : "bg-blue-700"
-              } fixed bottom-[76px] right-4 flex h-12 w-12 items-center justify-center rounded-full  text-3xl text-white shadow-lg`}
-            >
-              {isOpen ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="h-6 w-6"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="h-6 w-6"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              )}
-            </button>
+          {/* Movie Page - Page 2 - Start */}
+          <div className={`page ${activePage === 1 ? "active" : "hidden"}`}>
+            <MoviePageLayout />
           </div>
-          {/* Add List - End*/}
-          <FooterNav />
+          {/* Movie Page - Page 2 - End */}
+          {/* Television Page - Page 2 - Start */}
+          <div className={`page ${activePage === 2 ? "active" : "hidden"}`}>
+            <div>Tv Show Page Placeholder</div>
+          </div>
+          {/* Television Page - Page 2 - End */}
+          {/* Music Page - Page 2 - Start */}
+          <div className={`page ${activePage === 3 ? "active" : "hidden"}`}>
+            <div>Music Page Placeholder</div>
+          </div>
+          {/* Music Page - Page 2 - End */}
         </div>
-      </motion.div>
+        {/* //* Add List - Start */}
+        <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
+          {/* Drawer */}
+          <div
+            className={`${
+              isOpen ? "h-40" : "h-0"
+            }   transition-height fixed bottom-0 w-full overflow-hidden bg-white pb-10 shadow-lg duration-300 ease-in-out`}
+          >
+            <AddList />
+          </div>
+
+          {/* Circular Button - Bot Right Corner*/}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className={` ${
+              isOpen ? "bg-red-400" : "bg-blue-700"
+            } fixed bottom-[76px] right-4 flex h-12 w-12 items-center justify-center rounded-full  text-3xl text-white shadow-lg`}
+          >
+            {isOpen ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-6 w-6"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
+        {/* Add List - End*/}
+        <FooterNav />
+      </div>
     </AnimatePresence>
   );
 };
