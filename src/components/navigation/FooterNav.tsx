@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React, { ReactElement, memo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 import type { NextPage } from "next";
-import { useAppDispatch, useAppSelector } from "../../hooks/useTypedSelector";
+import { useAppDispatch } from "../../hooks/useTypedSelector";
 import { setActivePage } from "../../slices/pageSlice";
 //import { useAppContext } from "../context/appContext";
 
-const FooterNav: NextPage = () => {
-  const { lists } = useAppSelector((state) => state.list);
+const FooterNav: NextPage = (): ReactElement => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
   const handleClick = () => {
     // set the active tab back to 0
+
     dispatch(setActivePage(0));
 
     // navigate to home page
@@ -68,4 +68,4 @@ const FooterNav: NextPage = () => {
   );
 };
 
-export default FooterNav;
+export default memo(FooterNav);

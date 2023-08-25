@@ -10,7 +10,7 @@ import {
 } from "../../../hooks/useTypedSelector";
 
 import { HiOutlineChevronRight } from "react-icons/hi";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { trpc } from "../../../utils/trpc";
 
@@ -25,18 +25,21 @@ import {
   incrementActivePage,
   setActivePage,
 } from "../../../slices/pageSlice";
+import MoviePageLayout from "../moviePage/MoviePageLayout";
+import FeaturedItemCard from "../../cards/FeaturedItemCard";
 
 const HomePageLayout: NextPage = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [openTab, setOpenTab] = React.useState(1);
+  const [openListTab, setOpenListTab] = React.useState(0);
+  const [openPageTab, setPageOpenTab] = React.useState(0);
   const [userListsOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
 
   //get error state from Redux
   const hasGlobalError = useAppSelector((state) => state.error.hasError);
   const { lists } = useAppSelector((state) => state.list);
-  const { activePage } = useAppSelector((state) => state.page);
+  const { activePage, pageLimit } = useAppSelector((state) => state.page);
 
   const {
     data: results,
@@ -83,7 +86,7 @@ const HomePageLayout: NextPage = () => {
       ),
     [lists]
   );
-  console.log("createdFilteredArchivedLists: ", createdFilteredArchivedLists);
+  // console.log("createdFilteredArchivedLists: ", createdFilteredArchivedLists);
 
   const receivedFilteredArchivedLists = useMemo(
     () =>
@@ -96,7 +99,7 @@ const HomePageLayout: NextPage = () => {
     [lists]
   );
 
-  console.log("receivedFilteredArchivedLists: ", receivedFilteredArchivedLists);
+  // console.log("receivedFilteredArchivedLists: ", receivedFilteredArchivedLists);
 
   //set Active List in Redux
   const setActiveListFunction = async (activeList: List) => {
@@ -104,101 +107,251 @@ const HomePageLayout: NextPage = () => {
     await dispatch(setActiveList(activeList));
   };
 
-  //carousel/swipe test
+  // Featured List Test Data
 
-  function handleSwipe(startX: any, endX: any) {
-    // Threshold (in pixels) for triggering a swipe
-    const threshold = 50;
+  // query for featuredLists && featuredListitems from DB:
 
-    // Calculate distance moved
-    const distanceMoved = endX - startX;
+  type ListType = {
+    id: string;
+    title: string;
+    category: string;
+    userId: string;
+    img: string;
+  };
 
-    // Check if swipe/drag is beyond threshold
-    if (Math.abs(distanceMoved) > threshold) {
-      if (distanceMoved > 0) {
-        // Swipe/drag from left to right
-        if (activePage < 2) {
-          dispatch(setActivePage(activePage + 1));
-        }
-      } else {
-        // Swipe/drag from right to left
-        if (activePage > 0) {
-          dispatch(setActivePage(activePage - 1));
-        }
-      }
-    }
-  }
+  type ItemType = {
+    title: string;
+    id: string;
+    userId: string;
+    listId: string;
+  };
+
+  const featuredLists: ListType[] = [
+    {
+      id: "list1",
+      title: "Top 10 Marvel Movies",
+      category: "Movies",
+      userId: "userIdAdmin1",
+      img: "https://parade.com/.image/c_limit%2Ccs_srgb%2Cq_auto:good%2Cw_620/MTk3MzM3ODU4NTU2NTY4Nzc1/marveldisney.webp",
+    },
+    {
+      id: "list2",
+      title: "Best Shows like Game of Thrones",
+      category: "TV Shows",
+      userId: "userIdAdmin1",
+      img: "https://media.newyorker.com/photos/5cae6ad5671c64058676f05c/master/w_2560%2Cc_limit/Larson-GameofThronesPreview.jpg",
+    },
+    {
+      id: "list3",
+      title: "Favorite breakup songs",
+      category: "Music",
+      userId: "userIdAdmin1",
+      img: "https://assets.teenvogue.com/photos/637e51fbebf13d8100c6e3a0/4:3/w_2608,h_1956,c_limit/163644955",
+    },
+    {
+      id: "list4",
+      title: "NBA best players",
+      category: "Sports",
+      userId: "userIdAdmin1",
+      img: "https://img.buzzfeed.com/buzzfeed-static/complex/images/fcy36om1zuyfqaq3wbu0/best-nba-players-ever.jpg",
+    },
+  ];
+
+  const featuredItems: ItemType[] = [
+    {
+      title: "Avengers: Endgame",
+      id: "item1",
+      userId: "userIdAdmin1",
+      listId: "list1",
+    },
+    {
+      title: "Black Panther",
+      id: "item2",
+      userId: "userIdAdmin1",
+      listId: "list1",
+    },
+    {
+      title: "Breaking Bad",
+      id: "item3",
+      userId: "userIdAdmin1",
+      listId: "list2",
+    },
+    {
+      title: "Vikings",
+      id: "item4",
+      userId: "userIdAdmin1",
+      listId: "list2",
+    },
+    {
+      title: "Someone Like You - Adele",
+      id: "item5",
+      userId: "userIdAdmin1",
+      listId: "list3",
+    },
+    {
+      title: "I Will Survive - Gloria Gaynor",
+      id: "item6",
+      userId: "userIdAdmin1",
+      listId: "list3",
+    },
+    {
+      title: "LeBron James",
+      id: "item7",
+      userId: "userIdAdmin1",
+      listId: "list4",
+    },
+    {
+      title: "Kevin Durant",
+      id: "item8",
+      userId: "userIdAdmin1",
+      listId: "list4",
+    },
+  ];
 
   useEffect(() => {
-    // Initialize start and end positions
-    let startX = 0;
-    let endX = 0;
-    setActiveList;
-
-    function handleStart(e: any) {
-      if (e.type === "touchstart") {
-        startX = e.touches[0].clientX;
-      } else if (e.type === "mousedown") {
-        startX = e.clientX;
-      }
-    }
-    function handleEnd(e: any) {
-      if (e.type === "touchend") {
-        endX = e.changedTouches[0].clientX;
-      } else if (e.type === "mouseup") {
-        endX = e.clientX;
-      }
-
-      handleSwipe(startX, endX);
-    }
-
-    function handleSwipe(startX: any, endX: any) {
-      // define threshold as per requirement
-      const threshold = 30;
-
-      // detecting swipe left
-      if (startX - endX > threshold) {
-        console.log("swiped left");
-        dispatch(incrementActivePage());
-      }
-      // detecting swipe right
-      if (endX - startX > threshold) {
-        console.log("swiped right");
-        dispatch(decrementActivePage());
-      }
-    }
-    // For mobile touch
-    window.addEventListener("touchstart", handleStart);
-    window.addEventListener("touchend", handleEnd);
-    // For desktop mouse drag
-    window.addEventListener("mousedown", handleStart);
-    window.addEventListener("mouseup", handleEnd);
-    return () => {
-      // Cleanup code
-      window.removeEventListener("touchstart", handleStart);
-      window.removeEventListener("touchend", handleEnd);
-      window.removeEventListener("mousedown", handleStart);
-      window.removeEventListener("mouseup", handleEnd);
-    };
-  }, [dispatch]);
+    console.log("activePage:", activePage, "pageLimit:", pageLimit);
+  }, [activePage, pageLimit]);
 
   if (isLoading) return <div>Loading ...</div>;
   if (isError)
     return <div>Error fetching the lists. Please try again later.</div>;
 
   return (
-    <motion.div
-    // initial={{ x: "100vw" }}
-    // animate={{ x: 0 }}
-    // transition={{ duration: 0.3 }}
-    // exit={{ x: "-100vw" }}
-    >
+    <AnimatePresence mode="wait" initial={false}>
       <div className="flex h-screen w-full flex-col justify-between">
-        <div className="h-screen">
-          <header className="absolute top-0 z-10 mb-2 flex h-14 w-full  flex-col items-center pt-4 text-center">
+        <div className="">
+          {/* Old Header - Start */}
+
+          {/* <header
+            className={` page absolute top-0 z-10 mb-2 flex h-14  w-full flex-col items-center pt-4 text-center ${
+              activePage === 0 ? "active" : "hidden"
+            }`}
+          >
             <h1 className="font-semibold">Shortlists</h1>
-          </header>
-          {/* Current Homepage - Start */}
+          </header> */}
+          {/* Old Header - End */}
+
+          {/* Page Header - Start */}
+          <div className="">
+            {/* Page Tab - Start */}
+            <div className="z-0 flex flex-col items-center justify-center rounded-md  text-black">
+              <div className="scrollable-tab-container">
+                <ul
+                  className="sticky mb-0 flex list-none flex-row  pb-4 "
+                  role="tablist"
+                >
+                  <li className="-mb-px mr-2  text-center last:mr-0">
+                    <a
+                      className={
+                        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                        (activePage === 0
+                          ? " text-black underline"
+                          : "bg-white text-blue-600")
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPageOpenTab(0);
+                        dispatch(setActivePage(0));
+                      }}
+                      data-toggle="tab"
+                      href="#link1"
+                      role="tablist"
+                    >
+                      ShortLists
+                    </a>
+                  </li>
+                  <li className="-mb-px mr-2  text-center last:mr-0">
+                    <a
+                      className={
+                        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                        (activePage === 1
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-blue-600")
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPageOpenTab(1);
+                        dispatch(setActivePage(1));
+                      }}
+                      data-toggle="tab"
+                      href="#link2"
+                      role="tablist"
+                    >
+                      Movies
+                    </a>
+                  </li>
+                  <li className="-mb-px mr-2  text-center last:mr-0">
+                    <a
+                      className={
+                        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                        (activePage === 2
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-blue-600")
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPageOpenTab(2);
+                        dispatch(setActivePage(2));
+                      }}
+                      data-toggle="tab"
+                      href="#link3"
+                      role="tablist"
+                    >
+                      Television
+                    </a>
+                  </li>
+                  <li className="-mb-px mr-2  text-center last:mr-0">
+                    <a
+                      className={
+                        "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
+                        (activePage === 3
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-blue-600")
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPageOpenTab(3);
+                        dispatch(setActivePage(3));
+                      }}
+                      data-toggle="tab"
+                      href="#link4"
+                      role="tablist"
+                    >
+                      Music
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            {/* Page Tab - End */}
+            {/* Page Header - End */}
+            {/* Featured Lists - Start */}
+            <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
+              <div className="pt-4">
+                <p className="font-semiBold items-center pb-4 text-center text-xl">
+                  Featured Lists
+                </p>
+                <ul className="grid grid-cols-2 items-center justify-center gap-0 md:grid-cols-3 lg:grid-cols-4">
+                  {featuredLists.map((list, index) => (
+                    <li
+                      className="col-span-1 items-center justify-center p-0.5"
+                      key={list.title}
+                    >
+                      <FeaturedItemCard
+                        title={list.title}
+                        index={index}
+                        featuredItems={featuredItems}
+                        featuredLists={featuredLists}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            {/* Featured Lists - End */}
+          </div>
+
+          {/* Current Homepage - Page 0 - Start */}
           <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
             <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
               <ul
@@ -209,13 +362,13 @@ const HomePageLayout: NextPage = () => {
                   <a
                     className={
                       "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                      (openTab === 1
+                      (openListTab === 0
                         ? "bg-blue-600 text-white"
                         : "bg-white text-blue-600")
                     }
                     onClick={(e) => {
                       e.preventDefault();
-                      setOpenTab(1);
+                      setOpenListTab(0);
                     }}
                     data-toggle="tab"
                     href="#link1"
@@ -228,13 +381,13 @@ const HomePageLayout: NextPage = () => {
                   <a
                     className={
                       "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                      (openTab === 2
+                      (openListTab === 1
                         ? "bg-blue-600 text-white"
                         : "bg-white text-blue-600")
                     }
                     onClick={(e) => {
                       e.preventDefault();
-                      setOpenTab(2);
+                      setOpenListTab(1);
                     }}
                     data-toggle="tab"
                     href="#link2"
@@ -247,13 +400,13 @@ const HomePageLayout: NextPage = () => {
                   <a
                     className={
                       "block rounded px-5 py-3 text-xs font-bold uppercase leading-normal shadow-lg " +
-                      (openTab === 3
+                      (openListTab === 2
                         ? "bg-blue-600 text-white"
                         : "bg-white text-blue-600")
                     }
                     onClick={(e) => {
                       e.preventDefault();
-                      setOpenTab(3);
+                      setOpenListTab(2);
                     }}
                     data-toggle="tab"
                     href="#link3"
@@ -272,7 +425,7 @@ const HomePageLayout: NextPage = () => {
                   <div className="tab-content tab-space">
                     {/*Tab 1 Selected*/}
                     <div
-                      className={openTab === 1 ? "block" : "hidden"}
+                      className={openListTab === 0 ? "block" : "hidden"}
                       id="link1"
                     >
                       {createdFilteredArchivedLists === undefined ||
@@ -322,7 +475,7 @@ const HomePageLayout: NextPage = () => {
                                       <h5 className="ml-4">{list.title}</h5>
                                     </Link>
 
-                                    {/* DropDown: Begin */}
+                                    {/* DropDown: Start */}
                                     <div className="dropdown-left dropdown">
                                       <label tabIndex={0} className="btn m-1">
                                         ...
@@ -368,7 +521,7 @@ const HomePageLayout: NextPage = () => {
                     {/* Display UserClassicLists Module: Ends*/}
                     {/*Tab 2 Selected*/}
                     <div
-                      className={openTab === 2 ? "block" : "hidden"}
+                      className={openListTab === 1 ? "block" : "hidden"}
                       id="link2"
                     >
                       {receivedFilteredArchivedLists === undefined ||
@@ -423,7 +576,7 @@ const HomePageLayout: NextPage = () => {
                                       {list.title}
                                     </Link>
 
-                                    {/* DropDown: Begin */}
+                                    {/* DropDown: Start */}
                                     <div className="dropdown-left dropdown">
                                       <label tabIndex={0} className="btn m-1">
                                         ...
@@ -468,7 +621,7 @@ const HomePageLayout: NextPage = () => {
                     </div>
                     {/*Tab 3 Selected*/}
                     <div
-                      className={openTab === 3 ? "block" : "hidden"}
+                      className={openListTab === 2 ? "block" : "hidden"}
                       id="link3"
                     >
                       <div>
@@ -481,21 +634,31 @@ const HomePageLayout: NextPage = () => {
               </div>
             </div>
           </div>
-          {/* Current Homepage - End */}
-          {/* New Page 2 - Start */}
+          {/* Current Homepage - Page 1 - End */}
+
+          {/* Movie Page - Page 2 - Start */}
           <div className={`page ${activePage === 1 ? "active" : "hidden"}`}>
-            <h1>Page 2</h1>
-            {/* Another layout goes here */}
+            <MoviePageLayout />
           </div>
-          {/* New Page 2 - End */}
+          {/* Movie Page - Page 2 - End */}
+          {/* Television Page - Page 2 - Start */}
+          <div className={`page ${activePage === 2 ? "active" : "hidden"}`}>
+            <div>Tv Show Page Placeholder</div>
+          </div>
+          {/* Television Page - Page 2 - End */}
+          {/* Music Page - Page 2 - Start */}
+          <div className={`page ${activePage === 3 ? "active" : "hidden"}`}>
+            <div>Music Page Placeholder</div>
+          </div>
+          {/* Music Page - Page 2 - End */}
         </div>
         {/* //* Add List - Start */}
-        <div className="">
+        <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
           {/* Drawer */}
           <div
             className={`${
               isOpen ? "h-40" : "h-0"
-            }   transition-height fixed bottom-0 w-full overflow-hidden bg-white shadow-lg duration-300 ease-in-out`}
+            }   transition-height fixed bottom-0 w-full overflow-hidden bg-white pb-10 shadow-lg duration-300 ease-in-out`}
           >
             <AddList />
           </div>
@@ -537,10 +700,9 @@ const HomePageLayout: NextPage = () => {
           </button>
         </div>
         {/* Add List - End*/}
-
         <FooterNav />
       </div>
-    </motion.div>
+    </AnimatePresence>
   );
 };
 
