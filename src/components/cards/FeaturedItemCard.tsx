@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 
-interface FeaturedItemCard {
+type ListType = {
+  id: string;
+  title: string;
+  category: string;
+  userId: string;
+  img: string;
+};
+
+type ItemType = {
+  title: string;
+  id: string;
+  userId: string;
+  listId: string;
+};
+
+interface FeaturedItemCardProps {
   title: string;
   index: number;
+  featuredItems: ItemType[];
+  featuredLists: ListType[];
 }
-
-const images = [
-  "https://parade.com/.image/c_limit%2Ccs_srgb%2Cq_auto:good%2Cw_620/MTk3MzM3ODU4NTU2NTY4Nzc1/marveldisney.webp",
-  "https://media.newyorker.com/photos/5cae6ad5671c64058676f05c/master/w_2560%2Cc_limit/Larson-GameofThronesPreview.jpg",
-  "https://assets.teenvogue.com/photos/637e51fbebf13d8100c6e3a0/4:3/w_2608,h_1956,c_limit/163644955",
-  "https://img.buzzfeed.com/buzzfeed-static/complex/images/fcy36om1zuyfqaq3wbu0/best-nba-players-ever.jpg",
-];
 
 // alternating colors for the cards
 //   const colors = [
@@ -24,8 +34,36 @@ const images = [
 
 //   const bgColor = colors[index % 6];
 
-const FeaturedItemCard = ({ title, index }: FeaturedItemCard) => {
-  const backgroundImage = images[index % images.length];
+const filterItemsBylist = () => {};
+
+const FeaturedItemCard = ({
+  title,
+  index,
+  featuredItems,
+  featuredLists,
+}: FeaturedItemCardProps) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const listWithImage = featuredLists.find((list) => list.title === title);
+  const backgroundImage = listWithImage ? listWithImage.img : "";
+
+  // Function to filter items based on listId
+  const filterItemsByList = (listId: string) => {
+    const filteredItems = featuredItems.filter(
+      (item) => item.listId === listId
+    );
+    return filteredItems.map((item) => item.title).join(", ");
+  };
+
+  const handleClick = () => {
+    if (listWithImage) {
+      setModalOpen(true);
+    }
+  };
+
+  const handleClose = () => {
+    setModalOpen(false);
+  };
+
   return (
     <div
       style={{
@@ -33,15 +71,57 @@ const FeaturedItemCard = ({ title, index }: FeaturedItemCard) => {
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
-      className="relative m-2 flex h-20 w-40 items-center justify-center rounded-lg"
+      className="relative flex h-[35vw] w-full items-center justify-center rounded-lg md:h-[25vw] lg:h-[20vw]"
     >
       <div className="absolute inset-0 rounded-lg bg-black opacity-50"></div>
       <p
         className="truncate-2-lines font-inter relative z-10 w-full text-center text-lg font-semibold text-white"
-        onClick={() => alert(title)}
+        onClick={handleClick}
       >
         {title}
       </p>
+      {isModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            zIndex: 1000,
+          }}
+          onClick={handleClose}
+        >
+          <div
+            style={{
+              width: "80%",
+              height: "80%",
+              position: "absolute",
+              top: "10%",
+              left: "10%",
+              backgroundColor: "white",
+              overflowY: "auto",
+              padding: "20px",
+            }}
+          >
+            <div className="flex flex-col items-center justify-center">
+              <div className="flex flex-row gap-10">
+                <div>+ Add List</div>
+                <div>Share</div>
+              </div>
+              <h2 className="text-center">{`Items belonging to List: ${title}`}</h2>
+              <ul>
+                {featuredItems
+                  .filter((item) => item.listId === listWithImage?.id)
+                  .map((item) => (
+                    <li key={item.id}>{item.title}</li>
+                  ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
