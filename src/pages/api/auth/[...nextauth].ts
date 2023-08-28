@@ -56,8 +56,8 @@ export const authOptions: NextAuthOptions = {
     },
     redirect: async ({ url, baseUrl }) => {
       console.log("Redirecting...", { url, baseUrl });
-      return "http://localhost:3000";
-      // return Promise.resolve(baseUrl);
+      // return "http://localhost:3000";
+      return Promise.resolve(baseUrl);
     },
 
     session: async ({ session, token }) => {
@@ -133,10 +133,7 @@ export const authOptions: NextAuthOptions = {
   jwt: {
     maxAge: 30 * 24 * 60 * 60,
   },
-  pages: {
-    signIn: "/",
-    newUser: "/register",
-  },
+  pages: {},
 };
 
 //https://stackoverflow.com/questions/69424685/custom-sign-in-page-not-redirecting-correctly-in-next-auth

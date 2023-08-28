@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginSchema } from "../server/schema/userSchema";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
+import { redirect } from "next/dist/server/api-utils";
 
 const LoginForm: NextPage = () => {
   const { data: session } = useSession();
@@ -23,8 +24,15 @@ const LoginForm: NextPage = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  let redirectUrl = "http://location:3000";
+
+  useEffect(() => {
+    const url = new URL(location.href);
+    redirectUrl = url.searchParams.get("callbackUrl")!;
+  });
+
   const handleGoogleSignin = () => {
-    signIn("google");
+    signIn("google", { callbackUrl: redirectUrl });
 
     // signIn('credentials', { email, password, callbackUrl: `${window.location.origin}/`
   };
@@ -32,7 +40,7 @@ const LoginForm: NextPage = () => {
   const onSubmit = useCallback(
     async (data: LoginSchema) => {
       try {
-        await signIn("credentials", { ...data, redirect: false });
+        await signIn("credentials", { ...data, redirect: true });
 
         reset();
       } catch (err) {

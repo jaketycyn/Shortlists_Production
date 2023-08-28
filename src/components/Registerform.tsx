@@ -45,7 +45,7 @@ const RegisterForm: NextPage = () => {
   const { mutateAsync } = trpc.user.registerUser.useMutation();
 
   const handleGoogleSignin = () => {
-    signIn("google"); // This should match the name of the provider as specified in [...nextauth].js
+    signIn("google", { redirect: true }); // This should match the name of the provider as specified in [...nextauth].js
   };
 
   const onSubmit = useCallback(
