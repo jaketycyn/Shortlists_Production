@@ -659,7 +659,7 @@ const HomePageLayout: NextPage = () => {
           {/* Music Page - Page 2 - End */}
         </div>
         {/* //* Add List - Start */}
-        <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
+        <div className={`page z-20 ${activePage === 0 ? "active" : "hidden"}`}>
           {/* Drawer */}
           <div
             className={`${
@@ -709,12 +709,14 @@ const HomePageLayout: NextPage = () => {
         <div className="mx-auto flex">
           <button
             onClick={handleSignOut}
-            className="h-10 w-20 transform rounded-xl bg-red-600 text-white shadow-md transition-transform duration-200 hover:scale-105 hover:bg-red-700 active:bg-red-800"
+            className="z-0 mb-20 h-10 w-20 transform rounded-xl bg-red-600 text-white shadow-md transition-transform duration-200 hover:scale-105 hover:bg-red-700 active:bg-red-800"
           >
             Signout
           </button>
         </div>
-        <FooterNav />
+        <div className="z-20">
+          <FooterNav />
+        </div>
       </div>
     </AnimatePresence>
   );
