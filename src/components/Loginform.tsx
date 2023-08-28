@@ -1,14 +1,20 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useCallback } from "react";
-import { signIn } from "next-auth/react";
+import { useCallback, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginSchema } from "../server/schema/userSchema";
 import { motion } from "framer-motion";
+import { useRouter } from "next/router";
 
 const LoginForm: NextPage = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  console.log("session: " + session);
+
   const { handleSubmit, register, reset } = useForm<LoginSchema>({
     defaultValues: {
       email: "",
@@ -18,13 +24,16 @@ const LoginForm: NextPage = () => {
   });
 
   const handleGoogleSignin = () => {
-    signIn("google"); // This should match the name of the provider as specified in [...nextauth].js
+    signIn("google");
+
+    // signIn('credentials', { email, password, callbackUrl: `${window.location.origin}/`
   };
 
   const onSubmit = useCallback(
     async (data: LoginSchema) => {
       try {
         await signIn("credentials", { ...data, redirect: false });
+
         reset();
       } catch (err) {
         console.error(err);
@@ -33,11 +42,19 @@ const LoginForm: NextPage = () => {
     [reset]
   );
 
+  // useEffect(() => {
+  //   console.log("Checking session...", session);
+  //   if (session) {
+  //     console.log("Session exists, redirecting...");
+  //     router.push("/"); // Redirect to wherever you want
+  //   }
+  // }, [session, router]);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 2, ease: "easeOut" }}
+      transition={{ duration: 2.5, ease: "easeOut" }}
     >
       <div className="mt-20 flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8 ">
         <div className="w-full max-w-md space-y-8 rounded-lg border-2 bg-white">
@@ -107,6 +124,8 @@ const LoginForm: NextPage = () => {
                   placeholder="Password"
                   type="password"
                   {...register("password")}
+                  required
+                  autoComplete="current-password"
                   // value={values.password}
                   // onChange={handleChange}
                 />

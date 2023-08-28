@@ -35,13 +35,13 @@ model Session {
 
 model User {
   id                     String       @id @default(cuid())
-  username               String
   email                  String       @unique
   emailVerified          DateTime?
-  password               String
+  password               String?
   image                  String?
   createdAt              DateTime     @default(now())
   updatedAt              DateTime     @updatedAt
+  name                   String
   accounts               Account[]
   receivedFriendRequests Friendship[] @relation("receivedRequests")
   sentFriendRequests     Friendship[] @relation("sentRequests")

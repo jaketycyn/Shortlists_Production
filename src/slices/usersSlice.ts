@@ -4,7 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 // individual list
 export interface User {
   id: string;
-  username: string;
+  name: string;
   email: string;
 }
 
