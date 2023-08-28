@@ -27,6 +27,7 @@ import {
 } from "../../../slices/pageSlice";
 import MoviePageLayout from "../moviePage/MoviePageLayout";
 import FeaturedItemCard from "../../cards/FeaturedItemCard";
+import { signOut } from "next-auth/react";
 
 const HomePageLayout: NextPage = () => {
   const router = useRouter();
@@ -207,6 +208,11 @@ const HomePageLayout: NextPage = () => {
       listId: "list4",
     },
   ];
+
+  //  Logout jUst for now:
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/" });
+  };
 
   useEffect(() => {
     console.log("activePage:", activePage, "pageLimit:", pageLimit);
@@ -700,6 +706,14 @@ const HomePageLayout: NextPage = () => {
           </button>
         </div>
         {/* Add List - End*/}
+        <div className="mx-auto flex">
+          <button
+            onClick={handleSignOut}
+            className="h-10 w-20 transform rounded-xl bg-red-600 text-white shadow-md transition-transform duration-200 hover:scale-105 hover:bg-red-700 active:bg-red-800"
+          >
+            Signout
+          </button>
+        </div>
         <FooterNav />
       </div>
     </AnimatePresence>

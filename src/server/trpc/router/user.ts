@@ -6,17 +6,6 @@ import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 
 export const userRouter = router({
-  //! examples
-  // hello: publicProcedure
-  //     .input(z.object({ text: z.string().nullish() }).nullish())
-  //     .query(({ input }) => {
-  //       return {
-  //         greeting: `Hello ${input?.text ?? "world"}`,
-  //       };
-  //     }),
-  //   getAll: publicProcedure.query(({ ctx }) => {
-  //     return ctx.prisma.example.findMany();
-  //   }),
   findUser: protectedProcedure
     .input(z.object({ email: z.string().email() }))
     .mutation(async ({ input, ctx }) => {
@@ -36,7 +25,7 @@ export const userRouter = router({
     const results = await ctx.prisma.user.findMany({
       select: {
         email: true,
-        username: true,
+        name: true,
         id: true,
       },
     });
@@ -50,7 +39,7 @@ export const userRouter = router({
   registerUser: publicProcedure
     .input(registerSchema)
     .mutation(async ({ input, ctx }) => {
-      const { username, email, password } = input;
+      const { name, email, password } = input;
 
       const userExists = await ctx.prisma.user.findFirst({
         where: { email },
@@ -66,7 +55,7 @@ export const userRouter = router({
       const hashedPassword = await hash(password);
 
       const result = await ctx.prisma.user.create({
-        data: { username, email, password: hashedPassword },
+        data: { name, email, password: hashedPassword },
       });
 
       console.log("result: ", result);
@@ -77,7 +66,7 @@ export const userRouter = router({
         result: {
           email: result.email,
           id: result.id,
-          userName: result.username,
+          name: result.name,
         },
       };
     }),

@@ -8,9 +8,6 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../../../env/server.mjs";
 import { prisma } from "../../../server/db/client";
 import { loginSchema } from "../../../server/schema/userSchema";
-import { Session } from "inspector";
-import { getToken } from "next-auth/jwt";
-import { type } from "os";
 
 const secret = process.env.NEXTAUTH_SECRET;
 
@@ -24,11 +21,45 @@ export const authOptions: NextAuthOptions = {
   // Include user.id on session
   adapter: PrismaAdapter(prisma),
   callbacks: {
-    jwt: async ({ token, user, account, profile, isNewUser }) => {
-      //console.log("token: ", token);
+    jwt: async ({ token, user, account, profile }) => {
+      if (account) {
+        if (account.provider === "google" && profile) {
+          console.log("account ", account);
+          console.log("account.provider: ", account.provider);
+          console.log("profile: ", profile);
+          // Check if a user already exists with this email
+          const existingUser = await prisma.user.findUnique({
+            where: { email: profile.email },
+          });
+          if (existingUser) {
+            // Here you can decide what to do.
+            // For example, you can merge this Google account with the existing account
+            // or you can throw an error to prevent duplicate accounts.
+          }
+          if (!existingUser) {
+            // Create a new user in your database
+            // Note: You'll need to handle this securely; this is just a simple example
+            const newUser = await prisma.user.create({
+              data: {
+                email: profile.email!,
+                name: profile.name!,
+                // You may want to store the Google ID or other information here
+              },
+            });
+            token.newUser = true;
+            token.sub = newUser.id; // set the JWT 'sub' claim to the new user's ID
+          }
+        }
+      }
 
       return token;
     },
+    redirect: async ({ url, baseUrl }) => {
+      console.log("Redirecting...", { url, baseUrl });
+      // return "http://localhost:3000";
+      return Promise.resolve(baseUrl);
+    },
+
     session: async ({ session, token }) => {
       if (session && token) {
         //?logic for adding user.id from token to session
@@ -39,11 +70,13 @@ export const authOptions: NextAuthOptions = {
 
       return session;
     },
+    // ... other callbacks
   },
   // Configure one or more authentication providers
 
   providers: [
     Credentials({
+      id: "credentials",
       name: "credentials",
       credentials: {
         email: {
@@ -55,7 +88,7 @@ export const authOptions: NextAuthOptions = {
       },
       authorize: async (credentials) => {
         try {
-          // console.log("credentials: ", credentials)
+          console.log("credentials: ", credentials);
 
           const { email, password } = await loginSchema.parseAsync(credentials);
           const result = await prisma.user.findFirst({
@@ -71,10 +104,14 @@ export const authOptions: NextAuthOptions = {
           return {
             id: result.id,
             email: result.email,
-            username: result.username,
+            name: result.name,
           };
         } catch {
+          // If you return null or false then the credentials will be rejected
           return null;
+          // You can also Reject this callback with an Error or with a URL:
+          // throw new Error('error message') // Redirect to error page
+          // throw '/path/to/redirect'        // Redirect to a URL
         }
       },
     }),
@@ -96,10 +133,9 @@ export const authOptions: NextAuthOptions = {
   jwt: {
     maxAge: 30 * 24 * 60 * 60,
   },
-  pages: {
-    signIn: "/",
-    newUser: "/register",
-  },
+  pages: {},
 };
+
+//https://stackoverflow.com/questions/69424685/custom-sign-in-page-not-redirecting-correctly-in-next-auth
 
 export default NextAuth(authOptions);

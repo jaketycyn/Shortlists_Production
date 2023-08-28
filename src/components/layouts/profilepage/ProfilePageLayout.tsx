@@ -349,7 +349,7 @@ const ProfilePageLayout: NextPage = () => {
             <div>
               {currentUser ? (
                 <ul className="m-2 flex flex-col gap-2 text-center">
-                  <p>{currentUser[0]!.username}</p>
+                  <p>{currentUser[0]!.name}</p>
 
                   <p>{currentUser[0]!.email}</p>
                 </ul>
@@ -398,7 +398,7 @@ const ProfilePageLayout: NextPage = () => {
                             </div>
                             <div className="min-w-0 flex-1">
                               <p className="truncate text-sm font-medium ">
-                                {user.username}
+                                {user.name}
                               </p>
                               <p className="truncate text-sm ">{user.email}</p>
                               {/* <p className="truncate text-sm ">{user.status}</p> */}
@@ -531,7 +531,7 @@ const ProfilePageLayout: NextPage = () => {
                                     </div>
                                     <div className=" row-start-1 min-w-0 flex-1 ">
                                       <p className="truncate text-sm font-medium ">
-                                        {user.username}
+                                        {user.name}
                                       </p>
                                       <p className="mr-4 truncate text-sm">
                                         {user.email}
@@ -598,7 +598,7 @@ const ProfilePageLayout: NextPage = () => {
                                     </div>
                                     <div className=" row-start-1 min-w-0 flex-1 ">
                                       <p className="truncate text-sm font-medium ">
-                                        {user.username}
+                                        {user.name}
                                       </p>
                                       <p className="mr-4 truncate text-sm">
                                         {user.email}
@@ -665,7 +665,7 @@ const ProfilePageLayout: NextPage = () => {
                                     </div>
                                     <div className=" row-start-1 min-w-0 flex-1 ">
                                       <p className="truncate text-sm font-medium ">
-                                        {user.username}
+                                        {user.name}
                                       </p>
                                       <p className="mr-4 truncate text-sm">
                                         {user.email}
@@ -832,7 +832,7 @@ const ProfilePageLayout: NextPage = () => {
                                         </div>
                                         <div className=" row-start-1 min-w-0 flex-1 ">
                                           <p className="truncate text-sm font-medium ">
-                                            {user.username}
+                                            {user.name}
                                           </p>
                                           <p className="mr-4 truncate text-sm">
                                             {user.email}

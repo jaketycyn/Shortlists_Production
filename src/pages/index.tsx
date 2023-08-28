@@ -5,28 +5,23 @@ import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import HomePageLayout from "../components/layouts/homepage/HomePageLayout";
-import LoginForm from "../components/Loginform";
+
 import { useAppDispatch } from "../hooks/useTypedSelector";
 import { setActiveList } from "../slices/listSlice";
 
 import { trpc } from "../utils/trpc";
+import { useRouter } from "next/router";
 
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
+  const router = useRouter();
 
-  // const HomepageLayoutComponent = dynamic(
-  //   async () => await import("../components/layouts/homepage/HomePageLayout"),
-  //   {
-  //     ssr: false,
-  //   }
-  // );
-  // console.log("session: ", session);
-  // console.log("status: ", status);
-  //const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
 
-  // console.log("INDEX>TSX FIRING");
-
-  // reset of ActiveList on returning to homepage/checking session. Might need to move this up one level in the future!
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(setActiveList(undefined));
@@ -40,13 +35,7 @@ const Home: NextPage = () => {
       </Head> */}
 
       <main className="h-screen w-full">
-        {session ? (
-          <HomePageLayout />
-        ) : (
-          <div className="h-screen w-full">
-            <LoginForm />
-          </div>
-        )}
+        {session ? <HomePageLayout /> : null}
       </main>
     </>
   );
