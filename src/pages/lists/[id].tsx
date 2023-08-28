@@ -260,7 +260,7 @@ const ListPage: NextPage = () => {
       console.log("About to filter: newFilteredResults");
       const newFilteredResults = usersNotCurrent?.filter((el) => {
         return filteredUsers?.some((u) => {
-          return u.username === el.username;
+          return u.name === el.name;
         });
       });
       console.log("newFilteredResults:  newFilteredResults");
