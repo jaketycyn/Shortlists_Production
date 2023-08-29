@@ -15,7 +15,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { trpc } from "../../../utils/trpc";
 
 import { type ArchiveListSchema } from "../../../server/schema/listSchema";
-import { setActiveList, setLists, type List } from "../../../slices/listSlice";
+import {
+  setActiveList,
+  setLists,
+  type List,
+  setListsLoading,
+} from "../../../slices/listSlice";
 
 import FooterNav from "../../navigation/FooterNav";
 import AddList from "../../AddList";
@@ -27,10 +32,11 @@ import {
 } from "../../../slices/pageSlice";
 import MoviePageLayout from "../moviePage/MoviePageLayout";
 import FeaturedItemCard from "../../cards/FeaturedItemCard";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { setUsers } from "../../../slices/usersSlice";
 
 const HomePageLayout: NextPage = () => {
+  const { data: session } = useSession();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [openListTab, setOpenListTab] = React.useState(0);
@@ -40,7 +46,7 @@ const HomePageLayout: NextPage = () => {
 
   //get error state from Redux
   const hasGlobalError = useAppSelector((state) => state.error.hasError);
-  const { lists } = useAppSelector((state) => state.list);
+  const { lists, loading } = useAppSelector((state) => state.list);
   const { activePage, pageLimit } = useAppSelector((state) => state.page);
   const { users } = useAppSelector((state) => state.user);
 
@@ -54,8 +60,18 @@ const HomePageLayout: NextPage = () => {
   const fetchedLists = results as List[];
 
   useEffect(() => {
-    dispatch(setLists(fetchedLists));
-  }, [dispatch, fetchedLists, hasGlobalError]);
+    const fetchData = async () => {
+      try {
+        await refetch;
+        dispatch(setLists(fetchedLists));
+        setListsLoading(false);
+      } catch (error) {
+        console.error("An error has occured:", error);
+        setListsLoading(false);
+      }
+    };
+    fetchData();
+  }, [dispatch, fetchedLists, hasGlobalError, loading]);
 
   // Delete Item
   const { mutateAsync } = trpc.userList.deleteList.useMutation();
@@ -79,6 +95,7 @@ const HomePageLayout: NextPage = () => {
   };
 
   //filtering out lists in Redux with archive set as "archive" these will be displayed in a trash bin for permanent deletion later
+  // console.log("lists: ", lists);
   const createdFilteredArchivedLists = useMemo(
     () =>
       lists?.filter(
@@ -89,6 +106,14 @@ const HomePageLayout: NextPage = () => {
       ),
     [lists]
   );
+
+  const allUsersLists = lists?.filter(
+    (i) =>
+      i.archive !== "archive" &&
+      i.archive !== "trash" &&
+      i.userId === session!.user!.id
+  );
+
   // console.log("createdFilteredArchivedLists: ", createdFilteredArchivedLists);
 
   const receivedFilteredArchivedLists = useMemo(
@@ -378,88 +403,87 @@ const HomePageLayout: NextPage = () => {
                       id="link1"
                     >
                       {createdFilteredArchivedLists === undefined ||
-                      createdFilteredArchivedLists?.length === 0 ? (
+                      allUsersLists?.length === 0 ? (
                         <div className="flex h-3/5 w-full flex-col">
-                          <h1>You have no Lists created</h1>
+                          <h1>You have no lists</h1>
                           <p className="mt-8">
                             To create your first lists and any future lists
                             click the {"+"} in the bottom right hand corner
                           </p>
                           <p className="mt-8">
-                            Then select the option {"Add List"}
+                            Or copy a featured list from above or on a page (ex:
+                            Movies)
                           </p>
                         </div>
                       ) : (
                         <div className="container z-0 h-full items-center">
                           {/* Display UserClassicLists Module: Starts*/}
-                          {createdFilteredArchivedLists && userListsOpen ? (
+                          {allUsersLists && userListsOpen ? (
                             <div>
-                              {createdFilteredArchivedLists.map(
-                                (list, index) => (
-                                  <div
-                                    className="mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
+                              {allUsersLists.map((list, index) => (
+                                <div
+                                  className="mt-2 flex cursor-pointer snap-center items-center justify-between gap-x-2 rounded-md border-2 border-gray-600 bg-white/90  text-sm  text-black"
+                                  key={index}
+                                >
+                                  <Link
+                                    href={`/lists/${encodeURIComponent(
+                                      list.id
+                                    )}`}
                                     key={index}
+                                    onClick={() =>
+                                      setActiveListFunction(
+                                        allUsersLists[index]!
+                                      )
+                                    }
+                                    className="flex h-full w-full flex-row items-center text-center"
                                   >
-                                    <Link
-                                      href={`/lists/${encodeURIComponent(
-                                        list.id
-                                      )}`}
-                                      key={index}
-                                      onClick={() =>
-                                        setActiveListFunction(
-                                          createdFilteredArchivedLists[index]!
-                                        )
-                                      }
-                                      className="flex h-full w-full flex-row items-center text-center"
-                                    >
-                                      <button className=" flex h-10 w-10 items-center  p-2">
-                                        <HiOutlineChevronRight
-                                          //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
-                                          className="h-4 w-4"
-                                          // onClick={() => {
-                                          //   toggleSubMenu(index, subMenuIndexes);
-                                          // }
-                                        />
-                                      </button>
-                                      <h5 className="ml-4">{list.title}</h5>
-                                    </Link>
+                                    <button className=" flex h-10 w-10 items-center  p-2">
+                                      <HiOutlineChevronRight
+                                        //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
+                                        className="h-4 w-4"
+                                        // onClick={() => {
+                                        //   toggleSubMenu(index, subMenuIndexes);
+                                        // }
+                                      />
+                                    </button>
+                                    <h5 className="ml-4">{list.title}</h5>
+                                  </Link>
 
-                                    {/* DropDown: Start */}
-                                    <div className="dropdown-left dropdown">
-                                      <label tabIndex={0} className="btn m-1">
-                                        ...
-                                      </label>
-                                      <ul
-                                        tabIndex={0}
-                                        className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
+                                  {/* DropDown: Start */}
+                                  <div className="dropdown-left dropdown">
+                                    <label tabIndex={0} className="btn m-1">
+                                      ...
+                                    </label>
+                                    <ul
+                                      tabIndex={0}
+                                      className="dropdown-content menu rounded-box flex w-20 flex-col items-center divide-black  border-2 border-black bg-white p-2 text-center  shadow"
+                                    >
+                                      <li
+                                        className="p-1 "
+                                        onClick={() => console.log("Share")}
                                       >
-                                        <li
-                                          className="p-1 "
-                                          onClick={() => console.log("Share")}
-                                        >
-                                          Share
-                                        </li>
-                                        <li
-                                          className="p-1"
-                                          // onClick={() => console.log("Trash: ", list.id, list.userId)}
-                                          onClick={
-                                            async () =>
-                                              ArchiveList({
-                                                listId: list.id,
-                                                userId: list.userId,
-                                                archive: "trash",
-                                              })
-                                            // set reQuery to ture
-                                          }
-                                        >
-                                          Trash
-                                        </li>
-                                      </ul>
-                                    </div>
-                                    {/* DropDown: End */}
+                                        Share
+                                      </li>
+                                      <li
+                                        className="p-1"
+                                        // onClick={() => console.log("Trash: ", list.id, list.userId)}
+                                        onClick={
+                                          async () =>
+                                            ArchiveList({
+                                              listId: list.id,
+                                              userId: list.userId,
+                                              archive: "trash",
+                                            })
+                                          // set reQuery to ture
+                                        }
+                                      >
+                                        Trash
+                                      </li>
+                                    </ul>
                                   </div>
-                                )
-                              )}
+                                  {/* DropDown: End */}
+                                </div>
+                              ))}
                             </div>
                           ) : (
                             <div></div>

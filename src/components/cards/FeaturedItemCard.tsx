@@ -2,6 +2,8 @@ import { list } from "postcss";
 import React, { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import { useSession } from "next-auth/react";
+import { useDispatch } from "react-redux";
+import { setListsLoading } from "../../slices/listSlice";
 
 // abusing null/undefined for now will need to fix later
 
@@ -48,6 +50,7 @@ const FeaturedItemCard = ({
   featuredLists,
 }: FeaturedItemCardProps) => {
   const { data: session, status } = useSession();
+  const dispatch = useDispatch();
   const [isModalOpen, setModalOpen] = useState(false);
   const currentList = featuredLists!.find((list) => list.title === title);
   const backgroundImage = currentList ? currentList.coverImage : "";
@@ -94,17 +97,27 @@ const FeaturedItemCard = ({
       );
 
       if (currentList) {
-        const data = {
-          userId: session!.user!.id,
-          parentListUserId: currentList.userId!,
-          listId: currentList.id!,
-          listTitle: currentList.title!,
-          items: currentListItems,
-        };
+        try {
+          const data = {
+            userId: session!.user!.id,
+            parentListUserId: currentList.userId!,
+            listId: currentList.id!,
+            listTitle: currentList.title!,
+            items: currentListItems,
+          };
 
-        const result = await mutateAsyncCopyFeatureList(data);
+          const result = await mutateAsyncCopyFeatureList(data);
+          setTimeout(() => {
+            alert("List has been copied!");
+            dispatch(setListsLoading(true));
+          }, 1000);
 
-        console.log("data: ", data);
+          console.log("data: ", data);
+        } catch (error) {
+          console.error("Failed to copy list", error);
+        } finally {
+          dispatch(setListsLoading(false)); // Set loading to false after async operation
+        }
       }
 
       // You can place code here that would handle the actual database operations
