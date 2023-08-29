@@ -1,3 +1,4 @@
+import { GetListsByUserIdSchema } from "./listSchema";
 import * as z from "zod";
 
 export const addItemSchema = z.object({
@@ -10,6 +11,14 @@ export const addSongItemSchema = z.object({
   album: z.string(),
   year: z.number().int(),
   artist: z.string(),
+  listId: z.string(),
+  bucket: z.string(),
+});
+
+export const addMovieItemSchema = z.object({
+  itemTitle: z.string(),
+  year: z.number().int(),
+  director: z.string(),
   listId: z.string(),
   bucket: z.string(),
 });
@@ -47,10 +56,14 @@ export const updateItemRankSchema = z.object({
   potentialRank: z.number(),
 });
 
+export const addMovieItemsSchema = z.array(addMovieItemSchema);
 export const addSongItemsSchema = z.array(addSongItemSchema);
+
 export const updateItemsRankSchema = z.array(updateItemRankSchema);
 
 export type AddItemSchema = z.TypeOf<typeof addItemSchema>;
+export type addMovieItemSchema = z.TypeOf<typeof addMovieItemSchema>;
+export type addMovieItemsSchema = z.TypeOf<typeof addMovieItemsSchema>;
 export type addSongItemSchema = z.TypeOf<typeof addSongItemSchema>;
 export type addSongItemsSchema = z.TypeOf<typeof addSongItemsSchema>;
 export type ArchiveItemSchema = z.TypeOf<typeof archiveItemSchema>;

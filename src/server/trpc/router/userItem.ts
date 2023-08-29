@@ -1,6 +1,7 @@
 import { router, protectedProcedure } from "../trpc";
 import {
   addItemSchema,
+  addMovieItemsSchema,
   addSongItemsSchema,
   archiveItemSchema,
   archiveItemsSchema,
@@ -30,6 +31,39 @@ export const userItemRouter = router({
         result,
       };
     }),
+  addMovieItems: protectedProcedure
+    .input(addMovieItemsSchema)
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session.user.id;
+
+      // Create multiple items in the database
+      const createItems = input.map((movie) => ({
+        title: movie.itemTitle,
+        director: movie.director,
+        year: movie.year,
+        listId: movie.listId,
+        userId: userId,
+        bucket: movie.bucket,
+      }));
+      // const createItems = input.map((movie) => ({
+      //   title: movie.itemTitle,
+      //   director: movie.director,
+      //   year: movie.year,
+      //   listId: movie.listId,
+      //   userId: userId,
+      //   bucket: movie.bucket,
+      // }));
+
+      const result = await ctx.prisma.userItem.createMany({
+        data: createItems,
+      });
+
+      return {
+        status: 201,
+        message: "Items created successfully",
+        result,
+      };
+    }),
   addSongItems: protectedProcedure
     .input(addSongItemsSchema)
     .mutation(async ({ input, ctx }) => {
@@ -43,6 +77,7 @@ export const userItemRouter = router({
         artist: song.artist,
         listId: song.listId,
         userId: userId,
+        bucket: song.bucket,
       }));
 
       const result = await ctx.prisma.userItem.createMany({
@@ -98,6 +133,42 @@ export const userItemRouter = router({
         message: "Archived user items successfully",
       };
     }),
+  getItems: protectedProcedure
+    .input(z.object({ listId: z.string() }))
+    .query(({ input, ctx }) => {
+      //console.log("user.id: ", ctx.session.user.id);
+      const { listId } = input;
+      const results = ctx.prisma.userItem.findMany({
+        where: { userId: ctx.session.user.id, listId: listId },
+      });
+
+      //way to convert results .createdAT property from Date to string() - It's created as DateTime but when brought in via prisma it converts to Date object.
+
+      console.log("results within GETITEMS: ", results);
+
+      return results;
+      // return {
+      //   status: 201,
+      //   message: "Retrieved user lists successfully",
+      //   items: { results },
+      // };
+    }),
+  getFeaturedItemsByListId: protectedProcedure
+    .input(z.object({ userId: z.string(), listIds: z.array(z.string()) }))
+    .query(async ({ input, ctx }) => {
+      const { userId, listIds } = input;
+
+      const results = await ctx.prisma.userItem.findMany({
+        where: {
+          userId,
+          listId: {
+            in: listIds, // Using the 'in' operator for array of listIds
+          },
+        },
+      });
+
+      return results;
+    }),
   updateManyItemsRank: protectedProcedure
     .input(updateItemsRankSchema)
     .mutation(async ({ ctx, input }) => {
@@ -134,27 +205,6 @@ export const userItemRouter = router({
       //   message: "Updated useritem - currentRank successfully",
       // };
     }),
-  getItems: protectedProcedure
-    .input(z.object({ listId: z.string() }))
-    .query(({ input, ctx }) => {
-      //console.log("user.id: ", ctx.session.user.id);
-      const { listId } = input;
-      const results = ctx.prisma.userItem.findMany({
-        where: { userId: ctx.session.user.id, listId: listId },
-      });
-
-      //way to convert results .createdAT property from Date to string() - It's created as DateTime but when brought in via prisma it converts to Date object.
-
-      console.log("results within GETITEMS: ", results);
-
-      return results;
-      // return {
-      //   status: 201,
-      //   message: "Retrieved user lists successfully",
-      //   items: { results },
-      // };
-    }),
-
   //   deleteList: protectedProcedure
   //     .input(deleteListSchema)
   //     .mutation(async ({ ctx, input }) => {

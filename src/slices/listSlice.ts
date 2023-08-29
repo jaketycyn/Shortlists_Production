@@ -57,6 +57,9 @@ export const listSlice = createSlice({
     setActiveList: (state, action: PayloadAction<any>) => {
       state.activeList = action.payload;
     },
+    setListsLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
+    },
   },
   extraReducers(builder) {
     builder
@@ -75,4 +78,4 @@ export const listSlice = createSlice({
 });
 
 export default listSlice.reducer;
-export const { setLists, setActiveList } = listSlice.actions;
+export const { setLists, setActiveList, setListsLoading } = listSlice.actions;

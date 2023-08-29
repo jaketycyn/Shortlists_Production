@@ -5,8 +5,10 @@ import {
   deleteListSchema,
   shareListSchema,
   updateListSchema,
+  getListsByUserIdSchema,
 } from "../../schema/listSchema";
 import { title } from "process";
+import { getLists } from "../../../slices/listSlice";
 
 export const userListRouter = router({
   addList: protectedProcedure
@@ -26,22 +28,7 @@ export const userListRouter = router({
         result,
       };
     }),
-  getLists: protectedProcedure.query(({ ctx }) => {
-    //console.log("user.id: ", ctx.session.user.id);
 
-    const results = ctx.prisma.userList.findMany({
-      where: { userId: ctx.session.user.id },
-    });
-
-    console.log("results: ", results);
-
-    return results;
-    // return {
-    //   status: 201,
-    //   message: "Retrieved user lists successfully",
-    //   lists: { results },
-    // };
-  }),
   archiveList: protectedProcedure
     .input(archiveListSchema)
     .mutation(async ({ ctx, input }) => {
@@ -61,25 +48,6 @@ export const userListRouter = router({
         //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
         status: 204,
         message: "Archived user list successfully",
-      };
-    }),
-  deleteList: protectedProcedure
-    .input(deleteListSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { listId, userId } = input;
-      // console.log("listId", listId)
-      // console.log("userId", userId)
-      //!in current iteration will not work as long as items with association to this list exist and are connected
-      await ctx.prisma.userList.deleteMany({
-        where: { id: listId, userId: userId },
-      });
-
-      return {
-        //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200
-        // "The successful result of a PUT or a DELETE is often not a 200 OK but a 204 No Content (or a 201 Created when the resource is uploaded for the first time)."
-        //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
-        status: 204,
-        message: "Delete user list successfully",
       };
     }),
   changeListTitle: protectedProcedure
@@ -104,13 +72,60 @@ export const userListRouter = router({
         message: "Change user list title successful",
       };
     }),
+  deleteList: protectedProcedure
+    .input(deleteListSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { listId, userId } = input;
+      // console.log("listId", listId)
+      // console.log("userId", userId)
+      //!in current iteration will not work as long as items with association to this list exist and are connected
+      await ctx.prisma.userList.deleteMany({
+        where: { id: listId, userId: userId },
+      });
+
+      return {
+        //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200
+        // "The successful result of a PUT or a DELETE is often not a 200 OK but a 204 No Content (or a 201 Created when the resource is uploaded for the first time)."
+        //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
+        status: 204,
+        message: "Delete user list successfully",
+      };
+    }),
+  getLists: protectedProcedure.query(({ ctx }) => {
+    //console.log("user.id: ", ctx.session.user.id);
+
+    const results = ctx.prisma.userList.findMany({
+      where: { userId: ctx.session.user.id },
+    });
+
+    console.log("results: ", results);
+
+    return results;
+    // return {
+    //   status: 201,
+    //   message: "Retrieved user lists successfully",
+    //   lists: { results },
+    // };
+  }),
+  getListsByUserId: protectedProcedure
+    .input(getListsByUserIdSchema)
+    .query(async ({ input, ctx }) => {
+      const { userId } = input;
+
+      const results = await ctx.prisma.userList.findMany({
+        where: { userId },
+      });
+
+      return results;
+    }),
+
   shareList: protectedProcedure
     .input(shareListSchema)
     //can add back in CTX later but removed because of the scenario where someone can share someone else's list thus their ID wouldnt' be taken from here but rather passed along from the shareform page.
     .mutation(async ({ input, ctx }) => {
       //! NEED ITEM VALUES
       //? Do I pass items with a parentItemId to attach everyitem to another item at one point?
-      const { userId, listTitle, listId, items } = input;
+      const { userId, parentListUserId, listTitle, listId, items } = input;
       console.log("items: ", items);
       //!Hardcoded itemTitle
 
@@ -140,7 +155,7 @@ export const userListRouter = router({
             title: listTitle,
             userId: FoundUser!.id,
             parentListId: listId,
-            parentListUserId: userId,
+            parentListUserId: parentListUserId,
 
             // parentListId: listId,
           },

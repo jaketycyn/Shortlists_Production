@@ -1,53 +1,127 @@
+import { list } from "postcss";
 import React, { useState } from "react";
+import { trpc } from "../../utils/trpc";
+import { useSession } from "next-auth/react";
+import { useDispatch } from "react-redux";
+import { setListsLoading } from "../../slices/listSlice";
+
+// abusing null/undefined for now will need to fix later
 
 type ListType = {
   id: string;
-  title: string;
-  category: string;
+  title?: string | null;
+  category?: string | null | undefined;
   userId: string;
-  img: string;
+  coverImage: string | null | undefined;
+  parentListId?: string | null;
+  parentListUserId?: string | null;
+  createdAt: Date;
 };
 
 type ItemType = {
-  title: string;
   id: string;
+  title: string;
   userId: string;
   listId: string;
+  archive?: string | null | undefined;
+  createdAt: Date;
+  currentRank?: number;
+  potentialRank?: number;
+  album?: string | null;
+  artist?: string | null;
+  genre?: string | null;
+  label?: string | null;
+  year?: number | null;
+  bucket?: string | null;
+  director?: string | null;
 };
 
 interface FeaturedItemCardProps {
   title: string;
   index: number;
-  featuredItems: ItemType[];
+  featuredItems?: ItemType[];
   featuredLists: ListType[];
 }
 
 const FeaturedItemCard = ({
   title,
   index,
-  featuredItems,
+  featuredItems = [],
   featuredLists,
 }: FeaturedItemCardProps) => {
+  const { data: session, status } = useSession();
+  const dispatch = useDispatch();
   const [isModalOpen, setModalOpen] = useState(false);
-  const listWithImage = featuredLists.find((list) => list.title === title);
-  const backgroundImage = listWithImage ? listWithImage.img : "";
+  const currentList = featuredLists!.find((list) => list.title === title);
+  const backgroundImage = currentList ? currentList.coverImage : "";
 
   // Function to filter items based on listId
   const filterItemsByList = (listId: string) => {
-    const filteredItems = featuredItems.filter(
+    const filteredItems = featuredItems!.filter(
       (item) => item.listId === listId
     );
     return filteredItems.map((item) => item.title).join(", ");
   };
 
   const handleClick = () => {
-    if (listWithImage) {
+    if (currentList) {
       setModalOpen(true);
     }
   };
 
   const handleClose = () => {
     setModalOpen(false);
+  };
+
+  const { mutateAsync: mutateAsyncCopyFeatureList } =
+    trpc.userList.shareList.useMutation();
+
+  const handleAddList = async (list: any) => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to add a new list?"
+    );
+
+    if (isConfirmed) {
+      // Mock targeting a database
+      console.log("New list has been added.");
+      console.log("list", list);
+
+      console.log(
+        "finding Items belonging to current list: ",
+        filterItemsByList(list.id)
+      );
+
+      console.log("featuredItems: ", featuredItems);
+      const currentListItems = featuredItems.filter(
+        (i) => i.listId === currentList?.id
+      );
+
+      if (currentList) {
+        try {
+          const data = {
+            userId: session!.user!.id,
+            parentListUserId: currentList.userId!,
+            listId: currentList.id!,
+            listTitle: currentList.title!,
+            items: currentListItems,
+          };
+
+          const result = await mutateAsyncCopyFeatureList(data);
+          setTimeout(() => {
+            alert("List has been copied!");
+            dispatch(setListsLoading(true));
+          }, 1000);
+
+          console.log("data: ", data);
+        } catch (error) {
+          console.error("Failed to copy list", error);
+        } finally {
+          dispatch(setListsLoading(false)); // Set loading to false after async operation
+        }
+      }
+
+      // You can place code here that would handle the actual database operations
+    }
   };
 
   return (
@@ -93,16 +167,23 @@ const FeaturedItemCard = ({
           >
             <div className="flex flex-col items-center justify-center">
               <div className="flex flex-row gap-10">
-                <div>+ Add List</div>
-                <div>Share</div>
+                <button
+                  className="rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                  onClick={() => handleAddList(currentList)}
+                >
+                  + Add List
+                </button>
+                <button className="rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+                  Share
+                </button>
               </div>
               <h2 className="text-center">{`Items belonging to List: ${title}`}</h2>
               <ul>
                 {featuredItems
-                  .filter((item) => item.listId === listWithImage?.id)
-                  .map((item) => (
-                    <li key={item.id}>{item.title}</li>
-                  ))}
+                  ? featuredItems
+                      .filter((item) => item.listId === currentList?.id)
+                      .map((item) => <li key={item.id}>{item.title}</li>)
+                  : null}
               </ul>
             </div>
           </div>
