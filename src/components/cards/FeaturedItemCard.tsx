@@ -1,15 +1,19 @@
 import { list } from "postcss";
 import React, { useState } from "react";
 import { trpc } from "../../utils/trpc";
+import { useSession } from "next-auth/react";
 
 // abusing null/undefined for now will need to fix later
 
 type ListType = {
-  id: string | null;
-  title: string | null;
-  category: string | null;
-  userId: string | null;
-  coverImage: string | null;
+  id: string;
+  title?: string | null;
+  category?: string | null | undefined;
+  userId: string;
+  coverImage: string | null | undefined;
+  parentListId?: string | null;
+  parentListUserId?: string | null;
+  createdAt: Date;
 };
 
 type ItemType = {
@@ -17,21 +21,22 @@ type ItemType = {
   title: string;
   userId: string;
   listId: string;
-  archive?: string | null;
+  archive?: string | null | undefined;
+  createdAt: Date;
   currentRank?: number;
   potentialRank?: number;
-  album?: string | null | undefined;
-  artist?: string | null | undefined;
-  genre?: string | null | undefined;
-  label?: string | null | undefined;
-  year?: number | null | undefined;
-  bucket?: string | null | undefined;
-  director?: string | null | undefined;
+  album?: string | null;
+  artist?: string | null;
+  genre?: string | null;
+  label?: string | null;
+  year?: number | null;
+  bucket?: string | null;
+  director?: string | null;
 };
 
 interface FeaturedItemCardProps {
-  title: string | null;
-  index: number | null;
+  title: string;
+  index: number;
   featuredItems?: ItemType[];
   featuredLists: ListType[];
 }
@@ -39,9 +44,10 @@ interface FeaturedItemCardProps {
 const FeaturedItemCard = ({
   title,
   index,
-  featuredItems,
+  featuredItems = [],
   featuredLists,
 }: FeaturedItemCardProps) => {
+  const { data: session, status } = useSession();
   const [isModalOpen, setModalOpen] = useState(false);
   const currentList = featuredLists!.find((list) => list.title === title);
   const backgroundImage = currentList ? currentList.coverImage : "";
@@ -67,7 +73,7 @@ const FeaturedItemCard = ({
   const { mutateAsync: mutateAsyncCopyFeatureList } =
     trpc.userList.shareList.useMutation();
 
-  const handleAddList = (list: any) => {
+  const handleAddList = async (list: any) => {
     const isConfirmed = window.confirm(
       "Are you sure you want to add a new list?"
     );
@@ -82,16 +88,23 @@ const FeaturedItemCard = ({
         filterItemsByList(list.id)
       );
 
+      console.log("featuredItems: ", featuredItems);
+      const currentListItems = featuredItems.filter(
+        (i) => i.listId === currentList?.id
+      );
+
       if (currentList) {
-        const newList = {
-          id: list.id,
-          title: list.title,
-          category: list.category,
-          userId: list.userId,
-          coverImage: list.coverImage,
-          items: filterItemsByList(list.id),
+        const data = {
+          userId: session!.user!.id,
+          parentListUserId: currentList.userId!,
+          listId: currentList.id!,
+          listTitle: currentList.title!,
+          items: currentListItems,
         };
-        console.log("newList: ", newList);
+
+        const result = await mutateAsyncCopyFeatureList(data);
+
+        console.log("data: ", data);
       }
 
       // You can place code here that would handle the actual database operations

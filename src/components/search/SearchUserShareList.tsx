@@ -87,6 +87,7 @@ const SearchUserShareList = () => {
 
         const data = {
           userId: userId,
+          parentListUserId: activeList.userId,
           listId: activeList.id,
           listTitle: activeList.title,
           items: filteredItems,
@@ -103,6 +104,7 @@ const SearchUserShareList = () => {
       } else {
         const data = {
           userId: userId,
+          parentListUserId: activeList.userId,
           listId: activeList.id,
           listTitle: activeList.title,
           items: [],

@@ -22,6 +22,7 @@ export const getListsByUserIdSchema = z.object({
 
 export const shareListSchema = z.object({
   userId: z.string(),
+  parentListUserId: z.string(),
   listTitle: z.string(),
   listId: z.string(),
   items: z.array(
