@@ -149,6 +149,13 @@ const HomePageLayout: NextPage = () => {
   if (isError)
     return <div>Error fetching the lists. Please try again later.</div>;
 
+  {
+    /* feature item loader */
+  }
+  if (!featuredLists) {
+    return <div>Loading...</div>; // or null, or any other component
+  }
+
   return (
     <AnimatePresence mode="wait" initial={false}>
       <div className="flex h-screen w-full flex-col justify-between">
@@ -265,26 +272,28 @@ const HomePageLayout: NextPage = () => {
                   Featured Lists
                 </p>
                 <ul className="grid grid-cols-2 items-center justify-center gap-0 md:grid-cols-3 lg:grid-cols-4">
-                  {/* feature item loader */}
-                  {isFeaturedItemsLoading ? (
-                    <div>Loading Featured Items...</div>
-                  ) : null}
                   {/* featured lists/items */}
-                  {featuredLists
-                    ? featuredLists.map((list, index) => (
-                        <li
-                          className="col-span-1 items-center justify-center p-0.5"
-                          key={list.title}
-                        >
+                  {featuredLists && featuredLists.length > 0 ? (
+                    featuredLists.map((list, index) => (
+                      <li
+                        className="col-span-1 items-center justify-center p-0.5"
+                        key={list.title}
+                      >
+                        {list.title ? (
                           <FeaturedItemCard
                             title={list.title}
                             index={index}
-                            featuredItems={featuredItems}
                             featuredLists={featuredLists}
+                            featuredItems={featuredItems}
                           />
-                        </li>
-                      ))
-                    : null}
+                        ) : (
+                          <div>No title available for this list</div>
+                        )}
+                      </li>
+                    ))
+                  ) : (
+                    <div>No Featured lists Available at this time</div>
+                  )}
                 </ul>
               </div>
             </div>
