@@ -144,7 +144,7 @@ const HomePageLayout: NextPage = () => {
     },
     {
       id: "list3",
-      title: "Favorite breakup songs",
+      title: "Favorite Taylor Swizzle Songs",
       category: "Music",
       userId: "userIdAdmin1",
       img: "https://assets.teenvogue.com/photos/637e51fbebf13d8100c6e3a0/4:3/w_2608,h_1956,c_limit/163644955",
