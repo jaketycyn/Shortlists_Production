@@ -1,5 +1,4 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import counterReducer from "../slices/counterSlice";
 import itemSlice from "../slices/itemSlice";
 import listSlice from "../slices/listSlice";
 import userSlice from "../slices/usersSlice";
@@ -41,7 +40,6 @@ const persistConfig = {
 
 //place reducers here
 const rootReducer = combineReducers({
-  counter: counterReducer,
   error: errorSlice,
   item: itemSlice,
   list: listSlice,
