@@ -108,111 +108,30 @@ const HomePageLayout: NextPage = () => {
     await dispatch(setActiveList(activeList));
   };
 
-  // Featured List Test Data
+  //Find Featured Lists/Items from DB
+  //use Admin User Id for now
+  const adminUserId = "cllvfh9nj0006w3jw8qligiap";
 
-  // query for featuredLists && featuredListitems from DB:
+  const { data: adminLists } = trpc.userList.getListsByUserId.useQuery({
+    userId: adminUserId,
+  });
 
-  type ListType = {
-    id: string;
-    title: string;
-    category: string;
-    userId: string;
-    img: string;
-  };
+  const featuredLists = adminLists?.filter((list) => list.archive !== "trash");
 
-  type ItemType = {
-    title: string;
-    id: string;
-    userId: string;
-    listId: string;
-  };
+  // loop through list Ids and get items from those lists
+  const { data: featuredItems, isLoading: isFeaturedItemsLoading } =
+    trpc.userItem.getFeaturedItemsByListId.useQuery({
+      userId: adminUserId,
+      listIds: featuredLists?.map((list) => list.id) || [],
+    });
 
-  const featuredLists: ListType[] = [
-    {
-      id: "list1",
-      title: "Top 10 Marvel Movies",
-      category: "Movies",
-      userId: "userIdAdmin1",
-      img: "https://parade.com/.image/c_limit%2Ccs_srgb%2Cq_auto:good%2Cw_620/MTk3MzM3ODU4NTU2NTY4Nzc1/marveldisney.webp",
-    },
-    {
-      id: "list2",
-      title: "Best Shows like Game of Thrones",
-      category: "TV Shows",
-      userId: "userIdAdmin1",
-      img: "https://media.newyorker.com/photos/5cae6ad5671c64058676f05c/master/w_2560%2Cc_limit/Larson-GameofThronesPreview.jpg",
-    },
-    {
-      id: "list3",
-      title: "Favorite Taylor Swizzle Songs",
-      category: "Music",
-      userId: "userIdAdmin1",
-      img: "https://assets.teenvogue.com/photos/637e51fbebf13d8100c6e3a0/4:3/w_2608,h_1956,c_limit/163644955",
-    },
-    {
-      id: "list4",
-      title: "NBA best players",
-      category: "Sports",
-      userId: "userIdAdmin1",
-      img: "https://img.buzzfeed.com/buzzfeed-static/complex/images/fcy36om1zuyfqaq3wbu0/best-nba-players-ever.jpg",
-    },
-  ];
+  // console.log("first featuredItems: ", featuredItems);
 
-  const featuredItems: ItemType[] = [
-    {
-      title: "Avengers: Endgame",
-      id: "item1",
-      userId: "userIdAdmin1",
-      listId: "list1",
-    },
-    {
-      title: "Black Panther",
-      id: "item2",
-      userId: "userIdAdmin1",
-      listId: "list1",
-    },
-    {
-      title: "Breaking Bad",
-      id: "item3",
-      userId: "userIdAdmin1",
-      listId: "list2",
-    },
-    {
-      title: "Vikings",
-      id: "item4",
-      userId: "userIdAdmin1",
-      listId: "list2",
-    },
-    {
-      title: "Someone Like You - Adele",
-      id: "item5",
-      userId: "userIdAdmin1",
-      listId: "list3",
-    },
-    {
-      title: "I Will Survive - Gloria Gaynor",
-      id: "item6",
-      userId: "userIdAdmin1",
-      listId: "list3",
-    },
-    {
-      title: "LeBron James",
-      id: "item7",
-      userId: "userIdAdmin1",
-      listId: "list4",
-    },
-    {
-      title: "Kevin Durant",
-      id: "item8",
-      userId: "userIdAdmin1",
-      listId: "list4",
-    },
-  ];
-
-  //  Logout jUst for now:
   const handleSignOut = () => {
     signOut({ callbackUrl: "/" });
   };
+
+  //!! get all users for now:
 
   useEffect(() => {
     console.log("activePage:", activePage, "pageLimit:", pageLimit);
@@ -338,19 +257,26 @@ const HomePageLayout: NextPage = () => {
                   Featured Lists
                 </p>
                 <ul className="grid grid-cols-2 items-center justify-center gap-0 md:grid-cols-3 lg:grid-cols-4">
-                  {featuredLists.map((list, index) => (
-                    <li
-                      className="col-span-1 items-center justify-center p-0.5"
-                      key={list.title}
-                    >
-                      <FeaturedItemCard
-                        title={list.title}
-                        index={index}
-                        featuredItems={featuredItems}
-                        featuredLists={featuredLists}
-                      />
-                    </li>
-                  ))}
+                  {/* feature item loader */}
+                  {isFeaturedItemsLoading ? (
+                    <div>Loading Featured Items...</div>
+                  ) : null}
+                  {/* featured lists/items */}
+                  {featuredLists
+                    ? featuredLists.map((list, index) => (
+                        <li
+                          className="col-span-1 items-center justify-center p-0.5"
+                          key={list.title}
+                        >
+                          <FeaturedItemCard
+                            title={list.title}
+                            index={index}
+                            featuredItems={featuredItems}
+                            featuredLists={featuredLists}
+                          />
+                        </li>
+                      ))
+                    : null}
                 </ul>
               </div>
             </div>

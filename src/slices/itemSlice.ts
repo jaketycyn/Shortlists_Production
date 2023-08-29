@@ -24,6 +24,7 @@ export interface Item {
   label?: string;
   year?: number;
   //movie item optional props
+  director?: string;
   //book item optional props
   //game item optional props
   //tv item optional props

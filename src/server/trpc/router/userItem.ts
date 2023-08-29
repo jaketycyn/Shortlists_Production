@@ -133,6 +133,42 @@ export const userItemRouter = router({
         message: "Archived user items successfully",
       };
     }),
+  getItems: protectedProcedure
+    .input(z.object({ listId: z.string() }))
+    .query(({ input, ctx }) => {
+      //console.log("user.id: ", ctx.session.user.id);
+      const { listId } = input;
+      const results = ctx.prisma.userItem.findMany({
+        where: { userId: ctx.session.user.id, listId: listId },
+      });
+
+      //way to convert results .createdAT property from Date to string() - It's created as DateTime but when brought in via prisma it converts to Date object.
+
+      console.log("results within GETITEMS: ", results);
+
+      return results;
+      // return {
+      //   status: 201,
+      //   message: "Retrieved user lists successfully",
+      //   items: { results },
+      // };
+    }),
+  getFeaturedItemsByListId: protectedProcedure
+    .input(z.object({ userId: z.string(), listIds: z.array(z.string()) }))
+    .query(async ({ input, ctx }) => {
+      const { userId, listIds } = input;
+
+      const results = await ctx.prisma.userItem.findMany({
+        where: {
+          userId,
+          listId: {
+            in: listIds, // Using the 'in' operator for array of listIds
+          },
+        },
+      });
+
+      return results;
+    }),
   updateManyItemsRank: protectedProcedure
     .input(updateItemsRankSchema)
     .mutation(async ({ ctx, input }) => {
@@ -169,27 +205,6 @@ export const userItemRouter = router({
       //   message: "Updated useritem - currentRank successfully",
       // };
     }),
-  getItems: protectedProcedure
-    .input(z.object({ listId: z.string() }))
-    .query(({ input, ctx }) => {
-      //console.log("user.id: ", ctx.session.user.id);
-      const { listId } = input;
-      const results = ctx.prisma.userItem.findMany({
-        where: { userId: ctx.session.user.id, listId: listId },
-      });
-
-      //way to convert results .createdAT property from Date to string() - It's created as DateTime but when brought in via prisma it converts to Date object.
-
-      console.log("results within GETITEMS: ", results);
-
-      return results;
-      // return {
-      //   status: 201,
-      //   message: "Retrieved user lists successfully",
-      //   items: { results },
-      // };
-    }),
-
   //   deleteList: protectedProcedure
   //     .input(deleteListSchema)
   //     .mutation(async ({ ctx, input }) => {

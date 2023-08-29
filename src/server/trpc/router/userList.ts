@@ -5,8 +5,10 @@ import {
   deleteListSchema,
   shareListSchema,
   updateListSchema,
+  getListsByUserIdSchema,
 } from "../../schema/listSchema";
 import { title } from "process";
+import { getLists } from "../../../slices/listSlice";
 
 export const userListRouter = router({
   addList: protectedProcedure
@@ -42,6 +44,18 @@ export const userListRouter = router({
     //   lists: { results },
     // };
   }),
+  getListsByUserId: protectedProcedure
+    .input(getListsByUserIdSchema)
+    .query(async ({ input, ctx }) => {
+      const { userId } = input;
+
+      const results = await ctx.prisma.userList.findMany({
+        where: { userId },
+      });
+
+      return results;
+    }),
+
   archiveList: protectedProcedure
     .input(archiveListSchema)
     .mutation(async ({ ctx, input }) => {
