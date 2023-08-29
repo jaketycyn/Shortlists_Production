@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { Resolver } from "react-hook-form";
 
 import { shareListSchema } from "../../server/schema/listSchema";
+import { useDebounce } from "./useDebounce";
 
 const SearchUserShareList = () => {
   const { data: session, status } = useSession();
@@ -16,57 +17,37 @@ const SearchUserShareList = () => {
   const { activeList, error, loading } = useAppSelector((state) => state.list);
 
   // Debounce Search Users Input
-  type Timer = ReturnType<typeof setTimeout>;
+  // type Timer = ReturnType<typeof setTimeout>;
   //type SomeFunction = (...args: any[]) => void;
-
-  function useDebounce<T>(value: T, delay: number): T {
-    const timer = useRef<T>();
-
-    //TODO: might need to change UseState to a ref to handle react batching
-    const [debouncedValue, setDebouncedValue] = useState<T>(value);
-    useEffect(
-      () => {
-        // Update debounced value after delay
-        const handler = setTimeout(() => {
-          setDebouncedValue(value);
-        }, delay);
-        // Cancel the timeout if value changes (also on delay change or unmount)
-        // This is how we prevent debounced value from updating if value is changed ...
-        // .. within the delay period. Timeout gets cleared and restarted.
-        return () => {
-          clearTimeout(handler);
-        };
-      },
-      [value, delay] // Only re-call effect if value or delay changes
-    );
-
-    return debouncedValue;
-  }
 
   const debouncedSearchTerm: string = useDebounce<string>(searchTerm, 500);
   //console.log("debouncedSearchTerm: ", debouncedSearchTerm);
 
+  interface User {
+    id: string;
+    name: string;
+    email: string;
+    [key: string]: any;
+  }
+
   useEffect(() => {
     if (debouncedSearchTerm) {
-      const filteredUsers = usersNotCurrent?.filter((user) => {
-        // Exclude the user with the username 'admin'
-        // if (user.username == "admin") {
-        //   return false;
-        // }
+      const filteredUsers = usersNotCurrent?.filter((user: User) => {
+        const fieldsToSearch = ["name", "email"]; // Add more fields if needed
 
-        const valuesToSearch = Object.entries(user)
-          .filter(([key]) => key !== "id" && key !== "email")
-          // exclude the 'id' field
-          .map(([_, value]) => value)
-          .join("")
-          .toLowerCase();
-        return valuesToSearch.includes(debouncedSearchTerm.toLowerCase());
+        for (const field of fieldsToSearch) {
+          if (
+            user[field]
+              .toLowerCase()
+              .includes(debouncedSearchTerm.toLowerCase())
+          ) {
+            return true;
+          }
+        }
+        return false;
       });
 
       setFilteredResults(filteredUsers);
-      //console.log("filteredUsers: ", filteredUsers);
-
-      //searchdata
     } else {
       setFilteredResults([]);
     }
@@ -213,7 +194,7 @@ const SearchUserShareList = () => {
                         </div>
                         <div className=" row-start-1 min-w-0 flex-1 ">
                           <p className="truncate text-sm font-medium ">
-                            {user.username}
+                            {user.name}
                           </p>
                           <p className="mr-4 truncate text-sm">{user.email}</p>
                           {/* <p className="truncate text-sm ">{user.status}</p> */}
