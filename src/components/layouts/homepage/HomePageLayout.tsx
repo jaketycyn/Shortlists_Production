@@ -28,6 +28,7 @@ import {
 import MoviePageLayout from "../moviePage/MoviePageLayout";
 import FeaturedItemCard from "../../cards/FeaturedItemCard";
 import { signOut } from "next-auth/react";
+import { setUsers } from "../../../slices/usersSlice";
 
 const HomePageLayout: NextPage = () => {
   const router = useRouter();
@@ -41,6 +42,7 @@ const HomePageLayout: NextPage = () => {
   const hasGlobalError = useAppSelector((state) => state.error.hasError);
   const { lists } = useAppSelector((state) => state.list);
   const { activePage, pageLimit } = useAppSelector((state) => state.page);
+  const { users } = useAppSelector((state) => state.user);
 
   const {
     data: results,
@@ -132,6 +134,12 @@ const HomePageLayout: NextPage = () => {
   };
 
   //!! get all users for now:
+  const { data: usersFromTrpc } = trpc.user.getAllUsers.useQuery();
+  useEffect(() => {
+    if (usersFromTrpc) {
+      dispatch(setUsers(usersFromTrpc.results));
+    }
+  }, [usersFromTrpc, dispatch]);
 
   useEffect(() => {
     console.log("activePage:", activePage, "pageLimit:", pageLimit);
