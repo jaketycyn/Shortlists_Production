@@ -4,6 +4,9 @@ import { trpc } from "../../utils/trpc";
 import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import { setListsLoading } from "../../slices/listSlice";
+import ConfirmationModal from "../modals/ConfirmationModal";
+import Toast from "../toasts/ProgressToast";
+import ProgressToast from "../toasts/ProgressToast";
 
 // abusing null/undefined for now will need to fix later
 
@@ -52,6 +55,8 @@ const FeaturedItemCard = ({
   const { data: session, status } = useSession();
   const dispatch = useDispatch();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isConfirmOpen, setConfirmOpen] = useState(false);
+  const [isToastVisible, setToastVisible] = useState(false);
   const currentList = featuredLists!.find((list) => list.title === title);
   const backgroundImage = currentList ? currentList.coverImage : "";
 
@@ -80,22 +85,9 @@ const FeaturedItemCard = ({
   const { mutateAsync: mutateAsyncCopyFeatureList } =
     trpc.userList.shareList.useMutation();
 
-  const handleAddList = async (list: any) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to add a new list?"
-    );
-
-    if (isConfirmed) {
-      // Mock targeting a database
-      console.log("New list has been added.");
-      console.log("list", list);
-
-      console.log(
-        "finding Items belonging to current list: ",
-        filterItemsByList(list.id)
-      );
-
-      console.log("featuredItems: ", featuredItems);
+  const handleAddList = async () => {
+    setConfirmOpen(true);
+    if (isConfirmOpen) {
       const currentListItems = featuredItems.filter(
         (i) => i.listId === currentList?.id
       );
@@ -109,10 +101,15 @@ const FeaturedItemCard = ({
             listTitle: currentList.title!,
             items: currentListItems,
           };
-
+          //process data
           const result = await mutateAsyncCopyFeatureList(data);
+
+          //show toast
+          setToastVisible(true);
+
+          //close modal & cleanup
           setTimeout(() => {
-            alert("List has been copied!");
+            setToastVisible(false);
             dispatch(setListsLoading(true));
             setModalOpen(false);
           }, 2000);
@@ -145,42 +142,63 @@ const FeaturedItemCard = ({
       >
         {title}
       </p>
+
       {isModalOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black bg-opacity-70"
-          onClick={handleClose}
-        >
+        <div>
           <div
-            className="absolute left-1/2 top-1/2 h-4/5 w-4/5 -translate-x-1/2 -translate-y-1/2 transform overflow-y-auto bg-white p-5"
-            onClick={stopPropagation}
+            className="fixed inset-0 z-40 bg-black bg-opacity-70"
+            onClick={handleClose}
           >
-            <div className="flex w-full flex-col items-center justify-center ">
-              <h2 className="pb-2 text-center text-2xl font-bold">{title}</h2>
-              <div className="flex flex-row gap-10 pb-4">
-                <button
-                  className="w-32 rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                  onClick={() => handleAddList(currentList)}
-                >
-                  + Add List
-                </button>
-                {/* //TODO add in share button feature in the future */}
-                {/* <button className="w-32 rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+            <div className="fixed z-50 flex w-full flex-col items-center justify-center bg-opacity-40 pt-40">
+              <ProgressToast message="Adding List" visible={isToastVisible} />
+            </div>
+            {/* Progress Toast - Start */}
+
+            {/* Progress Toast - End */}
+            <div
+              className="absolute left-1/2 top-1/2 h-4/5 w-4/5 -translate-x-1/2 -translate-y-1/2 transform overflow-y-auto bg-white p-5"
+              onClick={stopPropagation}
+            >
+              <div className="flex w-full flex-col items-center justify-center ">
+                <h2 className="pb-2 text-center text-2xl font-bold">{title}</h2>
+                <div className="flex flex-row gap-10 pb-4">
+                  <button
+                    className="w-32 rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                    onClick={() => setConfirmOpen(true)}
+                    data-testid="add-list-button"
+                  >
+                    + Add List
+                  </button>
+
+                  <ConfirmationModal
+                    title="Confirmation"
+                    message="Are you sure you want to add this list?"
+                    onConfirm={handleAddList}
+                    onCancel={() => console.log("cancelled")}
+                    isOpen={isConfirmOpen}
+                    setIsOpen={setConfirmOpen}
+                  />
+
+                  {/* //TODO add in share button feature in the future */}
+                  {/* <button className="w-32 rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
                   Share
                 </button> */}
+                </div>
+
+                <ul className="w-full space-y-1 ">
+                  {featuredItems
+                    ? featuredItems
+                        .filter((item) => item.listId === currentList?.id)
+                        .map((item) => (
+                          <div key={item.id} className="w-full grow-0 ">
+                            <li className="rounded-lg border  border-gray-300 bg-zinc-200 p-2 text-center font-semibold">
+                              {item.title}
+                            </li>
+                          </div>
+                        ))
+                    : null}
+                </ul>
               </div>
-              <ul className="w-full space-y-1 ">
-                {featuredItems
-                  ? featuredItems
-                      .filter((item) => item.listId === currentList?.id)
-                      .map((item) => (
-                        <div key={item.id} className="w-full grow-0 ">
-                          <li className="rounded-lg border  border-gray-300 bg-zinc-200 p-2 text-center font-semibold">
-                            {item.title}
-                          </li>
-                        </div>
-                      ))
-                  : null}
-              </ul>
             </div>
           </div>
         </div>
