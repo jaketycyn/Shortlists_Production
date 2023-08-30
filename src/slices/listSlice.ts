@@ -4,30 +4,37 @@ import { trpc } from "../utils/trpc";
 
 // individual list
 export interface List {
-  id: string;
-  userId: string;
-  title: string;
-  archive: string;
-  //This date will force a serialization error every time Will need to be converted to a string later or omitted on storage.
+  archive: string | null;
   createdAt: Date;
-  parentListId: string | undefined;
-  parentListUserId: string | undefined;
+  id: string;
+  parentListId: string | undefined | null;
+  parentListUserId: string | undefined | null;
+  title: string | null;
+  userId: string;
+  //This date will force a serialization error every time Will need to be converted to a string later or omitted on storage.
+}
+
+// feature list
+export interface FeaturedList extends List {
+  coverImage: string;
 }
 
 //the entire Lists state (all things attributed to lists)
 export interface ListState {
-  lists: null | List[];
   activeList: undefined | List;
-  loading: boolean;
   error: any;
+  featuredLists: null | FeaturedList[];
+  lists: null | List[];
+  loading: boolean;
 }
 
 //initializing state preloading of any data
 const initialState: ListState = {
-  lists: null,
   activeList: undefined,
-  loading: false,
   error: null,
+  featuredLists: null,
+  lists: null,
+  loading: false,
 };
 
 // ACTIONS
@@ -46,16 +53,33 @@ export const getLists = createAsyncThunk(
   }
 );
 
+export const getFeaturedLists = createAsyncThunk(
+  "lists/getFeaturedLists",
+  async (adminUserId: string, thunkApi) => {
+    try {
+      const response = await trpc.userList.getListsByUserId.useQuery({
+        userId: adminUserId,
+      });
+      return response.data?.filter((list) => list.archive !== "trash");
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  }
+);
+
 // SLICE
 export const listSlice = createSlice({
   name: "lists",
   initialState,
   reducers: {
-    setLists: (state, action: PayloadAction<List[]>) => {
-      state.lists = action.payload;
-    },
     setActiveList: (state, action: PayloadAction<any>) => {
       state.activeList = action.payload;
+    },
+    setFeaturedLists: (state, action: PayloadAction<FeaturedList[]>) => {
+      state.featuredLists = action.payload;
+    },
+    setLists: (state, action: PayloadAction<List[]>) => {
+      state.lists = action.payload;
     },
     setListsLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
@@ -63,6 +87,25 @@ export const listSlice = createSlice({
   },
   extraReducers(builder) {
     builder
+      // getFeaturedLists
+      .addCase(getFeaturedLists.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        getFeaturedLists.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.featuredLists = action.payload;
+        }
+      )
+      .addCase(
+        getFeaturedLists.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
+      )
+      // getLists
       .addCase(getLists.pending, (state) => {
         state.loading = true;
       })
@@ -78,4 +121,5 @@ export const listSlice = createSlice({
 });
 
 export default listSlice.reducer;
-export const { setLists, setActiveList, setListsLoading } = listSlice.actions;
+export const { setActiveList, setFeaturedLists, setLists, setListsLoading } =
+  listSlice.actions;

@@ -86,11 +86,11 @@ const SearchUserShareList = () => {
         console.log("filteredItems: ", filteredItems);
 
         const data = {
-          userId: userId,
-          parentListUserId: activeList.userId,
-          listId: activeList.id,
-          listTitle: activeList.title,
-          items: filteredItems,
+          userId: userId ?? "",
+          parentListUserId: activeList.userId ?? "",
+          listId: activeList.id ?? "",
+          listTitle: activeList.title ?? "",
+          items: filteredItems ?? "",
         };
 
         const result = await mutateAsync(data);
@@ -103,10 +103,10 @@ const SearchUserShareList = () => {
         }
       } else {
         const data = {
-          userId: userId,
-          parentListUserId: activeList.userId,
-          listId: activeList.id,
-          listTitle: activeList.title,
+          userId: userId ?? "",
+          parentListUserId: activeList.userId ?? "",
+          listId: activeList.id ?? "",
+          listTitle: activeList.title ?? "",
           items: [],
         };
 

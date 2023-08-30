@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import SearchUserShareList from "../search/SearchUserShareList";
 
-export const ListHeader = ({ title }: { title: string | undefined }) => {
+export const ListHeader = ({ title }: { title: string | undefined | null }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);

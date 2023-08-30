@@ -1,8 +1,5 @@
 import type { NextPage } from "next";
-import MovieList from "../../page/movies/Movielist";
-import { motion } from "framer-motion";
-import SmallCarousel from "../../carousels/SmallCarousel";
-import MovieListCard from "../../cards/MovieListCard";
+import FeaturedItemMovieCard from "../../cards/FeaturedItemMovieCard";
 
 const MoviePageLayout: NextPage = () => {
   // test movieDB
@@ -255,15 +252,34 @@ const MoviePageLayout: NextPage = () => {
       <h1>MoviePage info</h1>
       {/* Header Section - End */}
       {/* Featured MovieLists Section - Start */}
-      <div className=" flex w-full items-center justify-center">
-        {/* SmallCarousel Test - Start */}
-        {/* <SmallCarousel>
-          {lists.map((list) => (
-            <MovieListCard key={list.id} title={list.title} />
-          ))}
-        </SmallCarousel> */}
-        {/* SmallCarousel Test - End */}
-      </div>
+      {/* <div className="pt-4">
+        <p className="font-semiBold items-center pb-4 text-center text-xl">
+          Featured Lists
+        </p>
+        <ul className="grid grid-cols-2 items-center justify-center gap-0 md:grid-cols-3 lg:grid-cols-4">
+          {featuredLists && featuredLists.length > 0 ? (
+            featuredLists.map((list, index) => (
+              <li
+                className="col-span-1 items-center justify-center p-0.5"
+                key={list.title}
+              >
+                {list.title ? (
+                  <FeaturedItemMovieCard
+                    title={list.title}
+                    index={index}
+                    featuredLists={featuredLists}
+                    featuredItems={featuredItems}
+                  />
+                ) : (
+                  <div>No title available for this list</div>
+                )}
+              </li>
+            ))
+          ) : (
+            <div>No Featured lists Available at this time</div>
+          )}
+        </ul>
+      </div> */}
       {/* Featured MovieLists Section - End */}
     </div>
   );
