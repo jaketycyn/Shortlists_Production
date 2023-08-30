@@ -4,6 +4,9 @@ import { trpc } from "../../utils/trpc";
 import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import { setListsLoading } from "../../slices/listSlice";
+import ConfirmationModal from "../modals/ConfirmationModal";
+import Toast from "../toasts/ProgressToast";
+import ProgressToast from "../toasts/ProgressToast";
 
 // abusing null/undefined for now will need to fix later
 
@@ -52,6 +55,8 @@ const FeaturedItemCard = ({
   const { data: session, status } = useSession();
   const dispatch = useDispatch();
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isConfirmOpen, setConfirmOpen] = useState(false);
+  const [isToastVisible, setToastVisible] = useState(false);
   const currentList = featuredLists!.find((list) => list.title === title);
   const backgroundImage = currentList ? currentList.coverImage : "";
 
@@ -73,25 +78,16 @@ const FeaturedItemCard = ({
     setModalOpen(false);
   };
 
+  const stopPropagation = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
   const { mutateAsync: mutateAsyncCopyFeatureList } =
     trpc.userList.shareList.useMutation();
 
-  const handleAddList = async (list: any) => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to add a new list?"
-    );
-
-    if (isConfirmed) {
-      // Mock targeting a database
-      console.log("New list has been added.");
-      console.log("list", list);
-
-      console.log(
-        "finding Items belonging to current list: ",
-        filterItemsByList(list.id)
-      );
-
-      console.log("featuredItems: ", featuredItems);
+  const handleAddList = async () => {
+    setConfirmOpen(true);
+    if (isConfirmOpen) {
       const currentListItems = featuredItems.filter(
         (i) => i.listId === currentList?.id
       );
@@ -105,12 +101,18 @@ const FeaturedItemCard = ({
             listTitle: currentList.title!,
             items: currentListItems,
           };
-
+          //process data
           const result = await mutateAsyncCopyFeatureList(data);
+
+          //show toast
+          setToastVisible(true);
+
+          //close modal & cleanup
           setTimeout(() => {
-            alert("List has been copied!");
+            setToastVisible(false);
             dispatch(setListsLoading(true));
-          }, 1000);
+            setModalOpen(false);
+          }, 2000);
 
           console.log("data: ", data);
         } catch (error) {
@@ -135,56 +137,68 @@ const FeaturedItemCard = ({
     >
       <div className="absolute inset-0 rounded-lg bg-black opacity-50"></div>
       <p
-        className="truncate-2-lines font-inter relative z-10 w-full text-center text-lg font-semibold text-white"
+        className="truncate-2-lines font-inter relative z-10 w-full px-4 py-2 text-center text-xl font-semibold leading-relaxed tracking-wider text-white"
         onClick={handleClick}
       >
         {title}
       </p>
+
       {isModalOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
-            zIndex: 1000,
-          }}
-          onClick={handleClose}
-        >
+        <div>
           <div
-            style={{
-              width: "80%",
-              height: "80%",
-              position: "absolute",
-              top: "10%",
-              left: "10%",
-              backgroundColor: "white",
-              overflowY: "auto",
-              padding: "20px",
-            }}
+            className="fixed inset-0 z-40 bg-black bg-opacity-70"
+            onClick={handleClose}
           >
-            <div className="flex flex-col items-center justify-center">
-              <div className="flex flex-row gap-10">
-                <button
-                  className="rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                  onClick={() => handleAddList(currentList)}
-                >
-                  + Add List
-                </button>
-                <button className="rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+            <div className="fixed z-50 flex w-full flex-col items-center justify-center bg-opacity-40 pt-40">
+              <ProgressToast message="Adding List" visible={isToastVisible} />
+            </div>
+            {/* Progress Toast - Start */}
+
+            {/* Progress Toast - End */}
+            <div
+              className="absolute left-1/2 top-1/2 h-4/5 w-4/5 -translate-x-1/2 -translate-y-1/2 transform overflow-y-auto bg-white p-5"
+              onClick={stopPropagation}
+            >
+              <div className="flex w-full flex-col items-center justify-center ">
+                <h2 className="pb-2 text-center text-2xl font-bold">{title}</h2>
+                <div className="flex flex-row gap-10 pb-4">
+                  <button
+                    className="w-32 rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                    onClick={() => setConfirmOpen(true)}
+                    data-testid="add-list-button"
+                  >
+                    + Add List
+                  </button>
+
+                  <ConfirmationModal
+                    title="Confirmation"
+                    message="Are you sure you want to add this list?"
+                    onConfirm={handleAddList}
+                    onCancel={() => console.log("cancelled")}
+                    isOpen={isConfirmOpen}
+                    setIsOpen={setConfirmOpen}
+                  />
+
+                  {/* //TODO add in share button feature in the future */}
+                  {/* <button className="w-32 rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
                   Share
-                </button>
+                </button> */}
+                </div>
+
+                <ul className="w-full space-y-1 ">
+                  {featuredItems
+                    ? featuredItems
+                        .filter((item) => item.listId === currentList?.id)
+                        .map((item) => (
+                          <div key={item.id} className="w-full grow-0 ">
+                            <li className="rounded-lg border  border-gray-300 bg-zinc-200 p-2 text-center font-semibold">
+                              {item.title}
+                            </li>
+                          </div>
+                        ))
+                    : null}
+                </ul>
               </div>
-              <h2 className="text-center">{`Items belonging to List: ${title}`}</h2>
-              <ul>
-                {featuredItems
-                  ? featuredItems
-                      .filter((item) => item.listId === currentList?.id)
-                      .map((item) => <li key={item.id}>{item.title}</li>)
-                  : null}
-              </ul>
             </div>
           </div>
         </div>
