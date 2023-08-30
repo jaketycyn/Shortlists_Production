@@ -54,7 +54,7 @@ const HomePageLayout: NextPage = () => {
   );
   const { activePage, pageLimit } = useAppSelector((state) => state.page);
 
-  console.log("featuredLists: ", featuredLists);
+  //console.log("featuredLists: ", featuredLists);
 
   const { users } = useAppSelector((state) => state.user);
 
@@ -139,7 +139,7 @@ const HomePageLayout: NextPage = () => {
 
   //set Active List in Redux
   const setActiveListFunction = async (activeList: List) => {
-    console.log("activeList: ", activeList);
+    //console.log("activeList: ", activeList);
     await dispatch(setActiveList(activeList));
   };
 
@@ -150,18 +150,6 @@ const HomePageLayout: NextPage = () => {
   const { data: adminLists } = trpc.userList.getListsByUserId.useQuery({
     userId: adminUserId,
   });
-
-  useEffect(() => {
-    if (adminLists) {
-      console.log("about to filter", adminLists);
-
-      const featuredListsData = adminLists?.filter(
-        (list) => list.archive !== "trash"
-      );
-
-      dispatch(setFeaturedLists(featuredListsData as FeaturedList[]));
-    }
-  }, [dispatch, adminLists]);
 
   // loop through list Ids and get items from those lists
   const { data: featuredItems, isLoading: isFeaturedItemsLoading } =
@@ -182,17 +170,27 @@ const HomePageLayout: NextPage = () => {
   //   dispatch(getFeaturedLists(adminUserId));
   // }, [dispatch]);
 
-  //!! get all users for now:
+  //! UseEffects
+
+  useEffect(() => {
+    if (adminLists) {
+      //console.log("about to filter", adminLists);
+
+      const featuredListsData = adminLists?.filter(
+        (list) => list.archive !== "trash"
+      );
+
+      dispatch(setFeaturedLists(featuredListsData as FeaturedList[]));
+    }
+  }, [dispatch, adminLists]);
+
+  //! get all users for now:
   const { data: usersFromTrpc } = trpc.user.getAllUsers.useQuery();
   useEffect(() => {
     if (usersFromTrpc) {
       dispatch(setUsers(usersFromTrpc.results));
     }
   }, [usersFromTrpc, dispatch]);
-
-  useEffect(() => {
-    console.log("activePage:", activePage, "pageLimit:", pageLimit);
-  }, [activePage, pageLimit]);
 
   if (isLoading) return <div>Loading ...</div>;
   if (isError)
@@ -327,6 +325,7 @@ const HomePageLayout: NextPage = () => {
                       <li
                         className="col-span-1 items-center justify-center p-0.5"
                         key={list.id}
+                        data-testid={`featured-item-${index}`}
                       >
                         {list.title ? (
                           <FeaturedItemCard
