@@ -17,6 +17,7 @@ export interface List {
 // feature list
 export interface FeaturedList extends List {
   coverImage: string;
+  category?: string;
 }
 
 //the entire Lists state (all things attributed to lists)

@@ -44,7 +44,7 @@ interface FeaturedItemCardProps {
   featuredLists: ListType[];
 }
 
-const FeaturedItemCard = ({
+const FeaturedMovieItemCard = ({
   title,
   index,
   featuredItems = [],
@@ -207,4 +207,4 @@ const FeaturedItemCard = ({
   );
 };
 
-export default FeaturedItemCard;
+export default FeaturedMovieItemCard;
