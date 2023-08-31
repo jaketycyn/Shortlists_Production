@@ -21,7 +21,6 @@ import {
   type List,
   type FeaturedList,
   setListsLoading,
-  getFeaturedLists,
   setFeaturedLists,
 } from "../../../slices/listSlice";
 
@@ -46,12 +45,14 @@ const HomePageLayout: NextPage = () => {
   const [openPageTab, setPageOpenTab] = React.useState(0);
   const [userListsOpen] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   //get error state from Redux
   const hasGlobalError = useAppSelector((state) => state.error.hasError);
   const { lists, loading, featuredLists } = useAppSelector(
     (state) => state.list
   );
+
   const { activePage, pageLimit } = useAppSelector((state) => state.page);
 
   //console.log("featuredLists: ", featuredLists);
@@ -71,15 +72,15 @@ const HomePageLayout: NextPage = () => {
     const fetchData = async () => {
       try {
         await refetch;
-        dispatch(setLists(fetchedLists));
-        setListsLoading(false);
+        await dispatch(setLists(fetchedLists));
+        await dispatch(setListsLoading(false));
       } catch (error) {
         console.error("An error has occured:", error);
-        setListsLoading(false);
       }
     };
+
     fetchData();
-  }, [dispatch, fetchedLists, hasGlobalError, loading]);
+  }, [dispatch, fetchedLists, loading]);
 
   // Delete Item
   const { mutateAsync } = trpc.userList.deleteList.useMutation();

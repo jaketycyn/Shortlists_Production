@@ -82,6 +82,8 @@ const FeaturedItemCard = ({
     e.stopPropagation();
   };
 
+  const { refetch } = trpc.userList.getLists.useQuery();
+
   const { mutateAsync: mutateAsyncCopyFeatureList } =
     trpc.userList.shareList.useMutation();
 
@@ -103,22 +105,18 @@ const FeaturedItemCard = ({
           };
           //process data
           const result = await mutateAsyncCopyFeatureList(data);
-
+          refetch();
           //show toast
           setToastVisible(true);
-
+          dispatch(setListsLoading(true));
           //close modal & cleanup
           setTimeout(() => {
-            setToastVisible(false);
-            dispatch(setListsLoading(true));
             setModalOpen(false);
-          }, 2000);
+          }, 1000);
 
           console.log("data: ", data);
         } catch (error) {
           console.error("Failed to copy list", error);
-        } finally {
-          dispatch(setListsLoading(false)); // Set loading to false after async operation
         }
       }
 
@@ -146,12 +144,9 @@ const FeaturedItemCard = ({
       {isModalOpen && (
         <div>
           <div
-            className="fixed inset-0 z-40 bg-black bg-opacity-70"
+            className="fixed inset-0 z-20 bg-black bg-opacity-70"
             onClick={handleClose}
           >
-            <div className="fixed z-50 flex w-full flex-col items-center justify-center bg-opacity-40 pt-40">
-              <ProgressToast message="Adding List" visible={isToastVisible} />
-            </div>
             {/* Progress Toast - Start */}
 
             {/* Progress Toast - End */}
@@ -161,6 +156,12 @@ const FeaturedItemCard = ({
             >
               <div className="flex w-full flex-col items-center justify-center ">
                 <h2 className="pb-2 text-center text-2xl font-bold">{title}</h2>
+                <div className="relative z-50 flex w-full flex-col items-center justify-center bg-opacity-40">
+                  <ProgressToast
+                    message="Adding List"
+                    visible={isToastVisible}
+                  />
+                </div>
                 <div className="flex flex-row gap-10 pb-4">
                   <button
                     className="w-32 rounded-full bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
