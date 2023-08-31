@@ -9,7 +9,7 @@ interface ToastProps {
 const ProgressToast: React.FC<ToastProps> = ({
   message,
   visible,
-  duration = 1600,
+  duration = 500,
 }) => {
   const [progress, setProgress] = useState(0);
 
@@ -38,12 +38,12 @@ const ProgressToast: React.FC<ToastProps> = ({
   return (
     <>
       {visible && (
-        <div className="z-100 fixed m-4 w-5/6 rounded border-2 border-black bg-slate-700 p-4 text-white">
+        <div className="fixed m-4 mt-20 w-5/6 rounded border-2 border-black bg-slate-700 p-4 text-white ">
           <h2 className="pb-4 text-center text-2xl font-bold">{message}</h2>
           <div className="relative pt-1">
             <div className="mb-2 flex items-center justify-between">
               <div className="w-1/2">
-                <span className="inline-block rounded-full bg-white px-2 py-1 text-xs font-semibold uppercase text-green-700">
+                <span className="inline-block rounded-full bg-white px-2 py-1 text-center text-xs font-semibold uppercase text-green-700">
                   Task in Progress
                 </span>
               </div>
