@@ -125,7 +125,8 @@ export const userListRouter = router({
     .mutation(async ({ input, ctx }) => {
       //! NEED ITEM VALUES
       //? Do I pass items with a parentItemId to attach everyitem to another item at one point?
-      const { userId, parentListUserId, listTitle, listId, items } = input;
+      const { userId, parentListUserId, listTitle, listId, items, category } =
+        input;
       console.log("items: ", items);
       //!Hardcoded itemTitle
 
@@ -148,6 +149,7 @@ export const userListRouter = router({
         console.log("FoundUser: ", FoundUser);
         console.log("ID: ", FoundUser?.id);
         console.log("items: ", items);
+        console.log("category: ", category);
         // with userId corresponding to targetEmail create a new list referencing the old listID, for the targetEmail user with its own unique ID
 
         const newList = await ctx.prisma.userList.create({
@@ -156,6 +158,7 @@ export const userListRouter = router({
             userId: FoundUser!.id,
             parentListId: listId,
             parentListUserId: parentListUserId,
+            category: category,
 
             // parentListId: listId,
           },

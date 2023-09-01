@@ -36,6 +36,7 @@ import MoviePageLayout from "../moviePage/MoviePageLayout";
 import FeaturedItemCard from "../../cards/FeaturedItemCard";
 import { signOut, useSession } from "next-auth/react";
 import { setUsers } from "../../../slices/usersSlice";
+import MusicPageLayout from "../musicPage/MusicPageLayout";
 
 const HomePageLayout: NextPage = () => {
   const { data: session } = useSession();
@@ -645,7 +646,7 @@ const HomePageLayout: NextPage = () => {
           {/* Television Page - Page 2 - End */}
           {/* Music Page - Page 2 - Start */}
           <div className={`page ${activePage === 3 ? "active" : "hidden"}`}>
-            <div>Music Page Placeholder</div>
+            <MusicPageLayout />
           </div>
           {/* Music Page - Page 2 - End */}
         </div>

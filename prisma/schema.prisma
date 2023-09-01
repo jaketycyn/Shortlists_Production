@@ -96,7 +96,7 @@ model UserList {
   parentListId     String?    @default("undefined")
   parentListUserId String?    @default("undefined")
   category         String?    @default("undefined")
-  coverImage       String?    @default("")
+  coverImage       String?    @default("undefined")
   UserItem         UserItem[]
   user             User       @relation(fields: [userId], references: [id])
 }

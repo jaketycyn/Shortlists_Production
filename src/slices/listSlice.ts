@@ -11,13 +11,13 @@ export interface List {
   parentListUserId: string | undefined | null;
   title: string | null;
   userId: string;
+  category?: string | undefined;
   //This date will force a serialization error every time Will need to be converted to a string later or omitted on storage.
 }
 
 // feature list
 export interface FeaturedList extends List {
   coverImage: string;
-  category?: string;
 }
 
 //the entire Lists state (all things attributed to lists)

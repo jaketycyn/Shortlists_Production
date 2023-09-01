@@ -91,6 +91,7 @@ const SearchUserShareList = () => {
           listId: activeList.id ?? "",
           listTitle: activeList.title ?? "",
           items: filteredItems ?? "",
+          category: activeList.category ?? "",
         };
 
         const result = await mutateAsync(data);
