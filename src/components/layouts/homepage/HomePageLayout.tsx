@@ -357,7 +357,7 @@ const HomePageLayout: NextPage = () => {
                 </p>
                 <ul className="grid grid-cols-2 items-center justify-center gap-0 md:grid-cols-3 lg:grid-cols-4">
                   {/* featured lists/items */}
-                  {featuredLists && featuredLists.length > 0 ? (
+                  {currentFeaturedLists && currentFeaturedLists.length > 0 ? (
                     currentFeaturedLists
                       .slice(0, 4)
                       .map((list: any, index: any) => (
