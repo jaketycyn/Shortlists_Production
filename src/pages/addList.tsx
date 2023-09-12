@@ -7,7 +7,7 @@ const AddListForm = dynamic(async () => await import("../components/AddList"), {
 function AddListPage() {
   return (
     <div>
-      <AddListForm />
+      <AddListForm category="" />
     </div>
   );
 }

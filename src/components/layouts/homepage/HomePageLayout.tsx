@@ -358,24 +358,26 @@ const HomePageLayout: NextPage = () => {
                 <ul className="grid grid-cols-2 items-center justify-center gap-0 md:grid-cols-3 lg:grid-cols-4">
                   {/* featured lists/items */}
                   {featuredLists && featuredLists.length > 0 ? (
-                    currentFeaturedLists.slice(0, 4).map((list, index) => (
-                      <li
-                        className="col-span-1 items-center justify-center p-0.5"
-                        key={list.id}
-                        data-testid={`featured-item-${index}`}
-                      >
-                        {list.title ? (
-                          <FeaturedItemCard
-                            title={list.title}
-                            index={index}
-                            featuredLists={featuredLists}
-                            featuredItems={featuredItems}
-                          />
-                        ) : (
-                          <div>No title available for this list</div>
-                        )}
-                      </li>
-                    ))
+                    currentFeaturedLists
+                      .slice(0, 4)
+                      .map((list: any, index: any) => (
+                        <li
+                          className="col-span-1 items-center justify-center p-0.5"
+                          key={list.id}
+                          data-testid={`featured-item-${index}`}
+                        >
+                          {list.title ? (
+                            <FeaturedItemCard
+                              title={list.title}
+                              index={index}
+                              featuredLists={featuredLists}
+                              featuredItems={featuredItems}
+                            />
+                          ) : (
+                            <div>No title available for this list</div>
+                          )}
+                        </li>
+                      ))
                   ) : (
                     <div>No Featured lists Available at this time</div>
                   )}

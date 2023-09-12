@@ -100,6 +100,7 @@ const FeaturedMovieItemCard = ({
             listId: currentList.id!,
             listTitle: currentList.title!,
             items: currentListItems,
+            category: currentList.category!,
           };
           //process data
           const result = await mutateAsyncCopyFeatureList(data);
