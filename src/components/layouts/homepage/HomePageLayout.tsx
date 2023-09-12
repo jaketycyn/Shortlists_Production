@@ -37,6 +37,7 @@ import FeaturedItemCard from "../../cards/FeaturedItemCard";
 import { signOut, useSession } from "next-auth/react";
 import { setUsers } from "../../../slices/usersSlice";
 import MusicPageLayout from "../musicPage/MusicPageLayout";
+import TelevisionPageLayout from "../televisionPage/TelevisionPageLayout";
 
 const HomePageLayout: NextPage = () => {
   const { data: session } = useSession();
@@ -353,6 +354,8 @@ const HomePageLayout: NextPage = () => {
           {/* Current Homepage - Page 0 - Start */}
           <div className={`page ${activePage === 0 ? "active" : "hidden"}`}>
             <div className="z-0 mt-12 flex  flex-col items-center justify-center rounded-md  text-black">
+              {/* HomePage Tab Structure - Start */}
+
               <ul
                 className="sticky mb-0 flex list-none flex-row  pb-4 "
                 role="tablist"
@@ -463,13 +466,20 @@ const HomePageLayout: NextPage = () => {
                                     className="flex h-full w-full flex-row items-center text-center"
                                   >
                                     <button className=" flex h-10 w-10 items-center  p-2">
-                                      <HiOutlineChevronRight
-                                        //index + 1 needed because for some reason index at 0 was never found even with it being hard coded in.
-                                        className="h-4 w-4"
-                                        // onClick={() => {
-                                        //   toggleSubMenu(index, subMenuIndexes);
-                                        // }
-                                      />
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        className="h-6 w-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                                        />
+                                      </svg>
                                     </button>
                                     <h5 className="ml-4">{list.title}</h5>
                                   </Link>
@@ -630,6 +640,7 @@ const HomePageLayout: NextPage = () => {
                   </div>
                 </div>
               </div>
+              {/* HomePage Tab Structure - End */}
             </div>
           </div>
           {/* Current Homepage - Page 1 - End */}
@@ -641,7 +652,7 @@ const HomePageLayout: NextPage = () => {
           {/* Movie Page - Page 2 - End */}
           {/* Television Page - Page 2 - Start */}
           <div className={`page ${activePage === 2 ? "active" : "hidden"}`}>
-            <div>Tv Show Page Placeholder</div>
+            <TelevisionPageLayout />
           </div>
           {/* Television Page - Page 2 - End */}
           {/* Music Page - Page 2 - Start */}
@@ -658,7 +669,7 @@ const HomePageLayout: NextPage = () => {
               isOpen ? "h-40" : "h-0"
             }   transition-height fixed bottom-0 w-full overflow-hidden bg-white pb-10 shadow-lg duration-300 ease-in-out`}
           >
-            <AddList />
+            <AddList category="default" />
           </div>
 
           {/* Circular Button - Bot Right Corner*/}
@@ -698,7 +709,8 @@ const HomePageLayout: NextPage = () => {
           </button>
         </div>
         {/* Add List - End*/}
-        <div className="mx-auto flex">
+
+        <div className={`mx-auto ${activePage === 0 ? "active" : "hidden"}`}>
           <button
             onClick={handleSignOut}
             className="z-0 mb-20 h-10 w-20 transform rounded-xl bg-red-600 text-white shadow-md transition-transform duration-200 hover:scale-105 hover:bg-red-700 active:bg-red-800"

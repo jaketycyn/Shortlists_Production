@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import Papa from "papaparse";
 import { trpc } from "../../utils/trpc";
 import {
-  addMovieItemsSchema,
-  addSongItemsSchema,
+  AddItemsSchema,
+  AddMovieItemsSchema,
+  AddSongItemsSchema,
+  AddTvItemsSchema,
 } from "../../server/schema/itemSchema";
 import { useAppSelector } from "../../hooks/useTypedSelector";
 import FooterNav from "../../components/navigation/FooterNav";
@@ -40,6 +42,10 @@ const Excel = () => {
     setSelectedValue(e.target.value);
   };
 
+  type PersonData = {
+    Name: string;
+  };
+
   type SongData = {
     Song: string;
     Album: string;
@@ -52,6 +58,10 @@ const Excel = () => {
     Year: number;
     Director: string;
   };
+  type TvData = {
+    Title: string;
+    Year: number;
+  };
 
   //!hardcode for now list items will be added to
   //TODO: add listId to the form in form of input or dropdown retrieved from the database
@@ -60,6 +70,9 @@ const Excel = () => {
     trpc.userItem.addSongItems.useMutation();
   const { mutateAsync: mutateAsyncMovies } =
     trpc.userItem.addMovieItems.useMutation();
+  const { mutateAsync: mutateAsyncTv } = trpc.userItem.addTvItems.useMutation();
+  const { mutateAsync: mutateAsyncItems } =
+    trpc.userItem.addItems.useMutation();
   const handleSubmit = async () => {
     if (!file) return;
 
@@ -67,7 +80,7 @@ const Excel = () => {
 
     // console.log("file", file);
 
-    if (file && selectedValue === "music") {
+    if (file && selectedValue === "songs") {
       reader.onload = async (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
           const data = e.target.result;
@@ -95,7 +108,7 @@ const Excel = () => {
                     album: song.Album,
                     listId: listId,
                     bucket: "music",
-                  })) as addSongItemsSchema;
+                  })) as AddSongItemsSchema;
 
                   console.log("transformedSongData", transformedSongData);
 
@@ -117,6 +130,57 @@ const Excel = () => {
         reader.readAsText(file);
       }
     }
+    if (file && selectedValue === "musicalArtists") {
+      reader.onload = async (e: ProgressEvent<FileReader>) => {
+        if (e.target?.result) {
+          const data = e.target.result;
+          try {
+            // Parse CSV
+            if (file.type === "text/csv") {
+              Papa.parse(data.toString(), {
+                complete: async (parsedData) => {
+                  //Skip the header and map over the rest of the rows
+
+                  console.log("parsedData", parsedData);
+
+                  const rows = parsedData.data as string[][];
+
+                  //skip first array cause its the header
+
+                  const artistData = rows.slice(1).map((row: any) => ({
+                    Name: row[0],
+                  })) as PersonData[];
+                  console.log("rows", rows);
+
+                  console.log("artistData", artistData);
+
+                  // Transform the songData to match the addSongItemSchema
+                  const transformedArtistData = artistData.map((person) => ({
+                    itemTitle: person.Name,
+                    listId: listId,
+                  })) as AddItemsSchema;
+
+                  console.log("transformedSongData", transformedArtistData);
+
+                  await mutateAsyncItems(transformedArtistData);
+
+                  alert("Songs Added!");
+                },
+              });
+            }
+            // TODO: Handle other types e.g., Excel
+          } catch (err: any) {
+            console.error("Error parsing JSON", err.message);
+            alert("Error processing file. Make sure it is a valid JSON or CSV");
+          }
+        }
+      };
+
+      if (file.type === "text/csv") {
+        reader.readAsText(file);
+      }
+    }
+
     if (file && selectedValue === "movies") {
       reader.onload = async (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
@@ -143,7 +207,7 @@ const Excel = () => {
                     year: Math.floor(movie.Year),
                     director: movie.Director,
                     bucket: "movies",
-                  })) as addMovieItemsSchema;
+                  })) as AddMovieItemsSchema;
 
                   console.log("transformedMovieData", transformedMovieData);
                   await mutateAsyncMovies(transformedMovieData);
@@ -161,7 +225,98 @@ const Excel = () => {
         reader.readAsText(file);
       }
     }
+    if (file && selectedValue === "television") {
+      reader.onload = async (e: ProgressEvent<FileReader>) => {
+        if (e.target?.result) {
+          const data = e.target.result;
+          try {
+            // Parse CSV
+            if (file.type === "text/csv") {
+              Papa.parse(data.toString(), {
+                complete: async (parsedData) => {
+                  // Explicitly cast parsedData.data to a 2d string array
+                  const rows = parsedData.data as string[][];
 
+                  //Skip the header and map over the rest of the rows
+                  const tvData = rows.slice(1).map((row: any) => ({
+                    Title: row[0],
+                    Year: parseInt(row[1], 10),
+                  })) as TvData[];
+
+                  // Transform the tvData to match the addMovieItemSchema
+                  const transformedTvShowData = tvData.map((tvShow) => ({
+                    itemTitle: tvShow.Title,
+                    listId: listId,
+                    year: Math.floor(tvShow.Year),
+                    bucket: "television",
+                  })) as AddTvItemsSchema;
+
+                  console.log("transformedMovieData", transformedTvShowData);
+                  await mutateAsyncTv(transformedTvShowData);
+                  alert("Tv Show Added!");
+                },
+              });
+            }
+          } catch (err: any) {
+            console.error("Error parsing JSON", err.message);
+            alert("Error processing file. Make sure it is a valid JSON or CSV");
+          }
+        }
+      };
+      if (file.type === "text/csv") {
+        reader.readAsText(file);
+      }
+    }
+    // if (file && selectedValue === "custom") {
+    //   reader.onload = async (e: ProgressEvent<FileReader>) => {
+    //     if (e.target?.result) {
+    //       const data = e.target.result;
+    //       try {
+    //         // Parse CSV
+    //         if (file.type === "text/csv") {
+    //           Papa.parse(data.toString(), {
+    //             complete: async (parsedData) => {
+    //               //Skip the header and map over the rest of the rows
+
+    //               console.log("parsedData", parsedData);
+
+    //               const rows = parsedData.data as string[][];
+
+    //               //skip first array cause its the header
+
+    //               const artistData = rows.slice(1).map((row: any) => ({
+    //                 Name: row[0],
+    //               })) as PersonData[];
+    //               //console.log("rows", rows);
+
+    //               //console.log("artistData", artistData);
+
+    //               // Transform the songData to match the addSongItemSchema
+    //               const transformedArtistData = artistData.map((person) => ({
+    //                 itemTitle: person.Name,
+    //                 listId: listId,
+    //               })) as AddItemsSchema;
+
+    //               //console.log("transformedSongData", transformedArtistData);
+
+    //               await mutateAsyncItems(transformedArtistData);
+
+    //               alert("Songs Added!");
+    //             },
+    //           });
+    //         }
+    //         // TODO: Handle other types e.g., Excel
+    //       } catch (err: any) {
+    //         console.error("Error parsing JSON", err.message);
+    //         alert("Error processing file. Make sure it is a valid JSON or CSV");
+    //       }
+    //     }
+    //   };
+
+    //   if (file.type === "text/csv") {
+    //     reader.readAsText(file);
+    //   }
+    // }
     // TODO: Add reading methods for other file types, e.g., Excel
   };
 
@@ -184,9 +339,11 @@ const Excel = () => {
           className="mb-4"
         >
           <option value="">Select a Page</option>
-          <option value="music">Music</option>
+          <option value="songs">Songs</option>
+          <option value="musicalArtists">Musical Artists</option>
           <option value="movies">Movies</option>
           <option value="television">Television</option>
+          {/* <option value="custom">Custom</option> */}
         </select>
       </div>
       <input type="file" onChange={handleFileChange} className="mb-4" />

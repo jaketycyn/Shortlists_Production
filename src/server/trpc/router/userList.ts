@@ -14,12 +14,16 @@ export const userListRouter = router({
   addList: protectedProcedure
     .input(addListSchema)
     .mutation(async ({ input, ctx }) => {
-      const { listTitle } = input;
+      const { listTitle, category } = input;
 
       //console.log("ctx.session.user: inside userListRouter", ctx.session.user);
 
       const result = await ctx.prisma.userList.create({
-        data: { title: listTitle, userId: ctx.session.user.id },
+        data: {
+          title: listTitle,
+          userId: ctx.session.user.id,
+          category,
+        },
       });
 
       return {

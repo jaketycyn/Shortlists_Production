@@ -12,7 +12,7 @@ import { setActiveList, type List } from "../../../slices/listSlice";
 import { type ArchiveListSchema } from "../../../server/schema/listSchema";
 import AddList from "../../AddList";
 
-const MusicPageLayout: NextPage = () => {
+const TelevisionPageLayout: NextPage = () => {
   const { data: session } = useSession();
   const dispatch = useAppDispatch();
   const [openMovieListTab, setOpenMovieListTab] = useState(0);
@@ -25,7 +25,7 @@ const MusicPageLayout: NextPage = () => {
   // console.log("featuredLists: ", featuredLists);
 
   const featuredMovieLists = featuredLists!.filter(
-    (l) => l.category === "music"
+    (l) => l.category === "television"
   );
   // console.log("featuredMovieLists: ", featuredMovieLists);
 
@@ -47,14 +47,14 @@ const MusicPageLayout: NextPage = () => {
   const createdFilteredMovieLists = () =>
     lists?.filter(
       (l) =>
-        l.category === "music" &&
+        l.category === "television" &&
         l.archive === "active" &&
         l.userId === adminUserId
     );
 
   const allUsersLists = lists?.filter(
     (l) =>
-      l.category === "music" &&
+      l.category === "television" &&
       l.archive !== "archive" &&
       l.archive !== "trash" &&
       l.userId === session!.user!.id
@@ -106,7 +106,7 @@ const MusicPageLayout: NextPage = () => {
       {/* Featured MovieLists Section - Start */}
       <div className="pt-4">
         <p className="font-semiBold items-center pb-4 text-center text-xl">
-          Featured Music Lists
+          Featured TV Lists
         </p>
         <ul className="grid grid-cols-2 items-center justify-center gap-0 md:grid-cols-3 lg:grid-cols-4">
           {featuredMovieLists && featuredMovieLists.length > 0 ? (
@@ -426,14 +426,14 @@ const MusicPageLayout: NextPage = () => {
       </div>
       {/* User MovieList Section - End */}
       {/* //* Add List - Start */}
-      <div className={`page z-20 ${activePage === 3 ? "active" : "hidden"}`}>
+      <div className={`page z-20 ${activePage === 2 ? "active" : "hidden"}`}>
         {/* Drawer */}
         <div
           className={`${
             isOpen ? "h-40" : "h-0"
           }   transition-height fixed bottom-0 w-full overflow-hidden bg-white pb-10 shadow-lg duration-300 ease-in-out`}
         >
-          <AddList category="music" />
+          <AddList category="television" />
         </div>
 
         {/* Circular Button - Bot Right Corner*/}
@@ -477,4 +477,4 @@ const MusicPageLayout: NextPage = () => {
   );
 };
 
-export default MusicPageLayout;
+export default TelevisionPageLayout;

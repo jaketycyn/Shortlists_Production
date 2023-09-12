@@ -23,6 +23,13 @@ export const addMovieItemSchema = z.object({
   bucket: z.string(),
 });
 
+export const addTvItemSchema = z.object({
+  itemTitle: z.string(),
+  year: z.number().int(),
+  listId: z.string(),
+  bucket: z.string(),
+});
+
 export const archiveItemsSchema = z.object({
   userId: z.string(),
   listId: z.string(),
@@ -56,16 +63,21 @@ export const updateItemRankSchema = z.object({
   potentialRank: z.number(),
 });
 
+export const addItemsSchema = z.array(addItemSchema);
 export const addMovieItemsSchema = z.array(addMovieItemSchema);
+export const addTvItemsSchema = z.array(addTvItemSchema);
 export const addSongItemsSchema = z.array(addSongItemSchema);
 
 export const updateItemsRankSchema = z.array(updateItemRankSchema);
 
 export type AddItemSchema = z.TypeOf<typeof addItemSchema>;
-export type addMovieItemSchema = z.TypeOf<typeof addMovieItemSchema>;
-export type addMovieItemsSchema = z.TypeOf<typeof addMovieItemsSchema>;
-export type addSongItemSchema = z.TypeOf<typeof addSongItemSchema>;
-export type addSongItemsSchema = z.TypeOf<typeof addSongItemsSchema>;
+export type AddItemsSchema = z.TypeOf<typeof addItemsSchema>;
+export type AddMovieItemSchema = z.TypeOf<typeof addMovieItemSchema>;
+export type AddMovieItemsSchema = z.TypeOf<typeof addMovieItemsSchema>;
+export type AddTvItemSchema = z.TypeOf<typeof addTvItemSchema>;
+export type AddTvItemsSchema = z.TypeOf<typeof addTvItemsSchema>;
+export type AddSongItemSchema = z.TypeOf<typeof addSongItemSchema>;
+export type AddSongItemsSchema = z.TypeOf<typeof addSongItemsSchema>;
 export type ArchiveItemSchema = z.TypeOf<typeof archiveItemSchema>;
 export type ArchiveItemsSchema = z.TypeOf<typeof archiveItemsSchema>;
 export type DeleteItemSchema = z.TypeOf<typeof deleteItemSchema>;

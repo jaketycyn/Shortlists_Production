@@ -9,6 +9,8 @@ import {
   updateItemSchema,
   updateItemRankSchema,
   updateItemsRankSchema,
+  addTvItemsSchema,
+  addItemsSchema,
 } from "../../schema/itemSchema";
 import { z } from "zod";
 
@@ -31,6 +33,27 @@ export const userItemRouter = router({
         result,
       };
     }),
+  addItems: protectedProcedure
+    .input(addItemsSchema)
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session.user.id;
+      // Create multiple items in the database
+      const createItems = input.map((i) => ({
+        title: i.itemTitle,
+        listId: i.listId,
+        userId: userId,
+      }));
+
+      const result = await ctx.prisma.userItem.createMany({
+        data: createItems,
+      });
+
+      return {
+        status: 201,
+        message: "Items created successfully",
+        result,
+      };
+    }),
   addMovieItems: protectedProcedure
     .input(addMovieItemsSchema)
     .mutation(async ({ input, ctx }) => {
@@ -45,15 +68,31 @@ export const userItemRouter = router({
         userId: userId,
         bucket: movie.bucket,
       }));
-      // const createItems = input.map((movie) => ({
-      //   title: movie.itemTitle,
-      //   director: movie.director,
-      //   year: movie.year,
-      //   listId: movie.listId,
-      //   userId: userId,
-      //   bucket: movie.bucket,
-      // }));
 
+      const result = await ctx.prisma.userItem.createMany({
+        data: createItems,
+      });
+
+      return {
+        status: 201,
+        message: "Items created successfully",
+        result,
+      };
+    }),
+  addTvItems: protectedProcedure
+    .input(addTvItemsSchema)
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.session.user.id;
+
+      // Create multiple items in the database
+      const createItems = input.map((show) => ({
+        title: show.itemTitle,
+
+        year: show.year,
+        listId: show.listId,
+        userId: userId,
+        bucket: show.bucket,
+      }));
       const result = await ctx.prisma.userItem.createMany({
         data: createItems,
       });

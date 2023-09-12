@@ -3,6 +3,7 @@ import * as z from "zod";
 
 export const addListSchema = z.object({
   listTitle: z.string(),
+  category: z.string(),
 });
 
 export const archiveListSchema = z.object({

@@ -10,6 +10,10 @@ import { type AddListSchema } from "../server/schema/listSchema";
 
 import { HiX, HiOutlineCheck, HiPlus } from "react-icons/hi";
 
+interface AddListProps {
+  category: string;
+}
+
 const resolver: Resolver<AddListSchema> = async (values) => {
   return {
     values: !values.listTitle ? {} : values,
@@ -24,7 +28,7 @@ const resolver: Resolver<AddListSchema> = async (values) => {
   };
 };
 
-const AddList: NextPage = () => {
+const AddList: NextPage<AddListProps> = ({ category }) => {
   const [showToast, setShowToast] = React.useState<boolean>(false);
   const {
     handleSubmit,
@@ -46,10 +50,14 @@ const AddList: NextPage = () => {
 
   const onSubmit = async (data: AddListSchema) => {
     try {
-      console.log("onsubmit fired: ");
-      const result = await mutateAsync(data);
-      console.log("result: ", result);
-      console.log("resultID: ", result.result.id);
+      // console.log("onsubmit fired: ");
+      // console.log("data: ", data);
+      // console.log("category: ", category);
+      const newData = { ...data, category: category };
+      console.log("newData: ", newData);
+      const result = await mutateAsync(newData);
+      // console.log("result: ", result);
+      // console.log("resultID: ", result.result.id);
       if (result) {
         setShowToast(true);
         setTimeout(() => {
