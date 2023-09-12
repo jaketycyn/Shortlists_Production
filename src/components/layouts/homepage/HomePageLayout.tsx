@@ -177,8 +177,6 @@ const HomePageLayout: NextPage = () => {
 
   //featuredListRandomizer
 
-  const [arrayOfArrays, setArrayOfArrays] = useState<any>([featuredLists]);
-
   const [currentFeaturedLists, setCurrentFeaturedLists] =
     useState<any>(featuredLists);
 
@@ -203,10 +201,12 @@ const HomePageLayout: NextPage = () => {
   }
 
   useEffect(() => {
-    console.log("currentFeaturedLists: ", currentFeaturedLists);
-    const shuffled = shuffle([...currentFeaturedLists]);
-    setCurrentFeaturedLists(shuffled);
-    console.log("currentFeaturedLists: ", currentFeaturedLists);
+    if (Array.isArray(currentFeaturedLists)) {
+      console.log("currentFeaturedLists before shuffle:", currentFeaturedLists);
+      const shuffled = shuffle([...currentFeaturedLists]);
+      setCurrentFeaturedLists(shuffled);
+      console.log("currentFeaturedLists after shuffle:", currentFeaturedLists);
+    }
   }, []);
 
   useEffect(() => {
