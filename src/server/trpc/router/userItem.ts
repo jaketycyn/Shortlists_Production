@@ -208,6 +208,22 @@ export const userItemRouter = router({
 
       return results;
     }),
+  getItemsByListId: protectedProcedure
+    .input(z.object({ listId: z.array(z.string()) }))
+    .query(async ({ input, ctx }) => {
+      const { listId } = input;
+
+      const results = await ctx.prisma.userItem.findMany({
+        where: {
+          listId: {
+            in: listId, // Using the 'in' operator for array of listIds
+          },
+        },
+      });
+
+      return results;
+    }),
+
   updateManyItemsRank: protectedProcedure
     .input(updateItemsRankSchema)
     .mutation(async ({ ctx, input }) => {

@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
-import { setListsLoading } from "../../slices/listSlice";
+import { setActiveList, setListsLoading } from "../../slices/listSlice";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import ProgressToast from "../toasts/ProgressToast";
+import { set } from "cypress/types/lodash";
+import AddItem from "../AddItem";
+import Link from "next/link";
 
 // abusing null/undefined for now will need to fix later
 
@@ -37,32 +40,33 @@ type ItemType = {
   director?: string | null;
 };
 
-interface FeaturedItemCardProps {
+interface BasicItemCardProps {
   title: string;
   index: number;
-  featuredItems?: ItemType[];
-  featuredLists: ListType[];
+  items?: ItemType[];
+  lists: ListType[];
 }
 
-const FeaturedMovieItemCard = ({
+const BasicItemCard = ({
   title,
   index,
-  featuredItems = [],
-  featuredLists,
-}: FeaturedItemCardProps) => {
+  items = [],
+  lists,
+}: BasicItemCardProps) => {
   const { data: session, status } = useSession();
   const dispatch = useDispatch();
   const [isModalOpen, setModalOpen] = useState(false);
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   const [isToastVisible, setToastVisible] = useState(false);
-  const currentList = featuredLists!.find((list) => list.title === title);
-  const backgroundImage = currentList ? currentList.coverImage : "";
+  const [isAddItemModalOpen, setAddItemModalOpen] = useState(false);
+  const currentList = lists!.find((list) => list.title === title);
+  const backgroundImage = currentList ? currentList.coverImage || "" : "";
+
+  //console.log("currentList: ", currentList);
 
   // Function to filter items based on listId
   const filterItemsByList = (listId: string) => {
-    const filteredItems = featuredItems!.filter(
-      (item) => item.listId === listId
-    );
+    const filteredItems = items!.filter((item) => item.listId === listId);
     return filteredItems.map((item) => item.title).join(", ");
   };
 
@@ -80,6 +84,14 @@ const FeaturedMovieItemCard = ({
     e.stopPropagation();
   };
 
+  // set an Active List in Redux/local storage
+  // gets used by ListHeader.tsx to display the title of the list
+  const setActiveListFunction = async (activeList: List) => {
+    //console.log("activeList: ", activeList);
+    await dispatch(setActiveList(activeList));
+  };
+
+  // can later change this call to be more efficient
   const { refetch } = trpc.userList.getLists.useQuery();
 
   const { mutateAsync: mutateAsyncCopyFeatureList } =
@@ -88,7 +100,7 @@ const FeaturedMovieItemCard = ({
   const handleAddList = async () => {
     setConfirmOpen(true);
     if (isConfirmOpen) {
-      const currentListItems = featuredItems.filter(
+      const currentListItems = items.filter(
         (i) => i.listId === currentList?.id
       );
 
@@ -124,16 +136,27 @@ const FeaturedMovieItemCard = ({
     }
   };
 
+  const defaultColors = [
+    "bg-red-500",
+    "bg-green-500",
+    "bg-blue-400",
+    "bg-pink-400",
+  ];
+  const defaultColorClass = defaultColors[index % defaultColors.length];
   return (
     <div
       style={{
-        backgroundImage: `url(${backgroundImage})`,
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : "",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
-      className="relative flex h-[35vw] w-full items-center justify-center rounded-lg md:h-[25vw] lg:h-[20vw]"
+      className={`${
+        backgroundImage === "" || backgroundImage === "undefined"
+          ? defaultColorClass
+          : ""
+      } relative flex h-[35vw] w-full items-center justify-center rounded-lg md:h-[25vw] lg:h-[20vw]`}
     >
-      <div className="absolute inset-0 rounded-lg bg-black opacity-50"></div>
+      <div className="absolute inset-0 rounded-lg bg-black opacity-20"></div>
       <p
         className="truncate-2-lines font-inter relative z-10 w-full px-4 py-2 text-center text-xl font-semibold leading-relaxed tracking-wider text-white"
         onClick={handleClick}
@@ -168,9 +191,25 @@ const FeaturedMovieItemCard = ({
                     onClick={() => setConfirmOpen(true)}
                     data-testid="add-list-button"
                   >
-                    + Add List
+                    + Copy List
                   </button>
 
+                  <div className="mx-auto flex w-20 items-center justify-center rounded-md border-2 bg-orange-400 text-center text-lg text-white">
+                    <Link
+                      href={`/lists/${encodeURIComponent(currentList!.id)}`}
+                      key={index}
+                      passHref
+                      onClick={() => setActiveListFunction(currentList!)}
+                    >
+                      <button
+                        onClick={() =>
+                          console.log("go into list", currentList!.id)
+                        }
+                      >
+                        Rank
+                      </button>
+                    </Link>
+                  </div>
                   <ConfirmationModal
                     title="Confirmation"
                     message="Are you sure you want to add this list?"
@@ -187,8 +226,8 @@ const FeaturedMovieItemCard = ({
                 </div>
 
                 <ul className="w-full space-y-1 ">
-                  {featuredItems
-                    ? featuredItems
+                  {items
+                    ? items
                         .filter((item) => item.listId === currentList?.id)
                         .map((item) => (
                           <div key={item.id} className="w-full grow-0 ">
@@ -199,6 +238,56 @@ const FeaturedMovieItemCard = ({
                         ))
                     : null}
                 </ul>
+
+                {/* Add Item Modal - Start */}
+                <div
+                  className={`${
+                    isAddItemModalOpen ? "h-40" : "h-0"
+                  }   transition-height fixed bottom-0 w-full overflow-hidden bg-white  shadow-lg duration-300 ease-in-out`}
+                >
+                  <AddItem listId={currentList!.id} />
+                </div>
+                {/* Circular Button - Bot Right Corner*/}
+                <button
+                  onClick={() => setAddItemModalOpen(!isAddItemModalOpen)}
+                  className={` ${
+                    isAddItemModalOpen
+                      ? "h-12 w-12 rounded-full  bg-red-400  "
+                      : "h-12 w-32 rounded-xl bg-green-700"
+                  } fixed bottom-[56px] right-4 flex items-center  justify-center text-lg text-white shadow-lg`}
+                >
+                  {isAddItemModalOpen ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="h-6 w-6"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  ) : (
+                    <div className="flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="h-6 w-6"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <span className="ml-1">Add Item</span>
+                    </div>
+                  )}
+                </button>
+                {/* Add Item Modal - End */}
               </div>
             </div>
           </div>
@@ -208,4 +297,4 @@ const FeaturedMovieItemCard = ({
   );
 };
 
-export default FeaturedMovieItemCard;
+export default BasicItemCard;

@@ -6,6 +6,7 @@ import {
   shareListSchema,
   updateListSchema,
   getListsByUserIdSchema,
+  copyListSchema,
 } from "../../schema/listSchema";
 import { title } from "process";
 import { getLists } from "../../../slices/listSlice";
@@ -122,123 +123,142 @@ export const userListRouter = router({
 
       return results;
     }),
+  getRecentLists: protectedProcedure.query(({ ctx }) => {
+    const results = ctx.prisma.userList.findMany({
+      where: {
+        parentListId: "undefined",
+        NOT: {
+          archive: "trash",
+        },
+      },
+
+      orderBy: { createdAt: "desc" },
+      take: 4,
+    });
+
+    console.log("results: ", results);
+
+    return results;
+  }),
 
   shareList: protectedProcedure
     .input(shareListSchema)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const results = "hi";
+        return {
+          status: 201,
+          message: "List shared successfully",
+          results,
+        };
+      } catch (error) {}
+    }),
+  copyList: protectedProcedure
+    //! NEED TO CHANGE THE SYSTEM FROM CREATING A NEW LIST WITH A NEW LIST ID AND ASSOCIATING THAT LISTID w/ THE NEW ITEMS TO CREATING NEW ITEMS THAT ARE COPIES OF THE ORIGINAL ITEMS AND ASSOCIATING THEM WITH THE ORIGINAL LISTID AND THE NEW USERID
+    .input(copyListSchema)
     //can add back in CTX later but removed because of the scenario where someone can share someone else's list thus their ID wouldnt' be taken from here but rather passed along from the shareform page.
     .mutation(async ({ input, ctx }) => {
-      //! NEED ITEM VALUES
-      //? Do I pass items with a parentItemId to attach everyitem to another item at one point?
-      const { userId, parentListUserId, listTitle, listId, items, category } =
-        input;
-      console.log("items: ", items);
-      //!Hardcoded itemTitle
-
-      const sentItems = items as any;
-      // const dataArray = Array.from([items]).map(() => {
-      //   title: items;
-      // });
-      // console.log("SHARELIST - inputs: ", input);
-
-      // use targetEmail and search DB and retrieve userID corresponding to targetEmail
-
-      //! will create list before checking for item errors - kinda an issue
-
-      //! Will want a way to prevent password from coming back for security reasons in the future
-      const FoundUser = await ctx.prisma.user.findFirst({
-        where: { id: userId },
-      });
-
-      if (FoundUser) {
-        console.log("FoundUser: ", FoundUser);
-        console.log("ID: ", FoundUser?.id);
+      try {
+        const { userId, parentListUserId, listTitle, listId, items, category } =
+          input;
         console.log("items: ", items);
-        console.log("category: ", category);
-        // with userId corresponding to targetEmail create a new list referencing the old listID, for the targetEmail user with its own unique ID
-
-        const newList = await ctx.prisma.userList.create({
-          data: {
-            title: listTitle,
-            userId: FoundUser!.id,
-            parentListId: listId,
-            parentListUserId: parentListUserId,
-            category: category,
-
-            // parentListId: listId,
-          },
+        console.log("input: ", input);
+        console.log("hi inside here");
+        const sentItems = items as any;
+        // console.log("listId: ", listId);
+        // // use targetEmail and search DB and retrieve userID corresponding to targetEmail
+        // //! will create list before checking for item errors - kinda an issue
+        // //! Will want a way to prevent password from coming back for security reasons in the future
+        const FoundUser = await ctx.prisma.user.findFirst({
+          where: { id: userId },
         });
 
-        console.log("newList: ", newList);
-        console.log("newList ID: ", newList.id);
+        console.log("FoundUser: ", FoundUser);
 
-        // create items inside list in the new List with reference to the original 'parent' id
-        // will eventually need to attach parentList value and add said value to scheme for prompts, but those can be in their own call
-        //depending on iTems array fire function
+        if (!FoundUser) throw new Error("User not found");
 
-        if (sentItems.length === 0) {
-          console.log("no items Found");
-          return {
-            status: 201,
-            message: "List shared successfully",
-            newList,
-          };
-        } else if (sentItems.length === 1) {
-          console.log("create 1 item");
-          //! create 1 item
-          const newItem = await ctx.prisma.userItem.create({
+        // create new items for user
+        if (FoundUser) {
+          //create new list for user
+          const newList = await ctx.prisma.userList.create({
             data: {
-              title: items[0]!.title,
-              listId: newList.id,
+              title: listTitle,
               userId: FoundUser!.id,
+              category,
+              parentListId: listId,
+              parentListUserId,
             },
           });
-          return {
-            status: 201,
-            message: "List shared successfully",
-            newList,
-            newItem,
-          };
-        } else if (sentItems.length > 1) {
-          console.log(`create ${items.length}  items`);
-          //! create many test
 
-          console.log("sent items: ", sentItems);
-          console.log("sent items: ", sentItems);
-          console.log("sent items: ", sentItems);
-          //map out only title from original items
-          const sentItemsTitleArray = sentItems.map(
-            (i: any) =>
-              new Object({
-                title: i.title,
-                userId: "",
-                listId: "",
-              })
-          );
-          console.log("sentItemsTitle: ");
-
-          //add props to new array - listId: newList.id & userId: FoundUser!.id
-          console.log("newList.id: ", newList.id);
-          console.log(" FoundUser!.id: ", FoundUser!.id);
+          //? Later will need to create a check that if an error happens when creating the items either the list is deleted or a new pending action occurs for the items which weren't created.
 
           const newListId = newList.id;
-          //
-          sentItemsTitleArray.forEach((i: any) => {
-            (i.listId = newListId), (i.userId = FoundUser!.id);
-          });
-          console.log("newItemsObjectArray: ");
+          console.log("newListId: ", newListId);
 
-          const newItems = await ctx.prisma.userItem.createMany({
-            data: sentItemsTitleArray,
-            skipDuplicates: true,
-          });
+          if (sentItems.length === 0) {
+            console.log("no items Found");
+            return {
+              status: 201,
+              message: "List shared successfully",
+            };
+          } else if (sentItems.length === 1) {
+            // create 1 item
+            // console.log("create 1 item");
+            const newItem = await ctx.prisma.userItem.create({
+              data: {
+                title: items[0]!.title,
+                listId: newListId,
+                userId: FoundUser!.id,
+                parentListId: listId,
+              },
+            });
+            return {
+              status: 201,
+              message: "List shared successfully",
+              newItem,
+            };
+          } else if (sentItems.length > 1) {
+            try {
+              console.log(`create ${items.length}  items`);
+              //     //map out only title from original items
+              const sentItemsTitleArray = sentItems.map((i: any) => {
+                return {
+                  title: i.title,
+                  userId: FoundUser!.id, // Ensure this is a string, not a number
+                  listId: newListId, // Ensure this is a string, not a number
+                  parentUserId: parentListUserId, // If this is not provided, it will default to "undefined" (string)
+                  parentListId: listId, // Can be omitted if not available (will default to null)
+                  // We'll omit `id` and `createdAt` since they have default values.
+                  // We'll also omit optional fields that are not available, they will default to `null`.
+                  // Any other fields can be omitted if they are not applicable.
+                };
+              });
 
-          return {
-            status: 201,
-            message: "List shared successfully",
-            newList,
-            newItems,
-          };
+              const newItems = await ctx.prisma.userItem.createMany({
+                data: sentItemsTitleArray,
+                skipDuplicates: true,
+              });
+
+              return {
+                status: 201,
+                message: "List shared successfully",
+                newItems,
+              };
+            } catch (error) {
+              console.error("Error during userItem creation:", error);
+              return {
+                status: 500,
+                message: "An error occurred during item creation.",
+              };
+            }
+          }
         }
+      } catch (error) {
+        console.log("error: ", error);
+        return {
+          status: 500,
+          message: "An error occurred while processing your request.",
+        };
       }
     }),
 });

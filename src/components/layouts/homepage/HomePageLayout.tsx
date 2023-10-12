@@ -38,6 +38,7 @@ import { signOut, useSession } from "next-auth/react";
 import { setUsers } from "../../../slices/usersSlice";
 import MusicPageLayout from "../musicPage/MusicPageLayout";
 import TelevisionPageLayout from "../televisionPage/TelevisionPageLayout";
+import BasicItemCard from "../../cards/BasicItemCard";
 
 const HomePageLayout: NextPage = () => {
   const { data: session } = useSession();
@@ -220,6 +221,21 @@ const HomePageLayout: NextPage = () => {
       dispatch(setFeaturedLists(featuredListsData as FeaturedList[]));
     }
   }, [dispatch, adminLists]);
+
+  // get recent Lists & Items
+  const { data: recentLists } = trpc.userList.getRecentLists.useQuery();
+  // console.log("recentLists: ", recentLists);
+
+  const { data: recentItems, refetch: recentItemsRefetch } =
+    trpc.userItem.getItemsByListId.useQuery({
+      listId: recentLists?.map((list) => list.id) || [],
+    });
+
+  useEffect(() => {
+    recentItemsRefetch();
+  }, [dispatch, loading]);
+
+  console.log("recentItems: ", recentItems);
 
   //! get all users for now:
   const { data: usersFromTrpc } = trpc.user.getAllUsers.useQuery();
@@ -521,7 +537,7 @@ const HomePageLayout: NextPage = () => {
                                   </Link>
 
                                   {/* DropDown: Start */}
-                                  <div className="dropdown-left dropdown">
+                                  <div className="dropdown dropdown-left">
                                     <label tabIndex={0} className="btn m-1">
                                       ...
                                     </label>
@@ -745,14 +761,49 @@ const HomePageLayout: NextPage = () => {
           </button>
         </div>
         {/* Add List - End*/}
-
-        <div className={`mx-auto ${activePage === 0 ? "active" : "hidden"}`}>
-          <button
-            onClick={handleSignOut}
-            className="z-0 mb-20 h-10 w-20 transform rounded-xl bg-red-600 text-white shadow-md transition-transform duration-200 hover:scale-105 hover:bg-red-700 active:bg-red-800"
-          >
-            Signout
-          </button>
+        <div className={`mx-auto ${activePage === 0 ? "active" : "hidden"}  `}>
+          <div>
+            {/* Recent List Display - Start */}
+            <div className="pb-10">
+              <p className="font-semiBold items-center pb-4 text-center text-xl">
+                Recent User Created Lists
+              </p>
+              <ul className="grid grid-cols-2 items-center justify-center gap-0 md:grid-cols-3 lg:grid-cols-4">
+                {/* featured lists/items */}
+                {recentLists && recentLists.length > 0 ? (
+                  recentLists.slice(0, 5).map((list: any, index: any) => (
+                    <li
+                      className="col-span-1 items-center justify-center p-0.5"
+                      key={list.id}
+                      data-testid={`featured-item-${index}`}
+                    >
+                      {list.title ? (
+                        <BasicItemCard
+                          title={list.title}
+                          index={index}
+                          lists={recentLists}
+                          items={recentItems}
+                        />
+                      ) : (
+                        <div>No title available for this list</div>
+                      )}
+                    </li>
+                  ))
+                ) : (
+                  <div>No Featured lists Available at this time</div>
+                )}
+              </ul>
+            </div>
+            {/* Recent List Display - End */}
+            <div className=" flex  ">
+              <button
+                onClick={handleSignOut}
+                className="z-0 mx-auto mb-20 h-10 w-20 transform rounded-xl bg-red-600 text-white shadow-md transition-transform duration-200 hover:scale-105 hover:bg-red-700 active:bg-red-800"
+              >
+                Signout
+              </button>
+            </div>
+          </div>
         </div>
         <div className="z-20">
           <FooterNav />

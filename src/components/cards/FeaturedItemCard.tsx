@@ -83,7 +83,7 @@ const FeaturedItemCard = ({
   const { refetch } = trpc.userList.getLists.useQuery();
 
   const { mutateAsync: mutateAsyncCopyFeatureList } =
-    trpc.userList.shareList.useMutation();
+    trpc.userList.copyList.useMutation();
 
   const handleAddList = async () => {
     setConfirmOpen(true);
@@ -168,7 +168,7 @@ const FeaturedItemCard = ({
                     onClick={() => setConfirmOpen(true)}
                     data-testid="add-list-button"
                   >
-                    + Add List
+                    + Copy List
                   </button>
 
                   <ConfirmationModal
