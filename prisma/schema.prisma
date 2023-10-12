@@ -49,6 +49,8 @@ model User {
   sessions               Session[]
   UserItem               UserItem[]
   UserList               UserList[]
+  sentLists              SharedList[] @relation("SharedListSender")
+  receivedLists          SharedList[] @relation("SharedListReceiver")
 }
 
 model LoginToken {
@@ -72,7 +74,9 @@ model UserItem {
   title         String
   createdAt     DateTime @default(now())
   userId        String
+  parentUserId  String?  @default("undefined")
   listId        String
+  parentListId  String?  @default("undefined")
   archive       String?  @default("undefined")
   currentRank   Int      @default(0)
   potentialRank Int      @default(0)
@@ -99,7 +103,25 @@ model UserList {
   coverImage       String?    @default("undefined")
   UserItem         UserItem[]
   user             User       @relation(fields: [userId], references: [id])
+  sharedLists      SharedList[]
+
 }
+
+model SharedList {
+  id          String   @id @default(cuid())
+  senderId    String
+  receiverId  String
+  sharedListId String
+  status      String   @default("pending")
+  sharedAt    DateTime @default(now())
+  
+  sender      User     @relation("SharedListSender", fields: [senderId], references: [id])
+  receiver    User     @relation("SharedListReceiver", fields: [receiverId], references: [id])
+  sharedList  UserList @relation(fields: [sharedListId], references: [id])
+
+  @@unique([senderId, receiverId, sharedListId])
+}
+
 
 model Friendship {
   senderId   String
