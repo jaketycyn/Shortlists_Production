@@ -77,82 +77,6 @@ export const userListRouter = router({
         message: "Change user list title successful",
       };
     }),
-  deleteList: protectedProcedure
-    .input(deleteListSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { listId, userId } = input;
-      // console.log("listId", listId)
-      // console.log("userId", userId)
-      //!in current iteration will not work as long as items with association to this list exist and are connected
-      await ctx.prisma.userList.deleteMany({
-        where: { id: listId, userId: userId },
-      });
-
-      return {
-        //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200
-        // "The successful result of a PUT or a DELETE is often not a 200 OK but a 204 No Content (or a 201 Created when the resource is uploaded for the first time)."
-        //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
-        status: 204,
-        message: "Delete user list successfully",
-      };
-    }),
-  getLists: protectedProcedure.query(({ ctx }) => {
-    //console.log("user.id: ", ctx.session.user.id);
-
-    const results = ctx.prisma.userList.findMany({
-      where: { userId: ctx.session.user.id },
-    });
-
-    console.log("results: ", results);
-
-    return results;
-    // return {
-    //   status: 201,
-    //   message: "Retrieved user lists successfully",
-    //   lists: { results },
-    // };
-  }),
-  getListsByUserId: protectedProcedure
-    .input(getListsByUserIdSchema)
-    .query(async ({ input, ctx }) => {
-      const { userId } = input;
-
-      const results = await ctx.prisma.userList.findMany({
-        where: { userId },
-      });
-
-      return results;
-    }),
-  getRecentLists: protectedProcedure.query(({ ctx }) => {
-    const results = ctx.prisma.userList.findMany({
-      where: {
-        parentListId: "undefined",
-        NOT: {
-          archive: "trash",
-        },
-      },
-
-      orderBy: { createdAt: "desc" },
-      take: 4,
-    });
-
-    console.log("results: ", results);
-
-    return results;
-  }),
-
-  shareList: protectedProcedure
-    .input(shareListSchema)
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const results = "hi";
-        return {
-          status: 201,
-          message: "List shared successfully",
-          results,
-        };
-      } catch (error) {}
-    }),
   copyList: protectedProcedure
     //! NEED TO CHANGE THE SYSTEM FROM CREATING A NEW LIST WITH A NEW LIST ID AND ASSOCIATING THAT LISTID w/ THE NEW ITEMS TO CREATING NEW ITEMS THAT ARE COPIES OF THE ORIGINAL ITEMS AND ASSOCIATING THEM WITH THE ORIGINAL LISTID AND THE NEW USERID
     .input(copyListSchema)
@@ -260,5 +184,104 @@ export const userListRouter = router({
           message: "An error occurred while processing your request.",
         };
       }
+    }),
+  deleteList: protectedProcedure
+    .input(deleteListSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { listId, userId } = input;
+      // console.log("listId", listId)
+      // console.log("userId", userId)
+      //!in current iteration will not work as long as items with association to this list exist and are connected
+      await ctx.prisma.userList.deleteMany({
+        where: { id: listId, userId: userId },
+      });
+
+      return {
+        //https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200
+        // "The successful result of a PUT or a DELETE is often not a 200 OK but a 204 No Content (or a 201 Created when the resource is uploaded for the first time)."
+        //https://stackoverflow.com/questions/2342579/http-status-code-for-update-and-delete
+        status: 204,
+        message: "Delete user list successfully",
+      };
+    }),
+  getLists: protectedProcedure.query(({ ctx }) => {
+    //console.log("user.id: ", ctx.session.user.id);
+
+    const results = ctx.prisma.userList.findMany({
+      where: { userId: ctx.session.user.id },
+    });
+
+    console.log("results: ", results);
+
+    return results;
+    // return {
+    //   status: 201,
+    //   message: "Retrieved user lists successfully",
+    //   lists: { results },
+    // };
+  }),
+  getListsByUserId: protectedProcedure
+    .input(getListsByUserIdSchema)
+    .query(async ({ input, ctx }) => {
+      const { userId } = input;
+
+      const results = await ctx.prisma.userList.findMany({
+        where: { userId },
+      });
+
+      return results;
+    }),
+  getRecentLists: protectedProcedure.query(({ ctx }) => {
+    const results = ctx.prisma.userList.findMany({
+      where: {
+        parentListId: "undefined",
+        NOT: {
+          archive: "trash",
+        },
+      },
+
+      orderBy: { createdAt: "desc" },
+      take: 4,
+    });
+
+    console.log("results: ", results);
+
+    return results;
+  }),
+
+  shareList: protectedProcedure
+    .input(shareListSchema)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const { userId, listId } = input;
+        const results = "hi";
+        console.log("input: ", input);
+        const senderId = ctx.session.user.id;
+        const receiverId = userId;
+        // const foundSentUser = await ctx.prisma.user.findFirst({
+        //   where: { id: ctx.session.user.id },
+        // });
+        // console.log("foundSentUser: ", foundSentUser);
+
+        // const foundReceiverUser = await ctx.prisma.user.findFirst({
+        //   where: { id: input.userId },
+        // });
+        // console.log("foundReceiverUser: ", foundReceiverUser);
+
+        //store the relationship between the two users
+
+        const newSharedList = await ctx.prisma.sharedList.create({
+          data: {
+            senderId,
+            receiverId,
+            sharedListId: listId,
+          },
+        });
+        return {
+          status: 201,
+          message: "List shared successfully",
+          newSharedList,
+        };
+      } catch (error) {}
     }),
 });
