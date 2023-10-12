@@ -39,7 +39,6 @@ export const copyListSchema = z.object({
 
 export const shareListSchema = z.object({
   userId: z.string(),
-  parentListUserId: z.string(),
   listId: z.string(),
 });
 
