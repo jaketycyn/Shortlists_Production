@@ -92,12 +92,23 @@ const HomePageLayout: NextPage = () => {
   const { mutateAsync: mutateArchiveItems } =
     trpc.userItem.archiveManyItems.useMutation();
 
+  // get SharedList Data
+  const { data: sharedListData } = trpc.userList.getSharedLists.useQuery();
+
+  console.log("sharedata: ", sharedListData);
+
+  // find ShareList by Id
+
+  // store ShareList in Redux
+
+  // get ShareList from Redux
+
+  // display ShareList in Drawer
   const ArchiveList = async (data: ArchiveListSchema) => {
     try {
       const result = await mutateArchiveList(data);
       const itemResult = await mutateArchiveItems(data);
       // await and fire a mutateArchiveItem.many ?? maybe
-
       console.log("result: ", result);
       console.log("itemResult: ", itemResult);
       refetch();
@@ -138,6 +149,9 @@ const HomePageLayout: NextPage = () => {
       ),
     [lists]
   );
+
+  //!! new received lists test
+  const newReceivedLists = "asdf";
 
   // console.log("receivedFilteredArchivedLists: ", receivedFilteredArchivedLists);
 

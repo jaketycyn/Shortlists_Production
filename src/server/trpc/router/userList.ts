@@ -248,6 +248,16 @@ export const userListRouter = router({
 
     return results;
   }),
+  getSharedLists: protectedProcedure.query(({ ctx }) => {
+    const results = ctx.prisma.sharedList.findMany({
+      where: {
+        receiverId: ctx.session.user.id,
+      },
+      orderBy: { sharedAt: "desc" },
+    });
+    console.log("results: ", results);
+    return results;
+  }),
 
   shareList: protectedProcedure
     .input(shareListSchema)
